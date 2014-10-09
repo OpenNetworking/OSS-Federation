@@ -1,6 +1,19 @@
 #API for android client
 
-###GET api/polis
+##Setup
+    git clone https://github.com/OpenNetworking/OSS-Federation.git
+    cd OSS-Federation
+    virtualenv env
+    . ./env/bin/activate
+    pip install -r requirements.txt
+    python manage.py runserver
+    
+    
+
+##Test Server
+Host: [140.112.29.198:9999](http://140.112.29.198:9999)
+
+##GET api/polis
 
 #####Description
 get polis list
