@@ -17,6 +17,7 @@ docs/_build
 garbage/*
 .env/
 env/
+db.sqlite3
 
 # Project Files
 Gemfile*
