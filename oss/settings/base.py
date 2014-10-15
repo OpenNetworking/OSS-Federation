@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'oss.apps.api',
     'oss.apps.polisauth',
     'oss.apps.adminapp',
+    'oss.apps.home',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -88,3 +89,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+LOGIN_URL = '/home/signin/'
+LOGIN_REDIRECT_URL = '/home/index/'
+LOGOUT_URL = 'home/logout/'

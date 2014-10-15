@@ -29,4 +29,9 @@ class PolisOwner(models.Model):
         return self.user.username + " " + self.polis.name
 
 
+    def delete(self, *args, **kwargs):
+        self.user.delete()
+        self.polis.delete()
+        super(PolisOwner, self).delete(*args, **kwargs)
+
 

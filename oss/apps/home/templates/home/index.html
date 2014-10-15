@@ -1,0 +1,14 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+   <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    PolisOwner: {{ user.username }}<br>
+                    Email: {{ user.email }}<br>
+                    Register URL: {{ user.polisowner.polis.register_url }}<br>
+                </div>
+            </div>
+        </div>
+{% endblock %}

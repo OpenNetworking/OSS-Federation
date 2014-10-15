@@ -7,7 +7,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-
     url(r'^api/', include('oss.apps.api.urls')),
     url(r'main/', include('oss.apps.adminapp.urls', namespace='adminapp')),
+    url(r'home/', include('oss.apps.home.urls', namespace='home')),
 )
