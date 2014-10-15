@@ -9,5 +9,6 @@ urlpatterns = patterns('',
 
     url(r'^index/$', views.index, name='index'),
     url(r'signin/$', login, kwargs=dict(template_name='home/login.html'), name='signin'),
+    url(r'signup/$', views.signup, name='signup'),
     url(r'logout/$', views.signout, name='signout'),
 )
