@@ -13,13 +13,13 @@
     <title>Simple Sidebar - Start Bootstrap Template</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="{% static 'home/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'adminapp/css/bootstrap.min.css' %}" rel="stylesheet">
 
-    <link href="{% static 'home/css/jquery-ui.css' %}" rel="stylesheet">
+    <link href="{% static 'adminapp/css/jquery-ui.css' %}" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="{% static 'home/css/simple-sidebar.css' %}" rel="stylesheet">
-    <link href="{% static 'home/css/oss.css' %}" rel="stylesheet">
+    <link href="{% static 'adminapp/css/simple-sidebar.css' %}" rel="stylesheet">
+    <link href="{% static 'adminapp/css/oss.css' %}" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -28,16 +28,21 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <!-- jQuery Version 1.11.0 -->
-    <script src="{% static 'home/js/jquery-1.11.0.js' %}"></script>
+    <script src="{% static 'adminapp/js/jquery-1.11.0.js' %}"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'home/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'adminapp/js/bootstrap.min.js' %}"></script>
 
     <!-- JQuery UI -->
-    <script src="{% static 'home/js/jquery-ui.js' %}"></script>
+    <script src="{% static 'adminapp/js/jquery-ui.js' %}"></script>
 
     <!-- OSS.js -->
-    <script src="{% static 'home/js/oss.js' %}"></script>
+    <script src="{% static 'adminapp/js/oss.js' %}"></script>
+
+    <!-- base.js -->
+    <script src="{% static 'adminapp/js/base.js' %}"></script>
+
+   
 
 </head>
 
@@ -49,15 +54,21 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
-                    <a href="{% url 'home:index'  %}">
-                        Home
+                    <a href="{% url 'adminapp:index'  %}">
+                        OSS-Federation Admin
                     </a>
+                </li>
+                <li>
+                    <a href="{% url 'adminapp:polis_list' %}">Poleis</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminapp:new_polis_list' %}">New Poleis</a>
                 </li>
                 <li>
                     <a href="#">Statiscs</a>
                 </li>
                 <li>
-                    <a href="{% url 'home:logout' %}">Logout</a>
+                    <a href="{% url 'adminapp:logout' %}">Logout</a> 
                 </li>
             </ul>
         </div>
@@ -83,7 +94,8 @@
         $("#wrapper").toggleClass("toggled");
     });
     </script>
-
+    {% block js %}
+    {% endblock js %}
 </body>
 
 </html>

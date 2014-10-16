@@ -8,13 +8,22 @@
 <body>
   <div id="fullscreen_bg" class="fullscreen_bg"/>
   <div class="container">
-    <form class="form-signin" action="{% url 'home:signin' %}" method="post" id="login-form">
+    <form class="form-signin" action="{% url 'home:login' %}" method="post" id="login-form">
     {% csrf_token %}
-      <h1 class="form-signin-heading text-muted">Sign in</h1>
-      <input type="text" id="id_username" name="username" class="form-control" placeholder="Username">
-      <input type="password" id="id_password" name="password" class="form-control" placeholder="Password">
+      <h1 class="form-signin-heading text-muted">Login</h1>
+      <input type="hidden" id="id_next" name="next" value="/home/index">
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+      {% endif %}
+      {% for field in form %}
+      {% if field.errors %}
+      <div class="alert alert-danger">{{ field.label }}{{ field.errors }}</div>
+      {% endif %}
+      {% endfor %}
+      {{ form.username }}
+      {{ form.password }}
       <button class="btn btn-lg btn-primary btn-block" type="submit">
-          Sign in
+        Login
       </button>
       <a class="btn btn-lg btn-success btn-block" href="{% url 'home:signup' %}">
           Sign up

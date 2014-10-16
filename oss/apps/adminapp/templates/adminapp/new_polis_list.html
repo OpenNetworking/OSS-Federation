@@ -1,0 +1,73 @@
+{% extends 'adminapp/base.html' %}
+{% load staticfiles %}
+
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+
+            <div class="row">
+                <h3>Unconfirmed Poleis List</h3>
+            </div>
+
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <input type="text">
+                            </div>
+                        </div>
+                    </div> <!-- panel heading close -->
+
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                                <th>Polis Name</th>
+                                <th>Color Name</th>
+                                <th>Register URL</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody>
+                                {% for polis in poleis %}
+                                <tr class="polis_owner">
+                                    <td>{{ polis.user.username }}</td>
+                                    <td>{{ polis.polis.color_set.all | length }}</td>
+                                    <td>{{ polis.polis.register_url }}</td>
+                                    <td>
+                                        <button data-href="{% url 'adminapp:polis_owner_confirm' polis.pk %}" class="btn btn-primary btn-confirm">confirm</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-md-4 col-md-offset-4">
+                                <ul class="pagination">
+                                    <li><a href="#">&laquo;</a></li>
+                                    <li><a href="#">1</a></li>
+                                    <li><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>
+                                    <li><a href="#">5</a></li>
+                                    <li><a href="#">&raquo;</a></li>
+                                </ul>
+                           </div>
+                        </div>
+
+                    </div>
+
+                </div> <!-- panel close -->
+           </div>
+            
+        </div>
+     </div>
+
+</div> 
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'adminapp/js/new_polis_list.js' %}"></script>
+{% endblock js %}

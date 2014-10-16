@@ -35,3 +35,15 @@ class PolisOwner(models.Model):
         super(PolisOwner, self).delete(*args, **kwargs)
 
 
+    def deactive(self):
+        self.user.is_active = False
+        self.user.save()
+
+    def active(self):
+        self.user.is_active = True
+        self.user.save()
+
+    def is_active(self):
+        return self.user.is_active
+
+
