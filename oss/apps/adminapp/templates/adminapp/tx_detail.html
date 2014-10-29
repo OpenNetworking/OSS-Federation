@@ -1,0 +1,21 @@
+{% extends 'adminapp/base.html' %}
+
+{% block content %}
+   <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                {% if tx %}
+                    <div class="col-md-12">
+                       tx_id:{{ tx.id }}<br>
+                       tx_email:{{ tx.color }}<br>
+                    </div>
+                {% elif err %}
+                    <div class="warning">
+                        <p>{{err.status}}</p>
+                        <p>{{err.message}}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+   </div>
+{% endblock %}

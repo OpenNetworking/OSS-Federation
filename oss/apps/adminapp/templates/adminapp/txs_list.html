@@ -1,0 +1,194 @@
+{% extends 'adminapp/base.html' %}
+
+{% load template_tag %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+
+            <div class="row">
+                <h3>Tx List</h3>
+            </div>
+
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" id="srch_tx_box" size="50" placeholder="transaction..."></input><button class="btn btn-default" id="srch_tx_btn">search</button>
+                            </div>
+                            <div class="col-md-1 col-md-offset-3">
+                                    <button class="color_filter btn btn-default dropdown-toggle" type="button" id="colors_filter" data-toggle="dropdown">color filter</button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="colors_filter">
+                                        {% for color in colors %}
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:txs_list'%}?color={{color}}">{{color}}</a></li>
+                                        {% endfor %}
+                                   </ul>
+                              </div>
+                              <div class="col-md-1">
+                                    <button class="addrs_filter btn btn-default dropdown-toggle" type="button" id="issuer_filter" data-toggle="dropdown">addr filter</button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="issuer_filter">
+                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:txs_list' %}">issuer1</a></li>
+                                   </ul>
+                              </div>
+                        </div>
+                            <div class="warning_msg srch_box" id="srch_tx_warning_msg" style="display: none"></div>
+                    </div> <!-- panel heading close -->
+
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                                <th>Transactions</th>
+                            </thead>
+                            <tbody>
+                                {% for tx in txs %}
+                                <tr>
+                                    <td><a href="#" class="tx" data-id={{ tx.hash }}>{{ tx.hash }}</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-md-4 col-md-offset-4">
+                                <ul class="pagination">
+                                    {% if page_count < 10 %}
+                                        <li><a href="#">&laquo;</a></li>
+                                            {% for i in page_count|get_range %}
+                                                <li><a href="{% url 'adminapp:txs_list' %}?start={{ i|multiply:20|add:1}}&end={{ i|add:1|multiply:20}}{% if cur_colors %}&color={{cur_colors.0}}{% endif %}">{{i|add:1}}</a></li>
+                                            {% endfor %}
+                                        <li><a href="#">&raquo;</a></li>
+                                    {% else %}
+                                        <li><input type="text" id="page_box" data-url="{% url 'adminapp:txs_list' %}"></input>{{cur_page}}/{{page_count}}</li>
+                                    {% endif %}
+                                </ul>
+                           </div>
+                        </div>
+
+                    </div>
+
+                </div> <!-- panel close -->
+           </div>
+            
+        </div>
+     </div>
+
+</div> 
+<!-- tx_info_dialog -->
+<div class="tx_info_block" id="template_tx_info_block" style="display: none">
+    <!-- coin direction -->
+    <table class="tx_dir_info">
+        <tr>
+            <td width="30%">
+                <div class="ellipsis" id="template_input_addr" style="display: none"></div>
+            </td>
+            <td width="50px">
+                <img class="arrow" src="img/arrow_right_green.png"></img>
+            </td>
+            <td width="200px">
+                <div id="template_output_addr_money_block" style="display: none">
+                    <div class="ellipsis" id="template_output_addr" style="display: inline-block"></div>
+                    <div class="btn gcoin" id="template_output_money" style="display:inline-block; float: right"></div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <!-- confirmation  number and total output -->
+    <div style="float:right">
+        <div class="btn bg-maroon" id="if_tx_coinbase" style="display: inline-block">coinbase</div>
+        <div class="btn" id="if_tx_confirmed" style="display: inline-block"></div>
+        <div class="btn gcoin_btn" id="total_output_money" style="display: inline-block"></div>
+    </div>
+    <!-- summary -->
+    <table class="tx_item_info">
+        <tr >
+            <td>
+                <a href="#">Size</a>
+            </td>
+            <td class="tx_summary" id="tx_size"></td>
+        </tr>
+        <tr class="tx_item_info">
+            <td>
+               <a href="#">Receive Time</a>
+            </td>
+            <td class="tx_summary" id="tx_r_time"></td>
+        </tr>
+        <tr class="tx_item_info">
+            <td>
+               <a href="#">Total Input</a>
+            </td>
+            <td class="tx_summary" id="tx_input"></td>
+        </tr>
+        <tr class="tx_item_info">
+            <td>
+               <a href="#">Total Output</a>
+            </td>
+            <td class="tx_summary" id="tx_output"></td>
+        </tr>
+        <tr class="tx_item_info">
+            <td>
+               <a href="#">Fee</a>
+            </td>
+            <td class="tx_summary" id="tx_fee"></td>
+        </tr>
+    </table>
+</div>
+<script>
+    var TX_URL = "http://140.112.29.198:8080/api/v1/transactions?hash=";
+    var CONFIRMATION_THRESHOLD = 6;
+    var g_tx_found = false;
+
+    var MSG_TX_NOT_FOUND = "Transaction not found"
+
+    $(document).ready(function() {
+        $(".tx").on("click", function() {
+            get_tx_info($(this).data("id"));
+        })
+
+        $("#srch_tx_box").keydown(function(event) {
+            var srch_val = $("#srch_tx_box").val();
+
+            g_tx_found = false;
+            if (event.which ==13 && srch_val != "") {
+                $("srch_tx_warning_msg").hide();
+                get_tx_info(srch_val);
+                if (!g_tx_found) {
+                    $("#srch_tx_warning_msg".html("Transaction not found"));
+                    $("#srch_tx_warning_msg").show();
+                }
+            }
+        });
+
+        $("#srch_tx_btn").on("click", function(event) {
+            var srch_val = $("#srch_tx_box").val();
+
+            g_tx_found = false;
+            $("#srch_tx_warning_msg").hide();
+
+            get_tx_info(srch_val);
+            if (!g_tx_found) {
+                $("#srch_tx_warning_msg").html("Transaction not found");
+                $("#srch_tx_warning_msg").show();
+            }
+        });
+
+        $("#page_box").keydown(function(event) {
+           var page_val = parseInt($("#page_box").val()); 
+
+           if (event.which == 13 && page_val != "") {
+               var begin_index = (page_val - 1) * 20 + 1;
+               var end_index = page_val * 20;
+               var url = $("#page_box").data("url");
+
+               {% if cur_colors %}
+                   url = url + "?start=" + begin_index + "&end=" + end_index + "&color={{cur_colors.0}}";
+               {% else %}
+                   url = url + "?start=" + begin_index + "&end=" + end_index;
+               {% endif %}
+               window.location.href = url;
+           }
+        });
+    });
+</script>
+{% endblock %}
