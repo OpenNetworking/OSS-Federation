@@ -7,7 +7,7 @@
         <div class="col-md-10 col-md-offset-1">
 
             <div class="row">
-                <h3>User List</h3>
+                <h3>Issuers List</h3>
             </div>
 
             <div class="row">
@@ -23,7 +23,7 @@
                                         <span class="glyphicon glyphicon-cog"></span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1">
-                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:create_user' %}"><span class="glyphicon glyphicon-user"> </span> Create new user</a></li>
+                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:issuer_create' %}"><span class="glyphicon glyphicon-user"> </span> Create new user</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -33,18 +33,20 @@
                     <div class="panel-body">
                         <table class="table">
                             <thead>
-                                <th>ID</th>
-                                <th>Username</th>
+                                <th>Issuer Name</th>
+                                <th>Color Name</th>
+                                <th>Register URL</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
-                                {% for user in users %}
+                                {% for issuer in issuers %}
                                 <tr>
-                                    <td>{{ user.id }}</td>
-                                    <td>{{ user.username }}</td>
+                                    <td>{{ issuer.user.username }}</td>
+                                    <td>{{ issuer.color_set.all | length }}</td>
+                                    <td>{{ issuer.pk }}</td>
                                     <td>
                                         <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-usd"></span></a>
-                                        <a href="{% url 'adminapp:user_detail' user.id  %}" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                        <a href="/adminapp/issuer_detail/{{issuer.pk}}/" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
                                         <a class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
                                         <a class="btn btn-default"><span class="glyphicon glyphicon-trash"></span></a>
                                     </td>
@@ -70,9 +72,8 @@
 
                 </div> <!-- panel close -->
            </div>
-            
         </div>
      </div>
 
-</div> 
+</div>
 {% endblock %}

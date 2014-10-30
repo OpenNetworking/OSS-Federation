@@ -1,0 +1,11 @@
+{% extends 'adminapp/base.html' %}
+
+{% block content %}
+    <form action="{% url 'adminapp:issuer_create' %}" method="POST">
+        {% csrf_token %}
+        {{ user_form.as_p }}
+        {{ issuer_form.as_p }}
+        <button type="submit">submit</button>
+    </form>
+
+{% endblock content %}

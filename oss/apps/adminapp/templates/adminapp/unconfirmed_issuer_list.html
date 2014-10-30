@@ -7,7 +7,7 @@
         <div class="col-md-10 col-md-offset-1">
 
             <div class="row">
-                <h3>Poleis List</h3>
+                <h3>Unconfirmed Issuers List</h3>
             </div>
 
             <div class="row">
@@ -17,33 +17,23 @@
                             <div class="col-md-8">
                                 <input type="text">
                             </div>
-                            <div class="col-md-1 col-md-offset-3">
-                                <div class="dropdown">
-                                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-                                        <span class="glyphicon glyphicon-cog"></span>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1">
-                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:polis_owner_create' %}"><span class="glyphicon glyphicon-user"> </span> Create new user</a></li>
-                                    </ul>
-                                </div>
-                            </div>
                         </div>
                     </div> <!-- panel heading close -->
 
                     <div class="panel-body">
                         <table class="table">
                             <thead>
-                                <th>Polis Name</th>
+                                <th>Issuer Name</th>
                                 <th>Color Name</th>
                                 <th>Register URL</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
-                                {% for polis in poleis %}
+                                {% for issuer in issuers %}
                                 <tr>
-                                    <td>{{ polis.user.username }}</td>
-                                    <td>{{ polis.polis.color_set.all | length }}</td>
-                                    <td>{{ polis.polis.register_url }}</td>
+                                    <td>{{ issuer.user.username }}</td>
+                                    <td>{{ issuer.color_set.all | length }}</td>
+                                    <td>{{ issuer.pk }}</td>
                                     <td>
                                         <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-usd"></span></a>
                                         <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
@@ -72,9 +62,8 @@
 
                 </div> <!-- panel close -->
            </div>
-            
         </div>
      </div>
 
-</div> 
+</div>
 {% endblock %}

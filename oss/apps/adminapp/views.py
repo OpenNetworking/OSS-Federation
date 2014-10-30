@@ -8,40 +8,74 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.http import require_http_methods
 from django.core.urlresolvers import reverse
-from django.contrib.auth import logout as auth_logout
-from django.contrib.auth import login as auth_login
 from django.contrib.admin.forms import AdminAuthenticationForm
 #from bitcoinrpc.connection import BitcoinConnection
+from django.utils.decorators import method_decorator
+from oss.apps.issuer.models import Issuer
+from oss.apps.issuer.views import (IssuerDetailView, issuer_create,
+                                   IssuerListView,
+                                   UnconfirmedIssuerListView,
+                                   issuer_add_color, issuer_update_color)
+from oss.apps.decorators import staff_required
 
-from oss.apps.polisauth.models import PolisOwner
-from oss.apps.polisauth.forms import PolisOwnerCreationForm
-from oss.apps.adminapp.config import _config_get
-from .decorators import staff_required
 
-
-ADMINAPP_LOGIN_URL = '/adminapp/login'
-
-# Create your views here.
-
-@staff_required(login_url=ADMINAPP_LOGIN_URL)
+@staff_required
 def index(request):
     return render(request, 'adminapp/index.html')
 
-@staff_required(login_url=ADMINAPP_LOGIN_URL)
-def polis_list(request):
-    poleis = [polis for polis in PolisOwner.objects.all() if polis.is_active()]
-    return render(request, 'adminapp/polis_list.html', 
-                  dict(poleis=poleis))
+@staff_required
+def admin_issuer_create(request):
+    print 'admin_issuer_create'
+    return issuer_create(request,
+                         template_name='adminapp/issuer_create.html',
+                         redirect_to='/adminapp/issuer_list/',
+                         confirm=True)
 
-@staff_required(login_url=ADMINAPP_LOGIN_URL)
-def new_polis_list(request):
-    poleis = [polis for polis in PolisOwner.objects.all() 
-              if not polis.is_active()]
-    return render(request, 'adminapp/new_polis_list.html', 
-                  dict(poleis=poleis))
+@staff_required
+def admin_issuer_add_color(request, pk):
+    redirect_to = '/adminapp/issuer_detail/{0}/'.format(pk)
+    return issuer_add_color(request, pk,
+                             template_name='adminapp/issuer_add_color.html',
+                             redirect_to=redirect_to)
+
+def admin_issuer_update_color(request, issuer_pk, color_pk):
+    redirect_to = '/adminapp/issuer_detail/{0}/'.format(issuer_pk)
+    return issuer_update_color(request, issuer_pk, color_pk,
+                               template_name='adminapp/issuer_update_color.html',
+                               redirect_to=redirect_to)
 
 
-@staff_required(login_url=ADMINAPP_LOGIN_URL)
+class AdminIssuerDetailView(IssuerDetailView):
+
+    template_name = 'adminapp/issuer_detail.html'
+
+    @method_decorator(staff_required)
+    def dispath(request, *args, **kwargs):
+        return super(AdminIssuerDetailView,
+                     self).dispatch(request, *args, **kwargs)
+
+class AdminIssuerListView(IssuerListView):
+
+    template_name = 'adminapp/issuer_list.html'
+
+    @method_decorator(staff_required)
+    def dispath(request, *args, **kwargs):
+        return super(AdminIssuerListView,
+                     self).dispatch(request, *args, **kwargs)
+
+
+class AdminUnconfirmedIssuerListView(UnconfirmedIssuerListView):
+
+    template_name = 'adminapp/unconfirmed_issuer_list.html'
+
+    @method_decorator(staff_required)
+    def dispath(request, *args, **kwargs):
+        return super(AdminUnconfirmedIssuerListView,
+                     self).dispatch(request, *args, **kwargs)
+
+
+'''
+@staff_required
 @require_http_methods(['POST',])
 def polis_owner_confirm(request, pk):
     try:
@@ -54,7 +88,8 @@ def polis_owner_confirm(request, pk):
         return HttpResponse()
     return HttpResponse()
 
-@staff_required(login_url=ADMINAPP_LOGIN_URL)
+@staff_required
+@require_http_methods(['POST',])
 def polis_owner_create(request):
     form = PolisOwnerCreationForm()
     if request.method == "POST":
@@ -65,13 +100,14 @@ def polis_owner_create(request):
             return HttpResponseRedirect(reverse('adminapp:polis_list'))
 
     return render(request, 'adminapp/polis_owner_create.html', dict(form=form))
+'''
 
-@staff_required(login_url=ADMINAPP_LOGIN_URL)
+@staff_required
 def txs_list(request):
     """ get blockchain transaction list
 
     Blockchain OSS can list all transactions
-    All transactions can be filtered by color & issuer 
+    All transactions can be filtered by color & issuer
     """
     tx_colors_str = ""
 
