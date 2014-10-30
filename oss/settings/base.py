@@ -36,10 +36,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'oss.apps.api',
-    'oss.apps.polisauth',
     'oss.apps.adminapp',
-    'oss.apps.home',
+    'oss.apps.website',
+    'oss.apps.issuer',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -1,6 +1,4 @@
 {% extends 'adminapp/base.html' %}
-{% load staticfiles %}
-
 
 {% block content %}
 
@@ -9,7 +7,7 @@
         <div class="col-md-10 col-md-offset-1">
 
             <div class="row">
-                <h3>Unconfirmed Poleis List</h3>
+                <h3>Unconfirmed Issuers List</h3>
             </div>
 
             <div class="row">
@@ -25,19 +23,22 @@
                     <div class="panel-body">
                         <table class="table">
                             <thead>
-                                <th>Polis Name</th>
+                                <th>Issuer Name</th>
                                 <th>Color Name</th>
                                 <th>Register URL</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
-                                {% for polis in poleis %}
-                                <tr class="polis_owner">
-                                    <td>{{ polis.user.username }}</td>
-                                    <td>{{ polis.polis.color_set.all | length }}</td>
-                                    <td>{{ polis.polis.register_url }}</td>
+                                {% for issuer in issuers %}
+                                <tr>
+                                    <td>{{ issuer.user.username }}</td>
+                                    <td>{{ issuer.color_set.all | length }}</td>
+                                    <td>{{ issuer.pk }}</td>
                                     <td>
-                                        <button data-href="{% url 'adminapp:polis_owner_confirm' polis.pk %}" class="btn btn-primary btn-confirm">confirm</a>
+                                        <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-usd"></span></a>
+                                        <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                        <a class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
+                                        <a class="btn btn-default"><span class="glyphicon glyphicon-trash"></span></a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -61,13 +62,8 @@
 
                 </div> <!-- panel close -->
            </div>
-            
         </div>
      </div>
 
-</div> 
+</div>
 {% endblock %}
-
-{% block js %}
-<script src="{% static 'adminapp/js/new_polis_list.js' %}"></script>
-{% endblock js %}

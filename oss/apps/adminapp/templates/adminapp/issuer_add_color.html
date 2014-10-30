@@ -1,0 +1,9 @@
+{% extends 'adminapp/base.html' %}
+{% block content %}
+<form action="{% url 'adminapp:issuer_add_color' issuer.pk %}" method="POST">
+    {% csrf_token %}
+    {{ color_form.as_p }}
+    {{ address_form.as_p }}
+    <input type="submit">
+</form>
+{% endblock content %}
