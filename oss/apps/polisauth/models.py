@@ -2,9 +2,6 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-# Create your models here.
-
-
 class Polis(models.Model):
     name = models.CharField(unique=True, max_length=30)
     register_url = models.URLField()
@@ -19,7 +16,10 @@ class Polis(models.Model):
 
 class Color(models.Model):
     color_number = models.BigIntegerField(primary_key=True)
+    color_name = models.CharField(unique=True, max_length=30)
+    address = models.CharField(unique=True, max_length=50)
     polis = models.ForeignKey(Polis)
+    is_license = models.BooleanField(default=False)
 
 class PolisOwner(models.Model):
     user = models.OneToOneField(User)
@@ -45,5 +45,3 @@ class PolisOwner(models.Model):
 
     def is_active(self):
         return self.user.is_active
-
-

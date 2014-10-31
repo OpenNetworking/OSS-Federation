@@ -49,12 +49,15 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
-                    <a href="{% url 'home:index'  %}">
+                    <a href="{% url 'home:index' %}">
                         Home
                     </a>
                 </li>
                 <li>
                     <a href="#">Statiscs</a>
+                </li>
+                <li>
+                    <a href="{% url 'home:license_list' %}">License List</a>
                 </li>
                 <li>
                     <a href="{% url 'home:logout' %}">Logout</a>

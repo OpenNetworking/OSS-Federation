@@ -18,4 +18,6 @@ urlpatterns = patterns('',
     url(r'^new_polis_list/create/$', views.polis_owner_create, name='polis_owner_create'),
     url(r'^new_polis_list/', views.new_polis_list, name='new_polis_list'),
     url(r'^txs_list/', views.txs_list, name='txs_list'),
+    url(r'^license_request_list/', views.license_request_list, name='license_request_list'),
+    url(r'^send_license_request/(?P<color_id>\d+)/', views.send_license_request, name='send_license_request'),
 )

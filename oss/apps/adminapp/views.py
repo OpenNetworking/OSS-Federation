@@ -11,9 +11,9 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import login as auth_login
 from django.contrib.admin.forms import AdminAuthenticationForm
-#from bitcoinrpc.connection import BitcoinConnection
+from bitcoinrpc.connection import BitcoinConnection
 
-from oss.apps.polisauth.models import PolisOwner
+from oss.apps.polisauth.models import PolisOwner, Color
 from oss.apps.polisauth.forms import PolisOwnerCreationForm
 from oss.apps.adminapp.config import _config_get
 from .decorators import staff_required
@@ -107,3 +107,18 @@ def txs_list(request):
                                                           cur_page=cur_page,
                                                           colors=ret_jdata["colors"],
                                                           cur_colors=tx_colors))
+
+@staff_required(login_url=ADMINAPP_LOGIN_URL)
+def license_request_list(request):
+    unconfirmed_colors = Color.objects.all().filter(is_license=False)
+
+    return render(request, "adminapp/license_request_list.html", dict(unconfirmed_colors=unconfirmed_colors))
+
+@staff_required(login_url=ADMINAPP_LOGIN_URL)
+def send_license_to_address(request):
+    # bitcoin rpc
+    if request.is_ajax():
+    # sendlicensetoaddress
+    parser = _config_get()
+
+    if request.is_ajax():

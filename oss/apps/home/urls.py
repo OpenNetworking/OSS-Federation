@@ -17,4 +17,7 @@ urlpatterns = patterns('',
         kwargs=dict(next_page='/home/index/'),
         name='logout'),
     url(r'^signup/$', views.signup, name='signup'),
+    url(r'^license_list/$', views.license_list, name='license_list'),
+    url(r'^create_license/$', views.create_license, name='create_license'),
+    url(r'^license_detail/(?P<color_number>\d+)$', views.license_detail, name='license_detail'),
 )
