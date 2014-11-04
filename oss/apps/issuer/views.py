@@ -3,17 +3,17 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.decorators import method_decorator
+from django.views.generic import ListView, DetailView
+
+from oss.apps.decorators import staff_required
+
 from .models import Issuer, Color, ColorHistory, Address, AddressHistory
 from .forms import (IssuerCreationForm, ColorCreationForm,
                     AddressInputForm)
-from oss.apps.decorators import staff_required
-from django.views.generic import ListView, DetailView
 
 def issuer_create(request, template_name='issuer/form.html',
                   redirect_to=None,
                   confirm=False):
-    issuer_form = IssuerCreationForm()
-    user_form = UserCreationForm()
     if request.method == "POST":
         issuer_form = IssuerCreationForm(request.POST)
         user_form = UserCreationForm(request.POST)
@@ -37,6 +37,9 @@ def issuer_create(request, template_name='issuer/form.html',
             if redirect_to:
                 return HttpResponseRedirect(redirect_to)
             return HttpResponse('success')
+    else:
+        issuer_form = IssuerCreationForm()
+        user_form = UserCreationForm()
 
     return render(request, template_name,
                   {'issuer_form': issuer_form,
@@ -53,8 +56,6 @@ def issuer_add_color(request, issuer_pk, confirm=False,
                      redirect_to=None):
 
     issuer = get_object_or_404(Issuer, pk=issuer_pk)
-    color_form = ColorCreationForm()
-    address_form = AddressInputForm()
     if request.method == 'POST':
         color_form = ColorCreationForm(request.POST)
         address_form = AddressInputForm(request.POST)
@@ -67,8 +68,8 @@ def issuer_add_color(request, issuer_pk, confirm=False,
             color = color_form.save(commit=False)
             color.address = address
             color.issuer = issuer
-            last_color = Color.objects.all() \
-                                        .order_by('color_id').last()
+            last_color = (Color.objects.all()
+                                       .order_by('color_id').last())
 
             color_id = 1
             if last_color:
@@ -82,11 +83,16 @@ def issuer_add_color(request, issuer_pk, confirm=False,
                 redirect_to = '/issuer/{0}/detail/'.format(pk)
 
             return HttpResponseRedirect(redirect_to)
+    else:
+        color_form = ColorCreationForm()
+        address_form = AddressInputForm()
 
     return render(request, template_name,
                   {'color_form': color_form, 'address_form': address_form,
                    'issuer': issuer })
 '''
+May be used in the future
+
 def issuer_update_color(request, color_pk,
                         template_name="issuer/issuer_update_color.html",
                         redirect_to=None):
