@@ -15,9 +15,17 @@ urlpatterns = patterns('',
 
     url(r'^(?P<pk>\d+)/add_color/$',
         views.issuer_add_color, name='issuer_add_color'),
-    url(r'^(?P<issuer_pk>\d+)/update_color/(?P<color_pk>\d+)/$',
-        views.issuer_update_color, name='issuer_update_color'),
     url(r'^list', views.IssuerListView.as_view(), name='issuer_list'),
-    url(r'^unconfirm_list', views.IssuerListView.as_view(), name='issuer_list'),
+    url(r'^unconfirmed_list', views.IssuerListView.as_view(), name='issuer_list'),
+
+    url(r'^color_list', views.ColorListView.as_view(), name='color_list'),
+    url(r'^unconfirmed_color_list', views.UnconfirmedColorListView.as_view(),
+        name='unconfirmed_color_list'),
+
+
+    url(r'^color/(?P<pk>\d+)/history/$', views.ColorHistoryListView.as_view(),
+        name='colorhistory_list'),
+    url(r'^address/(?P<pk>\d+)/history/$', views.AddressHistoryListView.as_view(),
+        name='addresshistory_list'),
 
 )

@@ -1,21 +1,23 @@
 from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import User
-from .models import Issuer, Color, ActiveAddress
+from .models import Issuer, Color, Address
 
-class ActiveAddressCreationForm(ModelForm):
+class AddressCreationForm(ModelForm):
     class Meta:
-        model = ActiveAddress
+        model = Address
+        exclude = ('issuer',)
 
+class AddressInputForm(forms.Form):
+    address = forms.CharField(max_length=50)
 
 class IssuerCreationForm(ModelForm):
     class Meta:
         model = Issuer
         exclude = ('user',)
 
-
 class ColorCreationForm(ModelForm):
     class Meta:
         model = Color
-        exclude = ('issuer', 'color_number', 'current_address')
+        exclude = ('issuer', 'color_id', 'address', 'is_confirmed')
 
