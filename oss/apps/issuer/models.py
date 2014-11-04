@@ -26,29 +26,32 @@ class Issuer(models.Model):
         self.user.delete()
         super(Issuer, self).delete(*args, **kwargs)
 
-class ActiveAddress(models.Model):
-    """
-    Address that used by Color currently.
-    """
+class Address(models.Model):
     address = models.CharField(primary_key=True, max_length=50)
+    issuer = models.ForeignKey(Issuer)
     create_time = models.DateTimeField(auto_now_add=True)
+    update_time = models.DateTimeField(auto_now=True)
 
 class Color(models.Model):
-    color_number = models.BigIntegerField(primary_key=True)
+    color_id = models.BigIntegerField(primary_key=True)
     color_name = models.CharField(unique=True, max_length=50)
     issuer = models.ForeignKey(Issuer)
-    current_address = models.OneToOneField(ActiveAddress)
-    create_date = models.DateTimeField(auto_now_add=True)
-    update_date = models.DateTimeField(auto_now=True)
+    address = models.ForeignKey(Address)
+    is_confirmed = models.BooleanField(default=False)
+    create_time = models.DateTimeField(auto_now_add=True)
+    update_time = models.DateTimeField(auto_now=True)
 
-class HistoryAddress(models.Model):
-    """
-    Address has used by color in the past, and now is not using.
-    This data can be used to trace transaction history.
-    """
-    address = models.CharField(primary_key=True, max_length=50)
+class AddressHistory(models.Model):
+    address = models.ForeignKey(Address)
+    issuer = models.ForeignKey(Issuer)
     color = models.ForeignKey(Color)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField(auto_now_add=True)
 
-
+class ColorHistory(models.Model):
+    color = models.ForeignKey(Color)
+    color_name = models.CharField(max_length=50)
+    issuer = models.ForeignKey(Issuer)
+    address = models.ForeignKey(Address)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField(auto_now_add=True)

@@ -7,13 +7,13 @@
     update_time: {{ issuer.update_time }}<br>
     create_time: {{ issuer.create_time }}<br>
     ------------------<br>
-    | color <a href="{% url 'issuer:issuer_add_color' issuer.pk %}">add new color </a><br>
+    <a href="{% url 'issuer:issuer_add_color' issuer.pk %}">add new color </a><br>
     ------------------<br>
     {% for color in issuer.color_set.all %}
+        color id: {{ color.color_id }}<br>
         color name: {{ color.color_name }}<br>
-        color number: {{ color.color_number}}<br>
-        current address: {{ color.current_address.address }}<br>
-        <a href="{% url 'issuer:issuer_update_color' issuer.pk color.pk %}">update address</a><br>
+        address: {{ color.address.address }}<br>
+        <a href="{% url 'issuer:colorhistory_list' color.pk %}">color history</a><br>
         ====<br>
     {% endfor %}
 </html>

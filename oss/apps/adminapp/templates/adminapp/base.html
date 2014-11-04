@@ -62,7 +62,13 @@
                     <a href="{% url 'adminapp:issuer_list' %}">Issuer</a>
                 </li>
                 <li>
-                    <a href="{% url 'adminapp:new_issuer_list' %}">New Issuer</a>
+                    <a href="{% url 'adminapp:unconfirmed_issuer_list' %}">Unconfirmed Issuer</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminapp:color_list' %}">Color</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminapp:unconfirmed_color_list' %}">Unconfirmed Color</a>
                 </li>
                 <li>
                     <a href="{% url 'adminapp:txs_list' %}">Transactions List</a>

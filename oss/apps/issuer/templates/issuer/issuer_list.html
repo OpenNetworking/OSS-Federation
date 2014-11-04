@@ -34,7 +34,6 @@
                         <table class="table">
                             <thead>
                                 <th>Issuer Name</th>
-                                <th>Color Name</th>
                                 <th>Register URL</th>
                                 <th>Action</th>
                             </thead>
@@ -42,8 +41,7 @@
                                 {% for issuer in issuers %}
                                 <tr>
                                     <td>{{ issuer.user.username }}</td>
-                                    <td>{{ issuer.color_set.all | length }}</td>
-                                    <td>{{ issuer.pk }}</td>
+                                    <td>{{ issuer.register_url }}</td>
                                     <td>
                                         <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-usd"></span></a>
                                         <a href="/adminapp/issuer_detail/{{issuer.pk}}/" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
