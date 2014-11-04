@@ -1,0 +1,9 @@
+{% extends 'adminapp/base.html' %}
+{% block content %}
+Unconfirmed Color List<br>
+{% for color in color_list %}
+color name:{{ color.color_name }}<br>
+color address:{{ color.address.address}}<br>
+-----<br>
+{% endfor %}
+{% endblock content %}

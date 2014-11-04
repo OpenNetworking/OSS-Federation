@@ -4,18 +4,19 @@ import math
 import os
 import collections
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.http import require_http_methods
 from django.core.urlresolvers import reverse
 from django.contrib.admin.forms import AdminAuthenticationForm
 #from bitcoinrpc.connection import BitcoinConnection
 from django.utils.decorators import method_decorator
-from oss.apps.issuer.models import Issuer
+
+from oss.apps.issuer.models import Issuer, Color
 from oss.apps.issuer.views import (IssuerDetailView, issuer_create,
                                    IssuerListView,
                                    UnconfirmedIssuerListView,
-                                   issuer_add_color, issuer_update_color)
+                                   issuer_add_color, ColorListView, UnconfirmedColorListView)
 from oss.apps.decorators import staff_required
 
 
@@ -34,16 +35,19 @@ def admin_issuer_create(request):
 @staff_required
 def admin_issuer_add_color(request, pk):
     redirect_to = '/adminapp/issuer_detail/{0}/'.format(pk)
-    return issuer_add_color(request, pk,
+    return issuer_add_color(request, pk, confirm=True,
                              template_name='adminapp/issuer_add_color.html',
                              redirect_to=redirect_to)
 
-def admin_issuer_update_color(request, issuer_pk, color_pk):
-    redirect_to = '/adminapp/issuer_detail/{0}/'.format(issuer_pk)
-    return issuer_update_color(request, issuer_pk, color_pk,
+'''
+# Might be used in the future
+def admin_issuer_update_color(request, color_pk):
+    color = get_object_or_404(Color, pk=color_pk)
+    redirect_to = '/adminapp/{0}/detail/'.format(color.issuer.pk)
+    return issuer_update_color(request, color_pk,
                                template_name='adminapp/issuer_update_color.html',
                                redirect_to=redirect_to)
-
+'''
 
 class AdminIssuerDetailView(IssuerDetailView):
 
@@ -74,33 +78,25 @@ class AdminUnconfirmedIssuerListView(UnconfirmedIssuerListView):
                      self).dispatch(request, *args, **kwargs)
 
 
-'''
-@staff_required
-@require_http_methods(['POST',])
-def polis_owner_confirm(request, pk):
-    try:
-        polis_owner = PolisOwner.objects.get(pk=pk)
-    except PolisOwner.DoseNotExist:
-        raise Http404
-    polis_owner.user.is_active = True
-    polis_owner.user.save()
-    if request.is_ajax():
-        return HttpResponse()
-    return HttpResponse()
+class AdminColorListView(ColorListView):
 
-@staff_required
-@require_http_methods(['POST',])
-def polis_owner_create(request):
-    form = PolisOwnerCreationForm()
-    if request.method == "POST":
-        form = PolisOwnerCreationForm(request.POST)
-        if form.is_valid():
-            polis_owner = form.save()
-            polis_owner.active()
-            return HttpResponseRedirect(reverse('adminapp:polis_list'))
+    template_name = 'adminapp/color_list.html'
 
-    return render(request, 'adminapp/polis_owner_create.html', dict(form=form))
-'''
+    @method_decorator(staff_required)
+    def dispath(request, *args, **kwargs):
+        return super(AdminUnconfirmedIssuerListView,
+                     self).dispatch(request, *args, **kwargs)
+
+class AdminUnconfirmedColorListView(UnconfirmedColorListView):
+
+    template_name = 'adminapp/unconfirmed_color_list.html'
+
+    @method_decorator(staff_required)
+    def dispath(request, *args, **kwargs):
+        return super(AdminUnconfirmedIssuerListView,
+                     self).dispatch(request, *args, **kwargs)
+
+
 
 @staff_required
 def txs_list(request):
