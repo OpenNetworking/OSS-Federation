@@ -8,6 +8,7 @@ from oss.apps.issuer.views import (issuer_create, IssuerDetailView,
                                    issuer_add_color)
 from oss.apps.decorators import non_staff_required
 
+import config
 # Create your views here.
 
 class HomeView(IssuerDetailView):
@@ -46,7 +47,8 @@ class HomeView(IssuerDetailView):
 
 def signup(request):
     return issuer_create(request, template_name='website/signup.html',
-                         redirect_to='/website/', confirm=False)
+                         redirect_to='/website/',
+                         confirm=config.AUTO_CONFIRM_ISSUER_REGISTRATION)
 
 def waiting(request):
     # ToDo: create a template
