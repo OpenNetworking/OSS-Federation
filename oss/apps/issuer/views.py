@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView
 
@@ -33,11 +34,16 @@ def issuer_create(request, template_name='issuer/form.html',
             issuer.user = user
             issuer.save()
             if confirm:
+                messages.success(request,
+                                 'Success, you can login now!')
                 issuer.active()
             else:
+                messages.info(request, 'Wating for approve')
                 issuer.deactive()
+
             if redirect_to:
                 return HttpResponseRedirect(redirect_to)
+
             return HttpResponse('success')
     else:
         issuer_form = IssuerCreationForm()

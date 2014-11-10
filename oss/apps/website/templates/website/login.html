@@ -8,10 +8,16 @@
 <body>
   <div id="fullscreen_bg" class="fullscreen_bg"/>
   <div class="container">
+    
     <form class="form-signin" action="{% url 'website:login' %}" method="post" id="login-form">
     {% csrf_token %}
       <h1 class="form-signin-heading text-muted">Login</h1>
       <input type="hidden" id="id_next" name="next" value="/website/">
+      {% if messages %}
+      {% for message in messages %}
+      <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+      {% endif %}
       {% if form.non_field_errors %}
       <div class="alert alert-danger">{{ form.non_field_errors }}</div>
       {% endif %}
