@@ -91,3 +91,43 @@ STATIC_URL = '/static/'
 LOGIN_URL = '/home/signin/'
 LOGIN_REDIRECT_URL = '/home/index/'
 LOGOUT_URL = 'home/logout/'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR + '/log/oss-federation.log',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
+        'django.request': { 
+            'handlers': ['file'],
+            'propagate': False,
+            'level': 'DEBUG',
+        },
+        'django.db.backends': { 
+            'handlers': ['file'],
+            'propagate': False,
+            'level': 'WARNING',
+        },
+        'oss': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        },
+    }    
+}
