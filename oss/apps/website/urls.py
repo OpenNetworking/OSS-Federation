@@ -19,5 +19,7 @@ urlpatterns = patterns('',
     url(r'^waiting/$', views.waiting, name='waiting'),
     url(r'^$', views.HomeView.as_view(), name='home'),
     url(r'^add_color', views.add_color, name='add_color'),
+    url(r'^(?P<pk>\d+)/color_detail/$',
+        views.WebsiteColorDetailView.as_view(), name='color_detail'),
 
 )

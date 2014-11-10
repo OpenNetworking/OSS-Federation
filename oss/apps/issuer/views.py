@@ -173,6 +173,10 @@ class UnconfirmedColorListView(ListView):
     context_object_name = 'color_list'
     template_name = 'issuer/unconfirmed_color_list.html'
 
+class ColorDetailView(DetailView):
+
+    model = Color
+
 class ColorHistoryListView(ListView):
     model = ColorHistory
     context_object_name = 'colorhistory_list'

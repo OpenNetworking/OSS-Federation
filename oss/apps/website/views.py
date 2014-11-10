@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import logout
 from django.utils.decorators import method_decorator
 from oss.apps.issuer.views import (issuer_create, IssuerDetailView,
-                                   issuer_add_color)
+                                   issuer_add_color, ColorDetailView)
 from oss.apps.decorators import non_staff_required
 
 import config
@@ -63,4 +63,12 @@ def add_color(request):
                             redirect_to=redirect_to,
                             confirm=config.AUTO_CONFIRM_COLOR_REGISTRATION)
 
+
+
+class WebsiteColorDetailView(ColorDetailView):
+
+    @method_decorator(non_staff_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(WebsiteColorDetailView,
+                     self).dispatch(request, *args, **kwargs)
 
