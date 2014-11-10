@@ -1,0 +1,15 @@
+    username: {{ issuer.user.username }}<br>
+    register_url: {{ issuer.register_url }}<br>
+    update_time: {{ issuer.update_time }}<br>
+    create_time: {{ issuer.create_time }}<br>
+    ------------------<br>
+    <a href="{% url 'website:logout' %}">logout</a><br>
+    ------------------<br>
+    {% for color in issuer.color_set.all %}
+        {% if color.is_confirmed %}
+        color id: {{ color.color_id }}<br>
+        color name: {{ color.color_name }}<br>
+        address: {{ color.address.address }}<br>
+        ====<br>
+        {% endif %}
+    {% endfor %}

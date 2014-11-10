@@ -34,6 +34,8 @@ def issuer_create(request, template_name='issuer/form.html',
             issuer.save()
             if confirm:
                 issuer.active()
+            else:
+                issuer.deactive()
             if redirect_to:
                 return HttpResponseRedirect(redirect_to)
             return HttpResponse('success')
