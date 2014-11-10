@@ -61,6 +61,6 @@ def add_color(request):
     return issuer_add_color(request, pk,
                             template_name='website/add_color.html',
                             redirect_to=redirect_to,
-                            confirm=False)
+                            confirm=config.AUTO_CONFIRM_COLOR_REGISTRATION)
 
 

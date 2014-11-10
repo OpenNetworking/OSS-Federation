@@ -4,12 +4,18 @@
     create_time: {{ issuer.create_time }}<br>
     ------------------<br>
     <a href="{% url 'website:logout' %}">logout</a><br>
+    <a href="{% url 'website:add_color' %}">add color</a><br>
     ------------------<br>
+    {% if messages %}
+    {% for message in messages %}
+    {{message}}<br>
+    {% endfor %}
+    --------------------<br>
+    {% endif %}
     {% for color in issuer.color_set.all %}
-        {% if color.is_confirmed %}
         color id: {{ color.color_id }}<br>
         color name: {{ color.color_name }}<br>
         address: {{ color.address.address }}<br>
+        confirmed: {% if color.is_confirmed %} confirmed {% else %} Not confirmed {% endif %}<br>
         ====<br>
-        {% endif %}
     {% endfor %}

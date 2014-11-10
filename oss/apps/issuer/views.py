@@ -84,7 +84,13 @@ def issuer_add_color(request, issuer_pk, confirm=False,
                 color_id = last_color.color_id + 1
             color.color_id = color_id
             if confirm:
+                messages.success(request,
+                                 'add color success')
                 color.is_confirmed = True
+            else:
+                messages.info(request,
+                              'waiting for approve')
+
             color.save()
 
             if not redirect_to:
