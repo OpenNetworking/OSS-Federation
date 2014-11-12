@@ -5,12 +5,13 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView
+from django.views.generic.edit import UpdateView
 
 from oss.apps.decorators import staff_required
 
 from .models import Issuer, Color, ColorHistory, Address, AddressHistory
-from .forms import (IssuerCreationForm, ColorCreationForm,
-                    AddressInputForm)
+from .forms import (IssuerCreationForm, IssuerUpdateForm,
+                    ColorCreationForm, AddressInputForm)
 
 def issuer_create(request, template_name='issuer/form.html',
                   redirect_to=None,
@@ -56,6 +57,16 @@ def issuer_create(request, template_name='issuer/form.html',
 def issuer_delete(request):
     return HttpResponse('delelte')
 
+class IssuerUpdateView(UpdateView):
+
+    model = Issuer
+    fields = ['register_url']
+    template_name_suffix = '_update'
+
+    def get_success_url(self):
+        obj = self.get_object()
+        return '/issuer/{0}/detail/'.format(obj.pk)
+
 def issuer_update(request):
     return HttpResponse('update')
 
@@ -94,7 +105,7 @@ def issuer_add_color(request, issuer_pk, confirm=False,
             color.save()
 
             if not redirect_to:
-                redirect_to = '/issuer/{0}/detail/'.format(pk)
+                redirect_to = '/issuer/{0}/detail/'.format(issuer_pk)
 
             return HttpResponseRedirect(redirect_to)
     else:

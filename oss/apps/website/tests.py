@@ -6,6 +6,7 @@ from oss.apps.issuer.models import Issuer, Color
 from oss.apps.issuer.forms import (IssuerCreationForm, ColorCreationForm,
                                    AddressInputForm)
 
+import config
 # Create your tests here.
 
 class WebsiteViewTest(TestCase):
@@ -127,7 +128,8 @@ class WebsiteViewTest(TestCase):
         self.assertRedirects(response, '/website/')
         color = Color.objects.get(color_name='test_color')
         user = User.objects.get(username='test')
-        self.assertFalse(color.is_confirmed)
+        self.assertEquals(config.AUTO_CONFIRM_COLOR_REGISTRATION,
+                          color.is_confirmed)
         self.assertEquals(color.issuer.pk, user.issuer.pk)
 
         # duplicate username
