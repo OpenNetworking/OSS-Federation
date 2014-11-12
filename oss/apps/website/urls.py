@@ -21,7 +21,7 @@ urlpatterns = patterns('',
     url(r'^update/$', views.WebsiteIssuerUpdateView.as_view(),
         name='issuer_update'),
     url(r'^add_color', views.add_color, name='add_color'),
-    url(r'^(?P<pk>\d+)/color_detail/$',
+    url(r'^color/(?P<pk>\d+)/detail/$',
         views.WebsiteColorDetailView.as_view(), name='color_detail'),
 
 )

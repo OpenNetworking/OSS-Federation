@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.core.urlresolvers import reverse
 from django.contrib.auth import logout
 from django.utils.decorators import method_decorator
@@ -98,6 +98,14 @@ def add_color(request):
 
 
 class WebsiteColorDetailView(ColorDetailView):
+
+    def get(self, request, *args, **kwargs):
+        color = self.get_object()
+        if color.issuer.pk != request.user.issuer.pk:
+            raise Http404
+        return super(WebsiteColorDetailView,
+                     self).get(request, *args, **kwargs)
+
 
     @method_decorator(non_staff_required)
     def dispatch(self, request, *args, **kwargs):

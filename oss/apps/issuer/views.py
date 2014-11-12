@@ -24,11 +24,9 @@ def issuer_create(request, template_name='issuer/form.html',
 
         if user_form.is_valid():
             user = user_form.save(commit=False)
-            print('user form valid')
 
         if issuer_form.is_valid():
             issuer = issuer_form.save(commit=False)
-            print('issuer form valid')
 
         if user and issuer:
             user.save()
