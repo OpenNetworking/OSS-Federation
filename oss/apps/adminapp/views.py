@@ -16,9 +16,11 @@ from oss.apps.issuer.models import Issuer, Color
 from oss.apps.issuer.views import (IssuerDetailView, issuer_create,
                                    IssuerListView,
                                    UnconfirmedIssuerListView,
-                                   issuer_add_color, ColorListView, UnconfirmedColorListView)
+                                   issuer_add_color, ColorListView,
+                                   UnconfirmedColorListView)
 from oss.apps.decorators import staff_required
 
+import config
 
 @staff_required
 def index(request):
@@ -30,24 +32,15 @@ def admin_issuer_create(request):
     return issuer_create(request,
                          template_name='adminapp/issuer_create.html',
                          redirect_to='/adminapp/issuer_list/',
-                         confirm=True)
+                         confirm=config.AUTO_CONFIRM_ISSUER_REGISTRATION)
 
 @staff_required
 def admin_issuer_add_color(request, pk):
     redirect_to = '/adminapp/issuer_detail/{0}/'.format(pk)
-    return issuer_add_color(request, pk, confirm=True,
-                             template_name='adminapp/issuer_add_color.html',
-                             redirect_to=redirect_to)
-
-'''
-# Might be used in the future
-def admin_issuer_update_color(request, color_pk):
-    color = get_object_or_404(Color, pk=color_pk)
-    redirect_to = '/adminapp/{0}/detail/'.format(color.issuer.pk)
-    return issuer_update_color(request, color_pk,
-                               template_name='adminapp/issuer_update_color.html',
-                               redirect_to=redirect_to)
-'''
+    return issuer_add_color(request, pk,
+                            template_name='adminapp/issuer_add_color.html',
+                            redirect_to=redirect_to,
+                            confirm=config.AUTO_CONFIRM_COLOR_REGISTRATION)
 
 class AdminIssuerDetailView(IssuerDetailView):
 
