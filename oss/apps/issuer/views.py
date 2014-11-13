@@ -80,7 +80,7 @@ def issuer_add_color(request, issuer_pk, confirm=False,
             color.save()
 
             if not redirect_to:
-                redirect_to = '/issuer/{0}/detail/'.format(pk)
+                redirect_to = '/issuer/{0}/detail/'.format(issuer_pk)
 
             return HttpResponseRedirect(redirect_to)
     else:
