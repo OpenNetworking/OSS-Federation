@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .forms import IssuerCreationForm, ColorCreationForm, AddressInputForm
 
+from .forms import IssuerCreationForm, ColorCreationForm, AddressInputForm
 from .models import Issuer, Color, Address, ColorHistory, AddressHistory
 # Create your tests here.
 
@@ -42,7 +42,7 @@ class IssuerViewTests(TestCase):
         self.assertIsInstance(response.context['issuer_form'],
                               IssuerCreationForm)
         self.assertIsInstance(response.context['user_form'],
-                          UserCreationForm)
+                              UserCreationForm)
 
         response = self.client.get('/issuer/create')
         self.assertEquals(response.status_code, 301)
@@ -144,7 +144,7 @@ class IssuerViewTests(TestCase):
                                      'address': 'test_address'})
         self.assertEquals(response.status_code, 200)
         self.assertFormError(response, 'color_form', 'color_name',
-                            'Color with this Color name already exists.')
+                             'Color with this Color name already exists.')
 
 
     def test_issuer_list_view(self):
