@@ -115,12 +115,12 @@ LOGGING = {
             'propagate': True,
             'level': 'DEBUG',
         },
-        'django.request': { 
+        'django.request': {
             'handlers': ['file'],
             'propagate': False,
             'level': 'DEBUG',
         },
-        'django.db.backends': { 
+        'django.db.backends': {
             'handlers': ['file'],
             'propagate': False,
             'level': 'WARNING',
@@ -129,5 +129,5 @@ LOGGING = {
             'handlers': ['file'],
             'level': 'DEBUG',
         },
-    }    
+    }
 }

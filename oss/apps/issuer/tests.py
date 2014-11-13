@@ -1,10 +1,15 @@
+import logging
+
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
 from .forms import IssuerCreationForm, ColorCreationForm, AddressInputForm
 from .models import Issuer, Color, Address, ColorHistory, AddressHistory
-# Create your tests here.
+
+# disable logging when running test
+logging.disable(logging.CRITICAL)
+
 
 class IssuerViewTests(TestCase):
 
