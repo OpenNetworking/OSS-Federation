@@ -1,5 +1,5 @@
 {% extends 'adminapp/base.html' %}
-
+{% load staticfiles %}
 {% block content %}
 
 <div class="container-fluid">
@@ -39,14 +39,13 @@
                             </thead>
                             <tbody>
                                 {% for issuer in issuer_list %}
-                                <tr>
+                                <tr class="issuer">
                                     <td>{{ issuer.user.username }}</td>
                                     <td>{{ issuer.register_url }}</td>
                                     <td>
                                         <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-usd"></span></a>
-                                        <a href="/adminapp/issuer_detail/{{issuer.pk}}/" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                        <a class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
-                                        <a class="btn btn-default"><span class="glyphicon glyphicon-trash"></span></a>
+                                        <a href="{% url 'adminapp:issuer_detail' issuer.pk %}" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                        <a data-href="{% url 'adminapp:issuer_delete' issuer.pk %}" class="btn btn-default btn-delete"><span class="glyphicon glyphicon-trash"></span></a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -62,3 +61,7 @@
 
 </div>
 {% endblock %}
+
+{% block js %}
+<script src="{% static 'adminapp/js/issuer_list.js' %}"></script>
+{% endblock js %}

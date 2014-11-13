@@ -1,11 +1,12 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, DeleteView
 
 from oss.apps.decorators import staff_required
 
@@ -52,8 +53,16 @@ def issuer_create(request, template_name='issuer/form.html',
                   {'issuer_form': issuer_form,
                    'user_form': user_form})
 
-def issuer_delete(request):
-    return HttpResponse('delelte')
+@require_http_methods(['POST'],)
+def issuer_delete(request, pk):
+    try:
+        issuer = Issuer.objects.get(pk=pk)
+    except Issuer.DoesNotExist:
+        raise Http404
+    issuer.delete()
+    if request.is_ajax():
+        return HttpResponse()
+    return HttpResponse('delete success')
 
 def issuer_add_color(request, issuer_pk, confirm=False,
                      template_name="issuer/issuer_add_color.html",

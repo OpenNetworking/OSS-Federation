@@ -6,7 +6,6 @@ import collections
 
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
-from django.views.decorators.http import require_http_methods
 from django.core.urlresolvers import reverse
 from django.contrib.admin.forms import AdminAuthenticationForm
 #from bitcoinrpc.connection import BitcoinConnection
@@ -14,7 +13,7 @@ from django.utils.decorators import method_decorator
 
 from oss.apps.issuer.models import Issuer, Color
 from oss.apps.issuer.views import (IssuerDetailView, issuer_create,
-                                   IssuerListView,
+                                   IssuerListView, issuer_delete,
                                    UnconfirmedIssuerListView,
                                    issuer_add_color, ColorListView,
                                    UnconfirmedColorListView)
@@ -28,7 +27,6 @@ def index(request):
 
 @staff_required
 def admin_issuer_create(request):
-    print 'admin_issuer_create'
     return issuer_create(request,
                          template_name='adminapp/issuer_create.html',
                          redirect_to='/adminapp/issuer_list/',
@@ -41,6 +39,10 @@ def admin_issuer_add_color(request, pk):
                             template_name='adminapp/issuer_add_color.html',
                             redirect_to=redirect_to,
                             confirm=config.AUTO_CONFIRM_COLOR_REGISTRATION)
+
+@staff_required
+def admin_issuer_delete(request, pk):
+    return issuer_delete(request, pk)
 
 class AdminIssuerDetailView(IssuerDetailView):
 
@@ -60,7 +62,6 @@ class AdminIssuerListView(IssuerListView):
         return super(AdminIssuerListView,
                      self).dispatch(request, *args, **kwargs)
 
-
 class AdminUnconfirmedIssuerListView(UnconfirmedIssuerListView):
 
     template_name = 'adminapp/unconfirmed_issuer_list.html'
@@ -69,7 +70,6 @@ class AdminUnconfirmedIssuerListView(UnconfirmedIssuerListView):
     def dispath(request, *args, **kwargs):
         return super(AdminUnconfirmedIssuerListView,
                      self).dispatch(request, *args, **kwargs)
-
 
 class AdminColorListView(ColorListView):
 
