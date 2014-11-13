@@ -97,7 +97,7 @@ class IssuerViewTests(TestCase):
 
 
     def test_issuer_delete_view(self):
-        response = self.client.get('/issuer/update/')
+        response = self.client.get('/issuer/delete/')
         self.assertEquals(response.status_code, 200)
 
     def test_issuer_detail_view(self):

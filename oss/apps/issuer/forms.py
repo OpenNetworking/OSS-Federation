@@ -16,6 +16,11 @@ class IssuerCreationForm(ModelForm):
         model = Issuer
         exclude = ('user',)
 
+class IssuerUpdateForm(ModelForm):
+    class Meta:
+        model = Issuer
+        exclude = ('user', )
+
 class ColorCreationForm(ModelForm):
     class Meta:
         model = Color
