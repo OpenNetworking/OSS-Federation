@@ -55,23 +55,9 @@ def issuer_create(request, template_name='issuer/form.html',
 def issuer_delete(request):
     return HttpResponse('delelte')
 
-class IssuerUpdateView(UpdateView):
-
-    model = Issuer
-    fields = ['register_url']
-    template_name_suffix = '_update'
-
-    def get_success_url(self):
-        obj = self.get_object()
-        return '/issuer/{0}/detail/'.format(obj.pk)
-
-def issuer_update(request):
-    return HttpResponse('update')
-
 def issuer_add_color(request, issuer_pk, confirm=False,
                      template_name="issuer/issuer_add_color.html",
                      redirect_to=None):
-
     issuer = get_object_or_404(Issuer, pk=issuer_pk)
     if request.method == 'POST':
         color_form = ColorCreationForm(request.POST)
@@ -113,71 +99,38 @@ def issuer_add_color(request, issuer_pk, confirm=False,
     return render(request, template_name,
                   {'color_form': color_form, 'address_form': address_form,
                    'issuer': issuer })
-'''
-May be used in the future
 
-def issuer_update_color(request, color_pk,
-                        template_name="issuer/issuer_update_color.html",
-                        redirect_to=None):
+class IssuerUpdateView(UpdateView):
 
-    color = get_object_or_404(Color, pk=color_pk)
-    address_form = AddressInputForm()
+    model = Issuer
+    fields = ['register_url']
+    template_name_suffix = '_update'
 
-    if request.method == "POST":
-        address_form = AddressInputForm(request.POST)
-        if address_form.is_valid():
-            # create a new color history
-            color_history = ColorHistory(color=color,
-                                         color_name=color.color_name,
-                                         issuer=color.issuer,
-                                         address=color.address,
-                                         start_time=color.update_time)
-            color_history.save()
-
-            # create a new address history
-            address_history = AddressHistory(address=color.address,
-                                             issuer=color.issuer,
-                                             color=color,
-                                             start_time=color.update_time)
-
-            address_history.save()
-
-            # get or create address
-            raw_address = address_form.cleaned_data.get('address')
-            address, created = Address.objects.get_or_create(address=raw_address, issuer=color.issuer)
-
-            # update color address
-            color.address = address
-            color.save()
-
-            if not redirect_to:
-                redirect_to = '/issuer/{0}/detail/'.format(color.issuer.pk)
-
-            return HttpResponseRedirect(redirect_to)
-
-
-    return render(request, template_name,
-                  {'address_form': address_form,
-                   'color': color })
-'''
+    def get_success_url(self):
+        obj = self.get_object()
+        return '/issuer/{0}/detail/'.format(obj.pk)
 
 class IssuerDetailView(DetailView):
 
     model = Issuer
 
 class IssuerListView(ListView):
+
     queryset = Issuer.objects.filter(user__is_active=True)
     context_object_name = 'issuer_list'
 
 class UnconfirmedIssuerListView(ListView):
+
     queryset = Issuer.objects.filter(user__is_active=False)
     context_object_name = 'issuer_list'
 
 class ColorListView(ListView):
+
     queryset = Color.objects.filter(is_confirmed=True)
     context_object_name = 'color_list'
 
 class UnconfirmedColorListView(ListView):
+
     queryset = Color.objects.filter(is_confirmed=False)
     context_object_name = 'color_list'
     template_name = 'issuer/unconfirmed_color_list.html'
@@ -187,10 +140,12 @@ class ColorDetailView(DetailView):
     model = Color
 
 class ColorHistoryListView(ListView):
+
     model = ColorHistory
     context_object_name = 'colorhistory_list'
 
 class AddressHistoryListView(ListView):
+
     model = AddressHistory
     context_object_name = 'addresshistory_list'
 

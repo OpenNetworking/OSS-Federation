@@ -45,7 +45,6 @@ class WebsiteViewTest(TestCase):
                       issuer=issuer2)
         color.save()
 
-
     def tearDown(self):
         Issuer.objects.all().delete()
         User.objects.all().delete()
@@ -119,7 +118,6 @@ class WebsiteViewTest(TestCase):
         self.assertFormError(response, 'user_form', 'password2',
                              "The two password fields didn't match.")
 
-
     def test_add_color_view(self):
 
         # no login
@@ -176,7 +174,6 @@ class WebsiteViewTest(TestCase):
         self.assertFormError(response, 'address_form', 'address',
                              'This field is required.')
 
-
     def test_website_issuer_update_view(self):
 
         # no login
@@ -214,7 +211,6 @@ class WebsiteViewTest(TestCase):
         self.assertRedirects(response, '/website/')
         issuer = Issuer.objects.get(user__username='test')
         self.assertEquals(issuer.register_url, 'http://www.test2.com/')
-
 
     def test_color_detail_view(self):
 

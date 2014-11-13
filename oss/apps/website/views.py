@@ -3,13 +3,13 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.core.urlresolvers import reverse
 from django.contrib.auth import logout
 from django.utils.decorators import method_decorator
+
 from oss.apps.issuer.views import (issuer_create, IssuerDetailView,
                                    IssuerUpdateView,
                                    issuer_add_color, ColorDetailView)
 from oss.apps.decorators import non_staff_required
 
 import config
-# Create your views here.
 
 class HomeView(IssuerDetailView):
     """
@@ -29,8 +29,7 @@ class HomeView(IssuerDetailView):
         if pk is None:
             pk = self.request.user.issuer.pk
 
-        if pk is not None:
-            queryset = queryset.filter(pk=pk)
+        queryset = queryset.filter(pk=pk)
 
         try:
             obj = queryset.get()
@@ -49,7 +48,6 @@ class WebsiteIssuerUpdateView(IssuerUpdateView):
 
     template_name = 'website/issuer_update.html'
 
-
     def get_object(self, queryset=None):
         if queryset is None:
             queryset = self.get_queryset()
@@ -58,8 +56,7 @@ class WebsiteIssuerUpdateView(IssuerUpdateView):
         if pk is None:
             pk = self.request.user.issuer.pk
 
-        if pk is not None:
-            queryset = queryset.filter(pk=pk)
+        queryset = queryset.filter(pk=pk)
 
         try:
             obj = queryset.get()
@@ -105,7 +102,6 @@ class WebsiteColorDetailView(ColorDetailView):
             raise Http404
         return super(WebsiteColorDetailView,
                      self).get(request, *args, **kwargs)
-
 
     @method_decorator(non_staff_required)
     def dispatch(self, request, *args, **kwargs):
