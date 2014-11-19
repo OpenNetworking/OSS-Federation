@@ -10,4 +10,10 @@ $('.btn-delete').click(function () {
     console.log(e);
   });
 });
+
+$('#search_box').keyup(function () {
+var search = this;
+$('#search_btn')[0].href = '/adminapp/issuer_list/?search=' + this.value;
+});
+
 })(jQuery);

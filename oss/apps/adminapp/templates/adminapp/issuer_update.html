@@ -1,0 +1,9 @@
+{% extends 'adminapp/base.html' %}
+
+{% block content %}
+<form action="{% url 'adminapp:issuer_update' issuer.pk %}" method="POST">
+{% csrf_token %}
+{{ form.as_p }}
+<button type="submit">submit</button>
+</form>
+{% endblock %}

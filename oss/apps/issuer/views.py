@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView
+from django.db.models import Q
 
 from oss.apps.decorators import staff_required
 
@@ -64,6 +65,12 @@ def issuer_delete(request, pk):
         return HttpResponse()
     return HttpResponse('delete success')
 
+@require_http_methods(['POST'],)
+def issuer_accept(request, pk):
+    issuer = get_object_or_404(Issuer, pk=pk)
+    issuer.active()
+    return HttpResponse('issuer accept success')
+
 def issuer_add_color(request, issuer_pk, confirm=False,
                      template_name="issuer/issuer_add_color.html",
                      redirect_to=None):
@@ -109,6 +116,19 @@ def issuer_add_color(request, issuer_pk, confirm=False,
                   {'color_form': color_form, 'address_form': address_form,
                    'issuer': issuer })
 
+@require_http_methods(['POST',])
+def color_reject(request, pk):
+    color = get_object_or_404(Color, pk=pk)
+    color.delete()
+    return HttpResponse('reject success')
+
+@require_http_methods(['POST',])
+def color_accept(request, pk):
+    color = get_object_or_404(Color, pk=pk)
+    color.is_confirmed = True
+    color.save()
+    return HttpResponse('accept success')
+
 class IssuerUpdateView(UpdateView):
 
     model = Issuer
@@ -128,10 +148,30 @@ class IssuerListView(ListView):
     queryset = Issuer.objects.filter(user__is_active=True)
     context_object_name = 'issuer_list'
 
+    def get_queryset(self):
+        queryset = super(IssuerListView, self).get_queryset()
+        search = self.request.GET.get('search', None)
+        if search is not None:
+            queryset = queryset.filter(Q(user__username__icontains=search)|
+                                       Q(address__address__icontains=search)|
+                                       Q(register_url__icontains=search))
+        queryset = queryset.distinct()
+        return queryset
+
 class UnconfirmedIssuerListView(ListView):
 
     queryset = Issuer.objects.filter(user__is_active=False)
     context_object_name = 'issuer_list'
+
+    def get_queryset(self):
+        queryset = super(UnconfirmedIssuerListView, self).get_queryset()
+        search = self.request.GET.get('search', None)
+        if search is not None:
+            queryset = queryset.filter(Q(user__username__icontains=search)|
+                                       Q(address__address__icontains=search)|
+                                       Q(register_url__icontains=search))
+        queryset = queryset.distinct()
+        return queryset
 
 class ColorListView(ListView):
 

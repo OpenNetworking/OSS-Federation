@@ -14,9 +14,12 @@ from django.utils.decorators import method_decorator
 from oss.apps.issuer.models import Issuer, Color
 from oss.apps.issuer.views import (IssuerDetailView, issuer_create,
                                    IssuerListView, issuer_delete,
+                                   issuer_accept,
+                                   color_reject, color_accept,
+                                   IssuerUpdateView,
                                    UnconfirmedIssuerListView,
                                    issuer_add_color, ColorListView,
-                                   UnconfirmedColorListView)
+                                   UnconfirmedColorListView, ColorDetailView)
 from oss.apps.decorators import staff_required
 
 import config
@@ -44,6 +47,18 @@ def admin_issuer_add_color(request, pk):
 def admin_issuer_delete(request, pk):
     return issuer_delete(request, pk)
 
+@staff_required
+def admin_issuer_accept(request, pk):
+    return issuer_accept(request, pk)
+
+@staff_required
+def admin_color_reject(request, pk):
+    return color_reject(request, pk)
+
+@staff_required
+def admin_color_accept(request, pk):
+    return color_accept(request, pk)
+
 class AdminIssuerDetailView(IssuerDetailView):
 
     template_name = 'adminapp/issuer_detail.html'
@@ -51,6 +66,18 @@ class AdminIssuerDetailView(IssuerDetailView):
     @method_decorator(staff_required)
     def dispath(request, *args, **kwargs):
         return super(AdminIssuerDetailView,
+                     self).dispatch(request, *args, **kwargs)
+
+class AdminIssuerUpdateView(IssuerUpdateView):
+
+    template_name = 'adminapp/issuer_update.html'
+
+    def get_success_url(self):
+        return '/adminapp/issuer_list/'
+
+    @method_decorator(staff_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AdminIssuerUpdateView,
                      self).dispatch(request, *args, **kwargs)
 
 class AdminIssuerListView(IssuerListView):
@@ -89,7 +116,14 @@ class AdminUnconfirmedColorListView(UnconfirmedColorListView):
         return super(AdminUnconfirmedIssuerListView,
                      self).dispatch(request, *args, **kwargs)
 
+class AdminColorDetailView(ColorDetailView):
 
+    template_name = 'adminapp/color_detail.html'
+
+    @method_decorator(staff_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AdminColorDetailView,
+                     self).dispatch(request, *args, **kwargs)
 
 @staff_required
 def txs_list(request):

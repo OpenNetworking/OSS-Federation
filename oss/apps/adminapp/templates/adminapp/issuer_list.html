@@ -15,7 +15,7 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-md-8">
-                                <input type="text">
+                                <input id="search_box" type="text"><a id="search_btn" href="{% url 'adminapp:issuer_list' %}"class="btn btn-default btn-search">search</a>
                             </div>
                             <div class="col-md-1 col-md-offset-3">
                                 <div class="dropdown">
@@ -45,6 +45,7 @@
                                     <td>
                                         <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-usd"></span></a>
                                         <a href="{% url 'adminapp:issuer_detail' issuer.pk %}" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                        <a href="{% url 'adminapp:issuer_update' issuer.pk %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
                                         <a data-href="{% url 'adminapp:issuer_delete' issuer.pk %}" class="btn btn-default btn-delete"><span class="glyphicon glyphicon-trash"></span></a>
                                     </td>
                                 </tr>
