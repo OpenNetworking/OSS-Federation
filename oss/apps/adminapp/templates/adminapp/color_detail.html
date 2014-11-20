@@ -1,0 +1,11 @@
+{% extends 'adminapp/base.html' %}
+
+
+{% block content %}
+color name:{{ color.color_name }}<br>
+color issuer:{{ color.issuer.user.username }}<br>
+color address:{{ color.address.address }}<br>
+color confirmed:{{ color.is_confirmed }}<br>
+color create time:{{ color.created_time }}<br>
+color update time:{{ color.update_time }}<br>
+{% endblock content %}

@@ -22,22 +22,21 @@
                     <div class="panel-body">
                         <table class="table">
                             <thead>
-                                <th>Issuer</th>
                                 <th>Color ID</th>
                                 <th>Color Name</th>
                                 <th>Address</th>
+                                <th>Issuer</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
                                 {% for color in color_list %}
                                 <tr>
-                                    <td>{{ color.issuer.user.username }}</td>
                                     <td>{{ color.color_id }}</td>
                                     <td>{{ color.color_name }}</td>
                                     <td>{{ color.address.address }}</td>
+                                    <td>{{ color.issuer.user.username }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                        <a class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
+                                        <a href="{% url 'adminapp:color_detail' color.pk %}" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
                                     </td>
                                 </tr>
                                 {% endfor %}

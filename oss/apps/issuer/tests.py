@@ -97,8 +97,15 @@ class IssuerViewTests(TestCase):
 
 
     def test_issuer_delete_view(self):
-        response = self.client.get('/issuer/delete/')
+        response = self.client.get('/issuer/{0}/delete/'.format(1))
+        self.assertEquals(response.status_code, 405)
+
+        response = self.client.post('/issuer/{0}/delete/'.format(1))
         self.assertEquals(response.status_code, 200)
+        self.assertRaises(Issuer.DoesNotExist, Issuer.objects.get, pk=1)
+
+        response = self.client.post('/issuer/1000/delete/')
+        self.assertEquals(response.status_code, 404)
 
     def test_issuer_detail_view(self):
         response = self.client.get('/issuer/1/detail/')

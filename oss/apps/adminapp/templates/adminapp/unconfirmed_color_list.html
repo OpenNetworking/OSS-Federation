@@ -1,4 +1,5 @@
 {% extends 'adminapp/base.html' %}
+{% load staticfiles %}
 {% block content %}
 
 <div class="container-fluid">
@@ -14,7 +15,6 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-md-8">
-                                <input type="text">
                             </div>
                         </div>
                     </div> <!-- panel heading close -->
@@ -22,22 +22,22 @@
                     <div class="panel-body">
                         <table class="table">
                             <thead>
-                                <th>Issuer</th>
                                 <th>Color ID</th>
                                 <th>Color Name</th>
                                 <th>Address</th>
+                                <th>Issuer</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
                                 {% for color in color_list %}
-                                <tr>
-                                    <td>{{ color.issuer.user.username }}</td>
+                                <tr class="color">
                                     <td>{{ color.color_id }}</td>
                                     <td>{{ color.color_name }}</td>
                                     <td>{{ color.address.address }}</td>
+                                    <td>{{ color.issuer.user.username }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                        <a class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
+                                        <a data-href="{% url 'adminapp:color_accept' color.pk %}" class="btn btn-success btn-color-accept">Accept</a>
+                                        <a data-href="{% url 'adminapp:color_reject' color.pk %}" class="btn btn-danger btn-color-reject">Reject</a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -53,3 +53,7 @@
 
 </div>
 {% endblock content %}
+
+{% block js %}
+<script src="{% static 'adminapp/js/unconfirmed_color_list.js' %}"></script>
+{% endblock js %}

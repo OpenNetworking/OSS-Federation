@@ -6,7 +6,6 @@ import collections
 
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
-from django.views.decorators.http import require_http_methods
 from django.core.urlresolvers import reverse
 from django.contrib.admin.forms import AdminAuthenticationForm
 #from bitcoinrpc.connection import BitcoinConnection
@@ -14,11 +13,16 @@ from django.utils.decorators import method_decorator
 
 from oss.apps.issuer.models import Issuer, Color
 from oss.apps.issuer.views import (IssuerDetailView, issuer_create,
-                                   IssuerListView,
+                                   IssuerListView, issuer_delete,
+                                   issuer_accept,
+                                   color_reject, color_accept,
+                                   IssuerUpdateView,
                                    UnconfirmedIssuerListView,
-                                   issuer_add_color, ColorListView, UnconfirmedColorListView)
+                                   issuer_add_color, ColorListView,
+                                   UnconfirmedColorListView, ColorDetailView)
 from oss.apps.decorators import staff_required
 
+import config
 
 @staff_required
 def index(request):
@@ -26,28 +30,34 @@ def index(request):
 
 @staff_required
 def admin_issuer_create(request):
-    print 'admin_issuer_create'
     return issuer_create(request,
                          template_name='adminapp/issuer_create.html',
                          redirect_to='/adminapp/issuer_list/',
-                         confirm=True)
+                         confirm=config.AUTO_CONFIRM_ISSUER_REGISTRATION)
 
 @staff_required
 def admin_issuer_add_color(request, pk):
     redirect_to = '/adminapp/issuer_detail/{0}/'.format(pk)
-    return issuer_add_color(request, pk, confirm=True,
-                             template_name='adminapp/issuer_add_color.html',
-                             redirect_to=redirect_to)
+    return issuer_add_color(request, pk,
+                            template_name='adminapp/issuer_add_color.html',
+                            redirect_to=redirect_to,
+                            confirm=config.AUTO_CONFIRM_COLOR_REGISTRATION)
 
-'''
-# Might be used in the future
-def admin_issuer_update_color(request, color_pk):
-    color = get_object_or_404(Color, pk=color_pk)
-    redirect_to = '/adminapp/{0}/detail/'.format(color.issuer.pk)
-    return issuer_update_color(request, color_pk,
-                               template_name='adminapp/issuer_update_color.html',
-                               redirect_to=redirect_to)
-'''
+@staff_required
+def admin_issuer_delete(request, pk):
+    return issuer_delete(request, pk)
+
+@staff_required
+def admin_issuer_accept(request, pk):
+    return issuer_accept(request, pk)
+
+@staff_required
+def admin_color_reject(request, pk):
+    return color_reject(request, pk)
+
+@staff_required
+def admin_color_accept(request, pk):
+    return color_accept(request, pk)
 
 class AdminIssuerDetailView(IssuerDetailView):
 
@@ -56,6 +66,18 @@ class AdminIssuerDetailView(IssuerDetailView):
     @method_decorator(staff_required)
     def dispath(request, *args, **kwargs):
         return super(AdminIssuerDetailView,
+                     self).dispatch(request, *args, **kwargs)
+
+class AdminIssuerUpdateView(IssuerUpdateView):
+
+    template_name = 'adminapp/issuer_update.html'
+
+    def get_success_url(self):
+        return '/adminapp/issuer_list/'
+
+    @method_decorator(staff_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AdminIssuerUpdateView,
                      self).dispatch(request, *args, **kwargs)
 
 class AdminIssuerListView(IssuerListView):
@@ -67,7 +89,6 @@ class AdminIssuerListView(IssuerListView):
         return super(AdminIssuerListView,
                      self).dispatch(request, *args, **kwargs)
 
-
 class AdminUnconfirmedIssuerListView(UnconfirmedIssuerListView):
 
     template_name = 'adminapp/unconfirmed_issuer_list.html'
@@ -76,7 +97,6 @@ class AdminUnconfirmedIssuerListView(UnconfirmedIssuerListView):
     def dispath(request, *args, **kwargs):
         return super(AdminUnconfirmedIssuerListView,
                      self).dispatch(request, *args, **kwargs)
-
 
 class AdminColorListView(ColorListView):
 
@@ -96,7 +116,14 @@ class AdminUnconfirmedColorListView(UnconfirmedColorListView):
         return super(AdminUnconfirmedIssuerListView,
                      self).dispatch(request, *args, **kwargs)
 
+class AdminColorDetailView(ColorDetailView):
 
+    template_name = 'adminapp/color_detail.html'
+
+    @method_decorator(staff_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AdminColorDetailView,
+                     self).dispatch(request, *args, **kwargs)
 
 @staff_required
 def txs_list(request):

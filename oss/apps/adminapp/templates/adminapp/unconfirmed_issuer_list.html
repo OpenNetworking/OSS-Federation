@@ -1,5 +1,5 @@
 {% extends 'adminapp/base.html' %}
-
+{% load staticfiles %}
 {% block content %}
 
 <div class="container-fluid">
@@ -15,7 +15,7 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-md-8">
-                                <input type="text">
+                                <input id="search_box" type="text"><a id="search_btn" href="{% url 'adminapp:issuer_list' %}"class="btn btn-default btn-search">search</a>
                             </div>
                         </div>
                     </div> <!-- panel heading close -->
@@ -30,15 +30,13 @@
                             </thead>
                             <tbody>
                                 {% for issuer in issuer_list %}
-                                <tr>
+                                <tr class="issuer">
                                     <td>{{ issuer.user.username }}</td>
                                     <td>{{ issuer.color_set.all | length }}</td>
                                     <td>{{ issuer.pk }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-usd"></span></a>
-                                        <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                        <a class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
-                                        <a class="btn btn-default"><span class="glyphicon glyphicon-trash"></span></a>
+                                        <a data-href="{% url 'adminapp:issuer_accept' issuer.pk %}" class="btn btn-success btn-issuer-accept">Accept</a>
+                                        <a data-href="{% url 'adminapp:issuer_delete' issuer.pk %}"class="btn btn-danger btn-issuer-reject">Reject</span></a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -54,3 +52,8 @@
 
 </div>
 {% endblock %}
+
+
+{% block js %}
+<script src="{% static 'adminapp/js/unconfirmed_issuer_list.js' %}"></script>
+{% endblock js %}
