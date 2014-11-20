@@ -11,7 +11,7 @@ from django.db.models import Q
 
 from oss.apps.decorators import staff_required
 
-from .models import Issuer, Color, ColorHistory, Address, AddressHistory
+from .models import Issuer, Color, Address
 from .forms import (IssuerCreationForm, IssuerUpdateForm,
                     ColorCreationForm, AddressInputForm)
 
@@ -81,7 +81,7 @@ def issuer_add_color(request, issuer_pk, confirm=False,
         if color_form.is_valid() and address_form.is_valid():
             #create address
             raw_address = address_form.cleaned_data.get('address')
-            address = Address(address=raw_address, issuer=issuer)
+            address = Address(address=raw_address)
             address.save()
 
             color = color_form.save(commit=False)
@@ -132,7 +132,7 @@ def color_accept(request, pk):
 class IssuerUpdateView(UpdateView):
 
     model = Issuer
-    fields = ['register_url']
+    fields = ['name', 'url']
     template_name_suffix = '_update'
 
     def get_success_url(self):
@@ -187,15 +187,4 @@ class UnconfirmedColorListView(ListView):
 class ColorDetailView(DetailView):
 
     model = Color
-
-class ColorHistoryListView(ListView):
-
-    model = ColorHistory
-    context_object_name = 'colorhistory_list'
-
-class AddressHistoryListView(ListView):
-
-    model = AddressHistory
-    context_object_name = 'addresshistory_list'
-
 

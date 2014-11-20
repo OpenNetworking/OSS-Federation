@@ -1,12 +1,15 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from simple_history.models import HistoricalRecords
 
 class Issuer(models.Model):
     user = models.OneToOneField(User)
-    register_url = models.URLField()
+    name = models.CharField(unique=True, max_length=20)
+    url = models.URLField()
     update_time = models.DateTimeField(auto_now=True)
     create_time = models.DateTimeField(auto_now_add=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.user.username
@@ -28,9 +31,9 @@ class Issuer(models.Model):
 
 class Address(models.Model):
     address = models.CharField(primary_key=True, max_length=50)
-    issuer = models.ForeignKey(Issuer)
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
+    history = HistoricalRecords()
 
 class Color(models.Model):
     color_id = models.BigIntegerField(primary_key=True)
@@ -40,18 +43,4 @@ class Color(models.Model):
     is_confirmed = models.BooleanField(default=False)
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
-
-class AddressHistory(models.Model):
-    address = models.ForeignKey(Address)
-    issuer = models.ForeignKey(Issuer)
-    color = models.ForeignKey(Color)
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField(auto_now_add=True)
-
-class ColorHistory(models.Model):
-    color = models.ForeignKey(Color)
-    color_name = models.CharField(max_length=50)
-    issuer = models.ForeignKey(Issuer)
-    address = models.ForeignKey(Address)
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField(auto_now_add=True)
+    history = HistoricalRecords()

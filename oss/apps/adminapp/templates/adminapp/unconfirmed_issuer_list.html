@@ -23,17 +23,17 @@
                     <div class="panel-body">
                         <table class="table">
                             <thead>
+                                <th>Username</th>
                                 <th>Issuer Name</th>
-                                <th>Color Name</th>
-                                <th>Register URL</th>
+                                <th>URL</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
                                 {% for issuer in issuer_list %}
                                 <tr class="issuer">
                                     <td>{{ issuer.user.username }}</td>
-                                    <td>{{ issuer.color_set.all | length }}</td>
-                                    <td>{{ issuer.pk }}</td>
+                                    <td>{{ issuer.name }}</td>
+                                    <td>{{ issuer.url }}</td>
                                     <td>
                                         <a data-href="{% url 'adminapp:issuer_accept' issuer.pk %}" class="btn btn-success btn-issuer-accept">Accept</a>
                                         <a data-href="{% url 'adminapp:issuer_delete' issuer.pk %}"class="btn btn-danger btn-issuer-reject">Reject</span></a>

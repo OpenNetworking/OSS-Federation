@@ -3,7 +3,7 @@
         <title>issuer detail</title>
     </head>
     username: {{ issuer.user.username }}<br>
-    register_url: {{ issuer.register_url }}<br>
+    url: {{ issuer.url }}<br>
     update_time: {{ issuer.update_time }}<br>
     create_time: {{ issuer.create_time }}<br>
     ------------------<br>
@@ -13,7 +13,6 @@
         color id: {{ color.color_id }}<br>
         color name: {{ color.color_name }}<br>
         address: {{ color.address.address }}<br>
-        <a href="{% url 'issuer:colorhistory_list' color.pk %}">color history</a><br>
         ====<br>
     {% endfor %}
 </html>

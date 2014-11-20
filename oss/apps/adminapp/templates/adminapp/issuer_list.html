@@ -33,15 +33,17 @@
                     <div class="panel-body">
                         <table class="table">
                             <thead>
+                                <th>Username</th>
                                 <th>Issuer Name</th>
-                                <th>Register URL</th>
+                                <th>URL</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
                                 {% for issuer in issuer_list %}
                                 <tr class="issuer">
                                     <td>{{ issuer.user.username }}</td>
-                                    <td>{{ issuer.register_url }}</td>
+                                    <td>{{ issuer.name }}</td>
+                                    <td>{{ issuer.url }}</td>
                                     <td>
                                         <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-usd"></span></a>
                                         <a href="{% url 'adminapp:issuer_detail' issuer.pk %}" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>

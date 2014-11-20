@@ -16,11 +16,10 @@ class WebsiteViewTest(TestCase):
         user = User.objects.create_user(username='test',
                                         password='test',
                                         email='test@test.com')
-        issuer = Issuer(user=user, register_url='http://test.com')
+        issuer = Issuer(user=user, name='test', url='http://test.com')
         issuer.save()
         issuer.active()
-        address = Address(address='addr_test_color',
-                          issuer=issuer)
+        address = Address(address='addr_test_color')
 
         address.save()
         color = Color(color_id=1,
@@ -32,11 +31,10 @@ class WebsiteViewTest(TestCase):
         user2 = User.objects.create_user(username='test2',
                                          password='test2',
                                          email='test2@test2.com')
-        issuer2 = Issuer(user=user2, register_url='http://test2.com')
+        issuer2 = Issuer(user=user2, name='test2', url='http://test2.com')
         issuer2.save()
         issuer2.active()
-        address = Address(address='addr_test2_color',
-                          issuer=issuer2)
+        address = Address(address='addr_test2_color')
 
         address.save()
         color = Color(color_id=2,
@@ -83,7 +81,7 @@ class WebsiteViewTest(TestCase):
                                     {'username': 'test',
                                      'password1': 'password',
                                      'password2': 'password',
-                                     'register_url': 'http://test.com'})
+                                     'url': 'http://test.com'})
         self.assertEquals(response.status_code, 200)
 
         # miss required fields
@@ -95,7 +93,7 @@ class WebsiteViewTest(TestCase):
                              'This field is required.')
         self.assertFormError(response, 'user_form', 'password2',
                              'This field is required.')
-        self.assertFormError(response, 'issuer_form', 'register_url',
+        self.assertFormError(response, 'issuer_form', 'url',
                              'This field is required.')
 
         # duplicate username
@@ -103,7 +101,7 @@ class WebsiteViewTest(TestCase):
                                     {'username': 'test',
                                      'password1': 'password',
                                      'password2': 'password',
-                                     'register_url': 'http://test.com'})
+                                     'url': 'http://test.com'})
         self.assertEquals(response.status_code, 200)
         self.assertFormError(response, 'user_form', 'username',
                              'A user with that username already exists.')
@@ -113,7 +111,7 @@ class WebsiteViewTest(TestCase):
                                     {'username': 'test',
                                      'password1': 'password',
                                      'password2': 'password2',
-                                     'register_url': 'http://test.com'})
+                                     'url': 'http://test.com'})
         self.assertEquals(response.status_code, 200)
         self.assertFormError(response, 'user_form', 'password2',
                              "The two password fields didn't match.")
@@ -195,22 +193,19 @@ class WebsiteViewTest(TestCase):
 
         # post
         response = self.client.post('/website/update/',
-                                    {'register_url': 'http://www.test2.com/'})
+                                    {'name': 'newname',
+                                     'url': 'http://www.test2.com/'})
         self.assertEquals(response.status_code, 302)
         self.assertRedirects(response, '/website/')
         issuer = Issuer.objects.get(user__username='test')
-        self.assertEquals(issuer.register_url, 'http://www.test2.com/')
+        self.assertEquals(issuer.url, 'http://www.test2.com/')
 
         response = self.client.post('/website/update/', {})
-        self.assertFormError(response, 'form', 'register_url',
+        self.assertFormError(response, 'form', 'name',
+                             'This field is required.')
+        self.assertFormError(response, 'form', 'url',
                              'This field is required.')
 
-        response = self.client.post('/website/update/',
-                                    {'register_url': 'http://www.test2.com/'})
-        self.assertEquals(response.status_code, 302)
-        self.assertRedirects(response, '/website/')
-        issuer = Issuer.objects.get(user__username='test')
-        self.assertEquals(issuer.register_url, 'http://www.test2.com/')
 
     def test_color_detail_view(self):
 

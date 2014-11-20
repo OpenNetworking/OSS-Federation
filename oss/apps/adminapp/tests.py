@@ -20,16 +20,16 @@ class AdminappViewTests(TestCase):
         for i in range(10):
             issuer_name = 'issuer{0}'.format(i)
             issuer_password = '12345{0}'.format(i)
-            issuer_register_url = 'http://google{0}.com.tw'.format(i)
+            issuer_url = 'http://google{0}.com.tw'.format(i)
             user = User.objects.create(username=issuer_name,
                                        password=issuer_password)
-            Issuer.objects.create(user=user, register_url=issuer_register_url)
+            Issuer.objects.create(user=user, name=issuer_name, url=issuer_url)
 
         issuer = Issuer.objects.get(pk=1)
         for i in range(10):
             color_name = 'color{0}'.format(i)
             address_name = 'address{0}'.format(i)
-            address = Address(address=address_name, issuer=issuer)
+            address = Address(address=address_name)
             address.save()
             is_confirmed = True if i % 2 == 0 else False
             color = Color(color_id=i+1, color_name=color_name,
@@ -41,7 +41,7 @@ class AdminappViewTests(TestCase):
         user.is_staff = True
         user.save()
         issuer = Issuer.objects.create(user=user,
-                                       register_url='http://test.com/')
+                                       url='http://test.com/')
 
     def tearDown(self):
         Issuer.objects.all().delete()
@@ -59,7 +59,7 @@ class AdminappViewTests(TestCase):
                                      {'username': 'test',
                                       'password1': 'password',
                                       'password2': 'password',
-                                      'register_url': 'http://test.com'})
+                                      'url': 'http://test.com'})
         self.assertEquals(response.status_code, 302)
         self.assertRedirects(response,
                              '/adminapp/login/?next=/adminapp/issuer_create/')
@@ -83,7 +83,7 @@ class AdminappViewTests(TestCase):
                                      {'username': 'test',
                                       'password1': 'password',
                                       'password2': 'password',
-                                      'register_url': 'http://test.com'})
+                                      'url': 'http://test.com'})
         self.assertEquals(response.status_code, 200)
 
         # miss required fileds
@@ -95,7 +95,7 @@ class AdminappViewTests(TestCase):
                              'This field is required.')
         self.assertFormError(response, 'user_form', 'password2',
                              'This field is required.')
-        self.assertFormError(response, 'issuer_form', 'register_url',
+        self.assertFormError(response, 'issuer_form', 'url',
                              'This field is required.')
 
         # duplicate username
@@ -103,7 +103,7 @@ class AdminappViewTests(TestCase):
                                     {'username': 'test',
                                      'password1': 'password',
                                      'password2': 'password',
-                                     'register_url': 'http://test.com'})
+                                     'url': 'http://test.com'})
         self.assertEquals(response.status_code, 200)
         self.assertFormError(response, 'user_form', 'username',
                              'A user with that username already exists.')
@@ -113,7 +113,7 @@ class AdminappViewTests(TestCase):
                                     {'username': 'test',
                                      'password1': 'password',
                                      'password2': 'password2',
-                                     'register_url': 'http://test.com'})
+                                     'url': 'http://test.com'})
         self.assertEquals(response.status_code, 200)
         self.assertFormError(response, 'user_form', 'password2',
                              "The two password fields didn't match.")

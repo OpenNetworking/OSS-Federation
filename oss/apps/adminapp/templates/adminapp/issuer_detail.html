@@ -1,7 +1,8 @@
 {% extends 'adminapp/base.html' %}
 {% block content %}
     username: {{ issuer.user.username }}<br>
-    register_url: {{ issuer.register_url }}<br>
+    name: {{ issuer.name }}<br>
+    register_url: {{ issuer.url }}<br>
     update_time: {{ issuer.update_time }}<br>
     create_time: {{ issuer.create_time }}<br>
     ------------------<br>
