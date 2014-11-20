@@ -16,7 +16,6 @@ logging.disable(logging.CRITICAL)
 class AdminappViewTests(TestCase):
 
     def setUp(self):
-
         # create test data
         for i in range(10):
             issuer_name = 'issuer{0}'.format(i)
