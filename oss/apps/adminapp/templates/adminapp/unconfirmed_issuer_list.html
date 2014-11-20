@@ -23,17 +23,17 @@
                     <div class="panel-body">
                         <table class="table">
                             <thead>
+                                <th>Username</th>
                                 <th>Issuer Name</th>
-                                <th>Color Name</th>
-                                <th>Register URL</th>
+                                <th>URL</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
                                 {% for issuer in issuer_list %}
                                 <tr>
                                     <td>{{ issuer.user.username }}</td>
-                                    <td>{{ issuer.color_set.all | length }}</td>
-                                    <td>{{ issuer.pk }}</td>
+                                    <td>{{ issuer.name }}</td>
+                                    <td>{{ issuer.url }}</td>
                                     <td>
                                         <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-usd"></span></a>
                                         <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>

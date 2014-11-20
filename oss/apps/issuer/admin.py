@@ -1,9 +1,7 @@
 from django.contrib import admin
-from .models import Issuer, Address, AddressHistory, Color, ColorHistory
+from simple_history.admin import SimpleHistoryAdmin
+from .models import Issuer, Address, Color
 
-# Register your models here.
-admin.site.register(Issuer)
-admin.site.register(Color)
-admin.site.register(ColorHistory)
-admin.site.register(Address)
-admin.site.register(AddressHistory)
+admin.site.register(Issuer, SimpleHistoryAdmin)
+admin.site.register(Color, SimpleHistoryAdmin)
+admin.site.register(Address, SimpleHistoryAdmin)

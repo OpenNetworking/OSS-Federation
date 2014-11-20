@@ -23,9 +23,4 @@ urlpatterns = patterns('',
         name='unconfirmed_color_list'),
     url(r'^(?P<pk>\d+)/color_detail', views.ColorDetailView.as_view(),
         name='color_detail'),
-    url(r'^color/(?P<pk>\d+)/history/$', views.ColorHistoryListView.as_view(),
-        name='colorhistory_list'),
-    url(r'^address/(?P<pk>\d+)/history/$', views.AddressHistoryListView.as_view(),
-        name='addresshistory_list'),
-
 )
