@@ -8,12 +8,17 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.db.models import Q
+from bitcoinrpc.connection import BitcoinConnection
+import logging
 
+import config
 from oss.apps.decorators import staff_required
 
 from .models import Issuer, Color, Address
 from .forms import (IssuerCreationForm, IssuerUpdateForm,
                     ColorCreationForm, AddressInputForm)
+
+logger = logging.getLogger(__name__)
 
 def issuer_create(request, template_name='issuer/form.html',
                   redirect_to=None,
@@ -125,6 +130,19 @@ def color_reject(request, pk):
 @require_http_methods(['POST',])
 def color_accept(request, pk):
     color = get_object_or_404(Color, pk=pk)
+
+    try:
+        rpc = BitcoinConnection(config.RPC_AE_USER,
+                                config.RPC_AE_PASSWORD,
+                                config.RPC_AE_HOST,
+                                config.RPC_AE_PORT)
+        print 
+        ret = rpc.sendlicensetoaddress(color.address.address, color.color_id)
+        print ret
+    except Exception as e:
+        logger.error(str(e))
+        return HttpResponse('failed to send license to Aliance')
+
     color.is_confirmed = True
     color.save()
     return HttpResponse('accept success')

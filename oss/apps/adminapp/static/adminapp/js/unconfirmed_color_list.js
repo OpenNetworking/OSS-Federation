@@ -17,8 +17,14 @@
         $.ajax({
             'url': $(button).data('href'),
             'type': 'POST'
-        }).done(function () {
-            $(button).parents('.color').remove();
+        }).done(function (ret) {
+            if (ret === "accept success") {
+                $(button).parents('.color').remove();
+            }
+            else {
+                alert("failed to accept");
+                console.log(ret);
+            }
         }).fail(function (e) {
             console.log(e);
         });
