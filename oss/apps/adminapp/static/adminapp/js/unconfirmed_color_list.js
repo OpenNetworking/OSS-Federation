@@ -18,7 +18,7 @@
             'url': $(button).data('href'),
             'type': 'POST'
         }).done(function (ret) {
-            if (ret == "accept success") {
+            if (ret === "accept success") {
                 $(button).parents('.color').remove();
             }
             else {
