@@ -23,14 +23,16 @@
                                     <button class="color_filter btn btn-default dropdown-toggle" type="button" id="colors_filter" data-toggle="dropdown">color filter</button>
                                     <ul class="dropdown-menu" role="menu" aria-labelledby="colors_filter">
                                         {% for color in colors %}
-                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:txs_list'%}?color={{color}}">{{color}}</a></li>
+                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:txs_list'%}?color={{color}}">{{color}}</a></li>
                                         {% endfor %}
                                    </ul>
                               </div>
                               <div class="col-md-1">
-                                    <button class="addrs_filter btn btn-default dropdown-toggle" type="button" id="issuer_filter" data-toggle="dropdown">addr filter</button>
+                                    <button class="addrs_filter btn btn-default dropdown-toggle" type="button" id="issuer_filter" data-toggle="dropdown">issuer filter</button>
                                     <ul class="dropdown-menu" role="menu" aria-labelledby="issuer_filter">
-                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:txs_list' %}">issuer1</a></li>
+                                        {% for issuer in issuers %}
+                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:txs_list' %}?issuer={{issuer.pk}}">{{issuer.name}}</a></li>
+                                        {% endfor %}
                                    </ul>
                               </div>
                         </div>
@@ -56,7 +58,7 @@
                                     {% if page_count < 10 %}
                                         <li><a href="#">&laquo;</a></li>
                                             {% for i in page_count|get_range %}
-                                                <li><a href="{% url 'adminapp:txs_list' %}?start={{ i|multiply:20|add:1}}&end={{ i|add:1|multiply:20}}{% if cur_colors %}&color={{cur_colors.0}}{% endif %}">{{i|add:1}}</a></li>
+                                                <li><a href="{% url 'adminapp:txs_list' %}?start={{ i|multiply:20|add:1}}&end={{ i|add:1|multiply:20}}{% if cur_colors %}&color={{cur_colors.0}}{% endif %}{% for cur_issuer in cur_issuers %}&issuer={{cur_issuer}}{% endfor %}">{{i|add:1}}</a></li>
                                             {% endfor %}
                                         <li><a href="#">&raquo;</a></li>
                                     {% else %}
@@ -70,7 +72,6 @@
 
                 </div> <!-- panel close -->
            </div>
-            
         </div>
      </div>
 
@@ -181,11 +182,14 @@
                var end_index = page_val * 20;
                var url = $("#page_box").data("url");
 
+               url = url + "?start=" + begin_index + "&end=" + end_index;
                {% if cur_colors %}
-                   url = url + "?start=" + begin_index + "&end=" + end_index + "&color={{cur_colors.0}}";
-               {% else %}
-                   url = url + "?start=" + begin_index + "&end=" + end_index;
+                   url = url +  "&color={{cur_colors.0}}";
                {% endif %}
+               {% for cur_issuer in cur_issuers %}
+                   url = url + "&issuer={{cur_issuer}}";
+               {% endfor %}
+
                window.location.href = url;
            }
         });

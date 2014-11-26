@@ -8,8 +8,8 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.admin.forms import AdminAuthenticationForm
-#from bitcoinrpc.connection import BitcoinConnection
 from django.utils.decorators import method_decorator
+import logging
 
 from oss.apps.issuer.models import Issuer, Color
 from oss.apps.issuer.views import (IssuerDetailView, issuer_create,
@@ -23,6 +23,8 @@ from oss.apps.issuer.views import (IssuerDetailView, issuer_create,
 from oss.apps.decorators import staff_required
 
 import config
+
+logger = logging.getLogger(__name__)
 
 @staff_required
 def index(request):
@@ -127,42 +129,71 @@ class AdminColorDetailView(ColorDetailView):
 
 @staff_required
 def txs_list(request):
-    """ get blockchain transaction list
+    """
+    Get blockchain transaction list.
 
     Blockchain OSS can list all transactions
     All transactions can be filtered by color & issuer
     """
     tx_colors_str = ""
+    tx_addrs_str = ""
 
-    tx_colors = request.GET.getlist("color")
-    tx_addrs = request.GET.getlist("issuer")
-    tx_start = request.GET.get("start", 1)
-    tx_end = request.GET.get("end", 20)
+    tx_addrs_array = []
 
-    if len(tx_colors) != 0:
-        tx_colors_array = ["%s=%s" % ("color", color) for color in tx_colors]
+    tx_addrs_str_array = []
+
+    tx_colors = request.GET.getlist('color')
+    tx_issuers_id = request.GET.getlist('issuer')
+    tx_start = request.GET.get('start', 1)
+    tx_end = request.GET.get('end', 20)
+
+    tx_mode = 0
+
+    if len(tx_colors) > 0:
+        tx_colors_array = ['%s=%s' % ('color', color) for color in tx_colors]
         tx_colors_str = '&'.join(tx_colors_array)
 
-    tx_start_str = "%s=%s" % ("start", tx_start)
-    tx_end_str = "%s=%s" % ("end", tx_end)
+    tx_start_str = '%s=%s' % ('start', tx_start)
+    tx_end_str = '%s=%s' % ('end', tx_end)
 
+    # get all color address related to issuer
+    for cur_issuer_id in tx_issuers_id:
+        colors = Color.objects.all().filter(issuer__pk=cur_issuer_id)
+        for color in colors:
+            # cur color address
+            tx_addrs_array.append(color.address)
+            # history color address
+
+    tx_addrs_str_array = ['%s=%s' % ('addr', addr.address) for addr in tx_addrs_array]
+    tx_addrs_str = '&'.join(tx_addrs_str_array)
+
+    url = '%s%s%s&' % (config.API_HOST, 'tx/?mode=', str(tx_mode))
     # remote api call to get txs_list
-    parser = _config_get()
-    base_url = parser.get("api", "host")
-    url = "%s%s?%s&%s&%s" % (base_url, "tx/", tx_start_str, tx_end_str, tx_colors_str)
+    if tx_addrs_str:
+        url = '%s%s&' % (url, tx_addrs_str)
+    if tx_colors_str:
+        url = '%s%s&' % (url, tx_colors_str)
+    if tx_start_str:
+        url = '%s%s&' % (url, tx_start_str)
+    if tx_end_str:
+        url = '%s%s&' % (url, tx_end_str)
 
+    print url
     try:
-        ret_jdata = json.load(urllib2.urlopen(url))["data"]
-    except urllib2.HTTPError as e:
-        # TODO: log error
-        print e.reason
-        pass
+        ret_jdata = json.load(urllib2.urlopen(url))['data']
+    except Exception as e:
+        logger.error(str(e))
+        return HttpResponse(str(e))
 
-    page_count = int(math.ceil(ret_jdata["total_count"] / (int(tx_end) - int(tx_start) + 1)))
+    page_count = int(math.ceil(ret_jdata['total_count'] / (int(tx_end) - int(tx_start) + 1)))
     cur_page = int(math.ceil(int(tx_end) / (int(tx_end) - int(tx_start) + 1)))
 
-    return render(request, "adminapp/txs_list.html", dict(txs=ret_jdata["transaction"],
+    issuers = Issuer.objects.all()
+
+    return render(request, 'adminapp/txs_list.html', dict(txs=ret_jdata['transaction'],
                                                           page_count=page_count,
                                                           cur_page=cur_page,
-                                                          colors=ret_jdata["colors"],
-                                                          cur_colors=tx_colors))
+                                                          colors=ret_jdata['colors'],
+                                                          cur_colors=tx_colors,
+                                                          issuers=issuers,
+                                                          cur_issuers=tx_issuers_id))

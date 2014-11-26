@@ -1,0 +1,72 @@
+diff --git a/oss/apps/adminapp/static/adminapp/js/unconfirmed_color_list.js b/oss/apps/adminapp/static/adminapp/js/unconfirmed_color_list.js
+index 5a929bd..15e6cc4 100644
+--- a/oss/apps/adminapp/static/adminapp/js/unconfirmed_color_list.js
++++ b/oss/apps/adminapp/static/adminapp/js/unconfirmed_color_list.js
+@@ -18,7 +18,7 @@
+             'url': $(button).data('href'),
+             'type': 'POST'
+         }).done(function (ret) {
+-            if (ret == "accept success") {
++            if (ret === "accept success") {
+                 $(button).parents('.color').remove();
+             }
+             else {
+diff --git a/oss/apps/adminapp/templates/adminapp/unconfirmed_color_list.html b/oss/apps/adminapp/templates/adminapp/unconfirmed_color_list.html
+index a63c850..0921b16 100644
+--- a/oss/apps/adminapp/templates/adminapp/unconfirmed_color_list.html
++++ b/oss/apps/adminapp/templates/adminapp/unconfirmed_color_list.html
+@@ -53,7 +53,6 @@
+ 
+ </div>
+ {% endblock content %}
+-
+ {% block js %}
+ <script src="{% static 'adminapp/js/unconfirmed_color_list.js' %}"></script>
+-{% endblock js %}
+\ No newline at end of file
++{% endblock js %}
+diff --git a/oss/apps/issuer/views.py b/oss/apps/issuer/views.py
+index b48279f..9d08a4c 100644
+--- a/oss/apps/issuer/views.py
++++ b/oss/apps/issuer/views.py
+@@ -18,7 +18,7 @@ from .models import Issuer, Color, Address
+ from .forms import (IssuerCreationForm, IssuerUpdateForm,
+                     ColorCreationForm, AddressInputForm)
+ 
+-logger = logging.getLogger("__name__")
++logger = logging.getLogger(__name__)
+ 
+ def issuer_create(request, template_name='issuer/form.html',
+                   redirect_to=None,
+@@ -129,12 +129,16 @@ def color_reject(request, pk):
+ 
+ @require_http_methods(['POST',])
+ def color_accept(request, pk):
+-
+     color = get_object_or_404(Color, pk=pk)
+ 
+     try:
+-        rpc = BitcoinConnection(config.RPC_AE_USER, config.RPC_AE_PASSWORD, config.RPC_AE_HOST, config.RPC_AE_PORT)
++        rpc = BitcoinConnection(config.RPC_AE_USER,
++                                config.RPC_AE_PASSWORD,
++                                config.RPC_AE_HOST,
++                                config.RPC_AE_PORT)
++        print 
+         ret = rpc.sendlicensetoaddress(color.address.address, color.color_id)
++        print ret
+     except Exception as e:
+         logger.error(str(e))
+         return HttpResponse('failed to send license to Aliance')
+diff --git a/oss/apps/website/views.py b/oss/apps/website/views.py
+index 88abf80..53152cd 100644
+--- a/oss/apps/website/views.py
++++ b/oss/apps/website/views.py
+@@ -92,8 +92,6 @@ def add_color(request):
+                             redirect_to=redirect_to,
+                             confirm=config.AUTO_CONFIRM_COLOR_REGISTRATION)
+ 
+-
+-
+ class WebsiteColorDetailView(ColorDetailView):
+ 
+     def get(self, request, *args, **kwargs):
