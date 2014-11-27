@@ -29,6 +29,8 @@ def issuer_create(request, template_name='issuer/form.html',
 
         if issuer_form.is_valid():
             issuer = issuer_form.save(commit=False)
+            # default account name = issuer name
+            issuer.account_name = issuer.name
 
         if user and issuer:
             user.save()
