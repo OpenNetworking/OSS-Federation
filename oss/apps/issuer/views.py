@@ -136,9 +136,7 @@ def color_accept(request, pk):
                                 config.RPC_AE_PASSWORD,
                                 config.RPC_AE_HOST,
                                 config.RPC_AE_PORT)
-        print 
         ret = rpc.sendlicensetoaddress(color.address.address, color.color_id)
-        print ret
     except Exception as e:
         logger.error(str(e))
         return HttpResponse('failed to send license to Aliance')
