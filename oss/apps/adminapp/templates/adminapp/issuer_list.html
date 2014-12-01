@@ -36,6 +36,7 @@
                                 <th>Username</th>
                                 <th>Issuer Name</th>
                                 <th>Balance</th>
+                                <th>Txs count</th>
                                 <th>URL</th>
                                 <th>Action</th>
                             </thead>
@@ -44,7 +45,12 @@
                                 <tr class="issuer">
                                     <td>{{ issuer.user.username }}</td>
                                     <td>{{ issuer.name }}</td>
-                                    <td>balance</td>
+                                    <td>
+                                    {% for balance in issuer.balance_list %}
+                                    <a href="#" class="btn btn-default">{{balance.color}}:{{balance.amount}}</a>
+                                    {% endfor %}
+                                    </td>
+                                    <td>{{ issuer.tx_count }}</td>
                                     <td>{{ issuer.url }}</td>
                                     <td>
                                         <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-usd"></span></a>
