@@ -24,7 +24,7 @@ class BaseCrawler(object):
         self.url = "ginfo@apiserver"
         self.threads = []
         self.concurrency = 0
-        self.max_outstanding = 32
+        self.max_outstanding = 16
         self.concurrency_lock = threading.Lock()
         
         self.since_time = 0
@@ -185,6 +185,14 @@ class BlockCrawler(BaseCrawler):
                     )
             block.save(using='chart_db')
 
+def blk_worker():
+    bc = BlockCrawler()
+    bc.start()
+
+def tx_worker():
+    tc = TxCrawler()
+    tc.start()
+
 
 class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
@@ -193,10 +201,26 @@ class Command(BaseCommand):
         parser.add_argument('poll_id', nargs='+', type=int)
 
     def handle(self, *args, **options):
-        bc = BlockCrawler()
-        bc.start()
+        master_threads = []
+        t1 = threading.Thread(target=blk_worker)
+        t2 = threading.Thread(target=tx_worker)
+        master_threads.append(t1)       
+        master_threads.append(t2)
+        t1.daemon = True
+        t2.daemon = True
+        
+        t1.start()
+        t2.start()
+        while master_threads:
+            try:
+                for t in master_threads:
+                    t.join(1)
+                    if not t.isAlive():
+                        master_threads.remove(t)
+            except KeyboardInterrupt, e:
+                sys.exit(1)
 
 
 if __name__ =='__main__':
-    gc = BaseCrawler()
-    gc.start()
+    bc = BlockCrawler()
+    bc.start()
