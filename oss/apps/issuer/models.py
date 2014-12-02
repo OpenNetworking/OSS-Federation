@@ -9,6 +9,7 @@ class Issuer(models.Model):
     url = models.URLField()
     update_time = models.DateTimeField(auto_now=True)
     create_time = models.DateTimeField(auto_now_add=True)
+    account_name = models.CharField(unique=True, max_length=20)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -28,6 +29,7 @@ class Issuer(models.Model):
     def delete(self, *args, **kwargs):
         self.user.delete()
         super(Issuer, self).delete(*args, **kwargs)
+
 
 class Address(models.Model):
     address = models.CharField(primary_key=True, max_length=50)

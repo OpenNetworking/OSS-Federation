@@ -1,3 +1,7 @@
+import collections
+import json
+import urllib2
+
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.decorators.http import require_http_methods
@@ -34,6 +38,8 @@ def issuer_create(request, template_name='issuer/form.html',
 
         if issuer_form.is_valid():
             issuer = issuer_form.save(commit=False)
+            # default account name = issuer name
+            issuer.account_name = issuer.name
 
         if user and issuer:
             user.save()
@@ -136,7 +142,9 @@ def color_accept(request, pk):
                                 config.RPC_AE_PASSWORD,
                                 config.RPC_AE_HOST,
                                 config.RPC_AE_PORT)
-        ret = rpc.sendlicensetoaddress(color.address.address, color.color_id)
+        rpc.sendlicensetoaddress(str(color.address.address), color.color_id)
+        # add color address to account
+        rpc.setaccount(str(color.address.address), str(color.issuer.account_name))
     except Exception as e:
         logger.error(str(e))
         return HttpResponse('failed to send license to Aliance')
@@ -172,6 +180,54 @@ class IssuerListView(ListView):
                                        Q(address__address__icontains=search)|
                                        Q(register_url__icontains=search))
         queryset = queryset.distinct()
+
+        try:
+            rpc = BitcoinConnection(config.RPC_AE_USER,
+                                    config.RPC_AE_PASSWORD,
+                                    config.RPC_AE_HOST,
+                                    config.RPC_AE_PORT)
+        except Exception as e:
+            logger.errot(str(e))
+            return HttpResponse('failed to connect to gcoind by rpc call when list issuers')
+
+        for issuer in queryset:
+            # get balance
+            balance_list = []
+            try:
+                all_balance = rpc.getbalance(str(issuer.account_name))
+            except Exception as e:
+                logger.error(str(e))
+                return HttpResponse('failed to getbalance from issuer list')
+
+            for k, v in all_balance.items():
+                tmp_balance = collections.OrderedDict([('color', int(k)), ('amount', float(v))])
+                balance_list.append(tmp_balance)
+            issuer.balance_list = balance_list
+
+            # get tx count
+            colors = Color.objects.filter(issuer__name=issuer.name)
+            if colors.count <= 0:
+                issuer.tx_count = 0
+            else:
+                tx_colors_array = []
+                tx_colors_str_array = []
+                tx_colors_str = ""
+                for color in colors:
+                    tx_colors_array.append(color.color_id)
+                tx_colors_str_array = ['%s=%s' % ('color', color) for color in tx_colors_array]
+                tx_colors_str = '&'.join(tx_colors_str_array)
+
+                url = '%s%s&' % (config.API_HOST, 'tx/?mode=0')
+                if tx_colors_str:
+                    url = '%s%s&' % (url, tx_colors_str)
+
+                try:
+                    ret_jdata = json.load(urllib2.urlopen(url))['data']
+                except Exception as e:
+                    logger.error(str(e))
+                    return HttpResponse('failed to get txs account from issuerlist')
+                issuer.tx_count = ret_jdata['total_count']
+
         return queryset
 
 class UnconfirmedIssuerListView(ListView):

@@ -14,7 +14,7 @@ class AddressInputForm(forms.Form):
 class IssuerCreationForm(ModelForm):
     class Meta:
         model = Issuer
-        exclude = ('user',)
+        exclude = ('user', 'account_name',)
 
 class IssuerUpdateForm(ModelForm):
     class Meta:
