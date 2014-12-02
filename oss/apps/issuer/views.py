@@ -223,7 +223,6 @@ class IssuerListView(ListView):
 
                 try:
                     ret_jdata = json.load(urllib2.urlopen(url))['data']
-                    print ret_jdata
                 except Exception as e:
                     logger.error(str(e))
                     return HttpResponse('failed to get txs account from issuerlist')
