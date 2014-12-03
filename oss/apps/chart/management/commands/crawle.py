@@ -2,25 +2,29 @@
 import sys
 import math
 import time
+import abc
 import json
 import Queue
 import threading
 import urllib2
+import logging
 
 from bs4 import BeautifulSoup
 from pyquery import PyQuery
 
 from django.core.management.base import BaseCommand, CommandError
-
 from django.core.exceptions import ObjectDoesNotExist
-from oss.apps.chart.models import Tx
-from oss.apps.chart.models import Block
+
+from oss.apps.chart.models import Tx, Block
 
 
+logger = logging.getLogger(__name__)
 
 class BaseCrawler(object):
+    
     def __init__(self):
         # need to override self.url for crawling different ginfo's api
+        self.DB = 'chart_db'
         self.url = "ginfo@apiserver"
         self.threads = []
         self.concurrency = 0
@@ -30,12 +34,10 @@ class BaseCrawler(object):
         self.since_time = 0
         self.page_queue = Queue.LifoQueue() 
     
-    #@abstractmethod
+    @abc.abstractmethod
     def init_queue(self):
         # get the newest model object in db
         raise NotImplementedError("Please Implement this method")
-
-
 
     # entry point for the crawler
     def start(self):
@@ -51,16 +53,14 @@ class BaseCrawler(object):
                         self.threads.remove(t)
             except KeyboardInterrupt, e:
                 sys.exit(1)
-   
-
+    
     # first-phase job for each worker
-    #@abstractmethod
+    @abc.abstractmethod
     def get_soup_by(self, page_id):
         raise NotImplementedError("Please Implement this method")
-   
 
     # second-phase job for each worker
-    #@abstractmethod
+    @abc.abstractmethod
     def grab_into_db(self,  soup):
         raise NotImplementedError("Please Implement this method")
    
@@ -77,9 +77,9 @@ class BaseCrawler(object):
     def consumer(self, tid):
         while not self.page_queue.empty():
             try:
-                print '* Starting thread %d' % tid
+                logger.info('* Starting thread %d' % tid)
                 page = self.page_queue.get()
-                print '[%s]: page %s' %(tid, page)
+                logger.info('[%s]: page %s' %(tid, page))
                 
                 soup = self.get_soup_by(page)
                 if self.concurrency < self.max_outstanding:
@@ -88,7 +88,7 @@ class BaseCrawler(object):
                 self.grab_into_db(soup)
                 
             except Queue.Empty, e:
-                print 'All pages have been queried'
+                logger.info('All pages have been queried')
                 
 
         self.concurrency_lock.acquire()
@@ -97,34 +97,40 @@ class BaseCrawler(object):
 
 
 class TxCrawler(BaseCrawler):
+    
     def __init__(self):
         super(TxCrawler, self).__init__()
         self.url = "http://140.112.29.198:8080/api/v1/tx-chart?type=longest"
 
-    
     def init_queue(self):
         # get the newest tx_time in DB
         try:
-            last_tx = Tx.objects.using('chart_db').latest('tx_ntime')
+            last_tx = Tx.objects.using(self.DB).latest('tx_ntime')
             self.since_time = last_tx.tx_ntime
         except ObjectDoesNotExist:
-            print 'DB have no data, try to initialize'
+            logger.info( 'DB have no data, try to initialize')
         
-        url = self.url + '&since=%s&verbose=%s' % (self.since_time, 0)
+        url = '%s&since=%s&verbose=%s' % (self.url, self.since_time, 0)
         doc = PyQuery(url)
         
         total_pages = json.loads(doc('p').text())['data']['num_pages']
-        for idx in range(int(total_pages)):
-            self.page_queue.put(idx+1)
+        for page in range(int(total_pages)):
+            self.page_queue.put(page+1)
 
     # first-phase job
     def get_soup_by(self, page_id):
-        url = self.url + '&since=%s&page=%s' % (self.since_time, page_id)
-        page = urllib2.urlopen(url)
+        url = '%s&since=%s&page=%s' % (self.url, self.since_time, page_id)
+        try:
+            page = urllib2.urlopen(url)
+            soup = BeautifulSoup(page.read())
+            return soup 
+        except urllib2.HTTPError, e:
+                logger.error('HTTPError = ' + str(e.code))
+        except urllib2.URLError, e:
+                logger.error('URLError = ' + str(e.reason))
+        except httplib.HTTPException, e:
+                logger.error('HTTPException')
         
-        soup = BeautifulSoup(page.read())
-        return soup 
-
     # second-phase job
     def grab_into_db(self,  soup):
         rows = json.loads(soup.get_text())['data']['transaction']
@@ -138,11 +144,11 @@ class TxCrawler(BaseCrawler):
                     total_out = row['total_out'],
                     tx_ntime = row['time']
                     )
-            tx.save(using='chart_db')
-
+            tx.save(using=self.DB)
 
 
 class BlockCrawler(BaseCrawler):
+    
     def __init__(self):
         super(BlockCrawler, self).__init__()
         self.url = "http://140.112.29.198:8080/api/v1/blk-chart"
@@ -150,12 +156,12 @@ class BlockCrawler(BaseCrawler):
     def init_queue(self):
         # get the newest block_ntime in DB
         try:
-            last_block = Block.objects.using('chart_db').latest('block_ntime')
+            last_block = Block.objects.using(self.DB).latest('block_ntime')
             self.since_time = last_block.block_ntime
         except ObjectDoesNotExist:
-            print 'DB have no data, try to initialize'
+            logger.info('DB have no data, try to initialize')
         
-        url = self.url + '?verbose=%s&since=%s' % (0, self.since_time)
+        url = '%s?verbose=%s&since=%s' % (self.url, 0, self.since_time)
         doc = PyQuery(url)
          
         total_count = json.loads(doc('p').text())['data']['total_count']
@@ -165,25 +171,31 @@ class BlockCrawler(BaseCrawler):
 
     # first-phase job
     def get_soup_by(self, page_id):
-        url = self.url + '?since=%s&page=%s' % (self.since_time, page_id)
-        page = urllib2.urlopen(url)
+        url = '%s?since=%s&page=%s' % (self.url, self.since_time, page_id)
+        try:
+            page = urllib2.urlopen(url)
+            soup = BeautifulSoup(page.read())
+            return soup 
+        except urllib2.HTTPError, e:
+                logger.error('HTTPError = ' + str(e.code))
+        except urllib2.URLError, e:
+                logger.error('URLError = ' + str(e.reason))
+        except httplib.HTTPException, e:
+                logger.error('HTTPException')
         
-        soup = BeautifulSoup(page.read())
-        return soup 
-
     # second-phase job
     def grab_into_db(self,  soup):
         rows = json.loads(soup.get_text())['data']['block']
         
         for row in rows:
             block = Block(block_id = row['block_index'],
-                    block_hash = row['hash'],
-                    block_miner = row['miner'],
-                    block_hashmerkleroot = row['mrklroot'],
-                    block_ntime = row['time'],
-                    block_height = row['height']
-                    )
-            block.save(using='chart_db')
+                          block_hash = row['hash'],
+                          block_miner = row['miner'],
+                          block_hashmerkleroot = row['mrklroot'],
+                          block_ntime = row['time'],
+                          block_height = row['height']
+                        )
+            block.save(using=self.DB)
 
 def blk_worker():
     bc = BlockCrawler()
