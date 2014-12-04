@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'oss.apps.adminapp',
     'oss.apps.website',
     'oss.apps.issuer',
+    'oss.apps.chart',
     'simple_history',
 )
 
