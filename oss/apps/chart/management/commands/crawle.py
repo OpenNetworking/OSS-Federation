@@ -30,7 +30,6 @@ class BaseCrawler(object):
         self.concurrency = 0
         self.max_outstanding = 16
         self.concurrency_lock = threading.Lock()
-        
         self.since_time = 0
         self.page_queue = Queue.LifoQueue() 
     
@@ -63,7 +62,6 @@ class BaseCrawler(object):
     @abc.abstractmethod
     def grab_into_db(self,  soup):
         raise NotImplementedError("Please Implement this method")
-   
 
     def spawn_new_worker(self):
         self.concurrency_lock.acquire()
@@ -90,7 +88,6 @@ class BaseCrawler(object):
             except Queue.Empty, e:
                 logger.info('All pages have been queried')
                 
-
         self.concurrency_lock.acquire()
         self.concurrency -= 1
         self.concurrency_lock.release()
@@ -124,12 +121,8 @@ class TxCrawler(BaseCrawler):
             page = urllib2.urlopen(url)
             soup = BeautifulSoup(page.read())
             return soup 
-        except urllib2.HTTPError, e:
-                logger.error('HTTPError = ' + str(e.code))
-        except urllib2.URLError, e:
-                logger.error('URLError = ' + str(e.reason))
-        except httplib.HTTPException, e:
-                logger.error('HTTPException')
+        except (urllib2.HTTPError, urllib2.URLError, httplib.HTTPException) as e:
+            logger.error('URLError = %s' % (str(e),))
         
     # second-phase job
     def grab_into_db(self,  soup):
@@ -176,12 +169,8 @@ class BlockCrawler(BaseCrawler):
             page = urllib2.urlopen(url)
             soup = BeautifulSoup(page.read())
             return soup 
-        except urllib2.HTTPError, e:
-                logger.error('HTTPError = ' + str(e.code))
-        except urllib2.URLError, e:
-                logger.error('URLError = ' + str(e.reason))
-        except httplib.HTTPException, e:
-                logger.error('HTTPException')
+        except (urllib2.HTTPError, urllib2.URLError, httplib.HTTPException) as e:
+            logger.error('URLError = %s' % (str(e),))
         
     # second-phase job
     def grab_into_db(self,  soup):
