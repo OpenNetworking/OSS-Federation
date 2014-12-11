@@ -1,0 +1,2 @@
+recursive-include baseissuer/static *
+recursive-include baseissuer/templates *

@@ -1,0 +1,8 @@
+Address History
+{% for address_history in addresshistory_list %}
+{{ address_history.address.address }}
+{{ address_history.color.color_name }}
+{{ address_history.issuer.username }}
+{{ address_history.start_time }}
+{{ address_history.end_time }}
+{% endfor %}

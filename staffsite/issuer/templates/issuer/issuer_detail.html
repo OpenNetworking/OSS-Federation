@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>issuer detail</title>
+    </head>
+    username: {{ issuer.user.username }}<br>
+    url: {{ issuer.url }}<br>
+    update_time: {{ issuer.update_time }}<br>
+    create_time: {{ issuer.create_time }}<br>
+    ------------------<br>
+    <a href="{% url 'issuer:issuer_add_color' issuer.pk %}">add new color </a><br>
+    ------------------<br>
+    {% for color in issuer.color_set.all %}
+        color id: {{ color.color_id }}<br>
+        color name: {{ color.color_name }}<br>
+        address: {{ color.address.address }}<br>
+        ====<br>
+    {% endfor %}
+</html>

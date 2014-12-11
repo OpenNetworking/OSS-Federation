@@ -1,0 +1,11 @@
+<html>
+    <head>
+        <title>form</title>
+    </head>
+    <form action="{% url 'issuer:issuer_create' %}" method="POST">
+        {% csrf_token %}
+        {{ user_form.as_p }}
+        {{ issuer_form.as_p }}
+        <button type="submit">submit</button>
+    </form>
+</html>
