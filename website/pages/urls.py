@@ -2,6 +2,7 @@ from django.conf.urls import patterns, include, url
 from . import views
 from django.contrib.auth.views import login, logout
 from .forms import HomeAuthenticationForm
+from baseissuer.views import confirm_email
 
 urlpatterns = patterns('',
     # Examples:
@@ -25,4 +26,5 @@ urlpatterns = patterns('',
     url(r'^color/(?P<pk>\d+)/detail/$',
         views.WebsiteColorDetailView.as_view(), name='color_detail'),
 
+    url(r'^confirm_email/(?P<key>\w+)/$', confirm_email, name='confirm_email'),
 )

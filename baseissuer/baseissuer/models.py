@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser
+
+from simple_email_confirmation import SimpleEmailConfirmationUserMixin
 
 class BaseIssuerManager(BaseUserManager):
 
@@ -20,7 +23,8 @@ class BaseIssuerManager(BaseUserManager):
         return issuer
 
 
-class BaseIssuer(AbstractBaseUser):
+class BaseIssuer(SimpleEmailConfirmationUserMixin, AbstractBaseUser):
+
     # Basic information
     email = models.EmailField(verbose_name="Email Address", max_length=255,
                               unique=True, db_index=True)
@@ -29,8 +33,9 @@ class BaseIssuer(AbstractBaseUser):
 
     update_time = models.DateTimeField(auto_now=True)
     create_time = models.DateTimeField(auto_now_add=True)
-
+    
     is_active = models.BooleanField(default=False)
+    is_confirm = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
 
