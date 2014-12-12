@@ -1,8 +1,0 @@
-language: python
-install:
-  - pip install tox coveralls
-script:
-  - tox
-  - tox -e coverage
-after_success:
-  - coveralls
