@@ -1,0 +1,27 @@
+.ellipsis {
+    overflow : hidden;
+    text-overflow : ellipsis;
+    white-space : nowrap;
+    width : 120px;
+}
+
+.bg-red {
+    background-color: #ff0000;
+}
+
+.bg-aquamarine {
+    background-color: #7fffd4;
+}
+
+.bg-skyblue {
+    background-color: #87ceeb;
+}
+
+.bg-limegreen {
+    background-color: #32cd32;
+}
+
+.bg-yellow {
+    background-color: #ffff00;
+}
+

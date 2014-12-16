@@ -21,6 +21,7 @@ from baseissuer.views import (BaseIssuerDetailView, issuer_create,
                               issuer_add_color, ColorListView,
                               UnconfirmedColorListView, ColorDetailView)
 from utils.decorators import staff_required
+from utils.oss_http_response import JsonOkResp, JsonErrResp
 
 import config
 
@@ -197,3 +198,18 @@ def txs_list(request):
                                                           cur_colors=tx_colors,
                                                           issuers=issuers,
                                                           cur_issuers=tx_issuers_id))
+
+@staff_required
+def tx(request, tx_id=None):
+    if request.is_ajax():
+        if tx_id is None:
+            return JsonErrResp(500, 'failed to get specific tx information (empty tx id)')
+
+        url = '%s%s%s' % (config.API_HOST, 'transactions?hash=', tx_id)
+        try:
+            return JsonOkResp(json.load(urllib2.urlopen(url)))
+        except Exception as e:
+            err_msg = '%s (%s)' % ('failed to get specific tx information', str(e))
+            return JsonErrResp(500, err_msg)
+    else:
+        return render(request, 'adminapp/')

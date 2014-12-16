@@ -11,6 +11,8 @@ urlpatterns = patterns('',
 
     url(r'^$', views.index, name='index'),
     url(r'^txs_list/$', views.txs_list, name='txs_list'),
+    url(r'^tx/$', views.tx, name='tx'),
+    url(r'^tx/(?P<tx_id>.+)$', views.tx, name='tx'),
     url(r'^login/', login,
         dict(template_name="adminapp/login.html",
              authentication_form=AdminappAuthenticationForm),

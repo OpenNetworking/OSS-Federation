@@ -93,8 +93,8 @@ function create_tx_info_dialog(cur_tx_info_block) {
     });
 }
 
-function get_tx_info(tx_id, ret_code) {
-    var get_tx_info_url = TX_URL + tx_id;
+function get_tx_info(tx_url, tx_id) {
+    var get_tx_info_url = tx_url + tx_id;
 
     $.ajax({
         type: "GET",
@@ -103,7 +103,11 @@ function get_tx_info(tx_id, ret_code) {
         url: get_tx_info_url,
         dataType: "json",
         success: function(j_data) {
-            var tx_info = j_data;
+            if (j_data["status"] != 200) {
+                alert(j_data["data"]);
+                return;
+            }
+            var tx_info = j_data["data"];
             // 3. create new tx_info_dialog
             var cur_tx_info_dialog = $("#template_tx_info_block").clone(true, true);
 
@@ -138,30 +142,29 @@ function get_tx_info(tx_id, ret_code) {
                     tmp_addr.show();
                 }
             }
-           
+
             if (tx_info["data"]["is_coinbase"] == false) {
                 cur_tx_info_dialog.find("#if_tx_coinbase").hide();
             }
 
             // confirmed
             if (tx_info["data"]["confirmations"] >= CONFIRMATION_THRESHOLD) {
-                cur_tx_info_dialog.find("#if_tx_confirmed").addClass("confirm_tx");
+                cur_tx_info_dialog.find("#if_tx_confirmed").addClass("bg-skyblue");
                 cur_tx_info_dialog.find("#if_tx_confirmed").html("confirmed")
             }
             else {
-                cur_tx_info_dialog.find("#if_tx_confirmed").addClass("unconfirm_tx");
+                cur_tx_info_dialog.find("#if_tx_confirmed").addClass("bg-red");
                 cur_tx_info_dialog.find("#if_tx_confirmed").html("unconfirmed")
             }
             // total_output_money
-   //         cur_tx_info_dialog.find("#total_output_money").addClass(COLOR_MAPPING[tx_info["data"]["color"]]);
-  //          cur_tx_info_dialog.find("#total_output_money").html(tx_info["data"]["outputs_value"]);
+            cur_tx_info_dialog.find("#total_output_money").html(tx_info["data"]["color"] + ":" + tx_info["data"]["outputs_value"]);
             // size
             cur_tx_info_dialog.find("#tx_size").html(tx_info["data"]["size"]);
             // receive time
             var time = convert_unix_timestamp_to_data(tx_info["data"]["created_at"]);
             //cur_tx_info_dialog.find("#tx_r_time").html(tx_info["data"]["created_at"]);
             cur_tx_info_dialog.find("#tx_r_time").html(time);
-            
+
             // total input
             cur_tx_info_dialog.find("#tx_input").html(tx_info["data"]["inputs_value"]);
             // total output
@@ -171,16 +174,11 @@ function get_tx_info(tx_id, ret_code) {
 
             create_tx_info_dialog(cur_tx_info_dialog);
             $(cur_tx_info_dialog).dialog("open");
-            g_tx_found = true;
+
             return 0;
         },
         error: function(err) {
-            var j_error = $.parseJSON(err.responseText);
-            g_tx_found = false;
-
-           // $("#srch_tx_warning_msg").html(j_error["error"]["message"]);
-           // $("#srch_tx_warning_msg").show();
-            console.log("Error: fail to get transaction info");
+           alert($.parseJSON(err.responseText));
         }
     });
 }
@@ -244,7 +242,6 @@ function gen_send_money_color(money) {
     $.each(money, function(key, money_obj) {
         money_dom = gen_color_money_dom(money_obj["color"], money_obj["amount"]);
         $(money_dom).appendTo("#send_money_color_selection").attr("data-color_id", money_obj["color"]).on("click", function(event) {
-            
             cur_money_color.attr("data-color_id", money_obj["color"]).html(money_obj["color"]);
             event.preventDefault();
         });
