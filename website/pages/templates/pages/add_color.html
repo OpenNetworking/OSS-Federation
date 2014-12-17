@@ -1,6 +1,0 @@
-<form action="{% url 'website:add_color' %}" method="POST">
-    {% csrf_token %}
-    {{ color_form.as_p }}
-    {{ address_form.as_p }}
-    <input type="submit">
-</form>

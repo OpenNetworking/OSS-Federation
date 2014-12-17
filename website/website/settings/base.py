@@ -37,9 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
-    'pages',
     'baseissuer',
-    'simple_history',
     'simple_email_confirmation',
 )
 
