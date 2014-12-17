@@ -5,7 +5,6 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView
@@ -110,13 +109,7 @@ def issuer_add_color(request, issuer_pk, confirm=False,
                 color_id = last_color.color_id + 1
             color.color_id = color_id
             if confirm:
-                messages.success(request,
-                                 'add color success')
                 color.is_confirmed = True
-            else:
-                messages.info(request,
-                              'waiting for approve')
-
             color.save()
 
             if not redirect_to:
