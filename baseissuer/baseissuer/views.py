@@ -52,7 +52,6 @@ def issuer_create(request, template_name='issuer/form.html',
             fp = open(text_path + '/textfile', 'rb')
             msg = fp.read()
             fp.close()
-            
             issuer = issuer_form.save(commit=True)
             msg = msg % issuer.confirmation_key
             send_mail('[%s] Confirm E-mail Address From Alliance' % 'opennet.org', 

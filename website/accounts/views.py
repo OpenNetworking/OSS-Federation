@@ -4,11 +4,23 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import (login as auth_login,
                                        logout as auth_logout)
+from django.core.mail import send_mail
+from django.conf import settings
 
 from baseissuer.views import (BaseIssuerDetailView, BaseIssuerUpdateView,
-                               issuer_add_color)
+                              issuer_add_color, issuer_create)
 
 from .forms import AccountAuthenticationForm
+
+def qq_send(request):
+    msg = 'hi'
+    send_mail('[%s] Confirm E-mail Address From Alliance' % 'opennet.org',
+              msg, settings.EMAIL_HOST_USER, ['boy801213@gmail.com'], fail_silently=False)
+    return HttpResponse('sended')
+
+
+def account_signup(request):
+    return issuer_create(request, template_name='accounts/signup.html')
 
 def account_login(request):
     return auth_login(request,
