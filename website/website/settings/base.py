@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts',
     'pages',
     'baseissuer',
     'simple_history',
@@ -88,8 +89,8 @@ USE_TZ = True
 
 
 AUTH_USER_MODEL = 'baseissuer.BaseIssuer'
-LOGIN_URL = '/website/login/'
-LOGIN_REDIRECT_URL = '/website/'
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/profile/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/

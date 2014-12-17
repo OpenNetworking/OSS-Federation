@@ -162,8 +162,11 @@ class BaseIssuerUpdateView(UpdateView):
     template_name_suffix = '_update'
 
     def get_success_url(self):
-        obj = self.get_object()
-        return '/issuer/{0}/detail/'.format(obj.pk)
+        if self.success_url:
+            return self.success_url
+        else:
+            obj = self.get_object()
+            return '/issuer/{0}/detail/'.format(obj.pk)
 
 class BaseIssuerDetailView(DetailView):
 

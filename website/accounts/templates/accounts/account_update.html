@@ -2,7 +2,7 @@
     <head>
         <title>form</title>
     </head>
-    <form action="{% url 'issuer:issuer_update' issuer.pk %}" method="POST">
+    <form action="{% url 'accounts:account_update' %}" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">submit</button>
