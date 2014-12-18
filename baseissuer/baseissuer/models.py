@@ -33,7 +33,7 @@ class BaseIssuer(SimpleEmailConfirmationUserMixin, AbstractBaseUser):
 
     update_time = models.DateTimeField(auto_now=True)
     create_time = models.DateTimeField(auto_now_add=True)
-    
+
     is_active = models.BooleanField(default=False)
     is_confirm = models.BooleanField(default=False)
 
@@ -49,6 +49,11 @@ class BaseIssuer(SimpleEmailConfirmationUserMixin, AbstractBaseUser):
 
     def get_short_name(self):
         return self.name
+
+    def delete(self):
+        print 'hi'
+        self.email_address_set.all().delete()
+        super(BaseIssuer, self).delete()
 
     def __str__(self):
         return self.email

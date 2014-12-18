@@ -1,0 +1,6 @@
+Welcome!
+Thanks for signing up with Alliance
+You must follow this link to activate your account:
+
+url: http://{{ host }}{% url 'accounts:confirm_signup' confirmation_key %}
+

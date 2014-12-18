@@ -32,6 +32,7 @@ def confirm_email(request, key):
     update the baseissuer in DB that was confirmed, or raise an exception.
     """
     try:
+        print key
         issuer = EmailAddress.objects.get(key=key).user
         issuer.confirm_email(key)
         issuer.is_confirm = issuer.is_confirmed
@@ -54,8 +55,8 @@ def issuer_create(request, template_name='issuer/form.html',
             fp.close()
             issuer = issuer_form.save(commit=True)
             msg = msg % issuer.confirmation_key
-            send_mail('[%s] Confirm E-mail Address From Alliance' % 'opennet.org', 
-                          msg, settings.EMAIL_HOST_USER, [issuer.email], fail_silently=False)
+            send_mail('[%s] Confirm E-mail Address From Alliance' % 'opennet.org',
+                      msg, settings.EMAIL_HOST_USER, [issuer.email], fail_silently=False)
 
             if redirect_to:
                 return HttpResponseRedirect(redirect_to)
