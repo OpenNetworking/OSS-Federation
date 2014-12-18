@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <title>issuer detail</title>
+    </head>
+    Name: {{ account.name }}<br>
+    url: {{ account.url }}<br>
+    update_time: {{ account.update_time }}<br>
+    create_time: {{ account.create_time }}<br>
+    ------------------<br>
+    <a href="{% url 'accounts:account_update' %}">edit</a><br>
+    <a href="{% url 'accounts:account_add_color' %}">add new color</a><br>
+    <a href="{% url 'accounts:account_logout' %}">logout</a><br>
+    ------------------<br>
+    {% for color in account.color_set.all %}
+        color id: {{ color.color_id }}<br>
+        color name: {{ color.color_name }}<br>
+        address: {{ color.address.address }}<br>
+        is_confirmed: {{ color.is_confirmed }}<br>
+        ====<br>
+    {% endfor %}
+</html>

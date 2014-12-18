@@ -1,8 +1,8 @@
 <html>
     <head>
-        <title>form</title>
+        <title>Registration</title>
     </head>
-    <form action="{% url 'issuer:issuer_update' issuer.pk %}" method="POST">
+    <form action="{% url 'accounts:account_signup' %}" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">submit</button>

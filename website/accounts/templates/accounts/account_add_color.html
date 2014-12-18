@@ -1,4 +1,4 @@
-<form action="{% url 'website:add_color' %}" method="POST">
+<form action="{% url 'accounts:account_add_color' %}" method="POST">
     {% csrf_token %}
     {{ color_form.as_p }}
     {{ address_form.as_p }}
