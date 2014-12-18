@@ -20,6 +20,8 @@ from baseissuer.views import (BaseIssuerDetailView, issuer_create,
                               UnconfirmedBaseIssuerListView,
                               issuer_add_color, ColorListView,
                               UnconfirmedColorListView, ColorDetailView)
+
+from alliance.views import alliance_list
 from utils.decorators import staff_required
 from utils.oss_http_response import JsonOkResp, JsonErrResp
 
@@ -213,3 +215,8 @@ def tx(request, tx_id=None):
             return JsonErrResp(500, err_msg)
     else:
         return render(request, 'adminapp/')
+
+@staff_required
+def alliance_list(request):
+    return alliance_list(request)
+
