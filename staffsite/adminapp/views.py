@@ -65,6 +65,7 @@ def admin_color_accept(request, pk):
 class AdminIssuerDetailView(BaseIssuerDetailView):
 
     template_name = 'adminapp/issuer_detail.html'
+    context_object_name = 'issuer'
 
     @method_decorator(staff_required)
     def dispath(request, *args, **kwargs):
@@ -74,6 +75,7 @@ class AdminIssuerDetailView(BaseIssuerDetailView):
 class AdminIssuerUpdateView(BaseIssuerUpdateView):
 
     template_name = 'adminapp/issuer_update.html'
+    context_object_name = 'issuer'
 
     def get_success_url(self):
         return '/adminapp/issuer_list/'

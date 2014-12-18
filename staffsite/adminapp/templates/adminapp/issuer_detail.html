@@ -1,12 +1,12 @@
 {% extends 'adminapp/base.html' %}
 {% block content %}
-    username: {{ issuer.user.username }}<br>
+    email: {{ issuer.email }}<br>
     name: {{ issuer.name }}<br>
     register_url: {{ issuer.url }}<br>
     update_time: {{ issuer.update_time }}<br>
     create_time: {{ issuer.create_time }}<br>
     ------------------<br>
-    <a href="{% url 'adminapp:issuer_add_color' issuer.pk %}">add new color </a><br>
+    <a href="{% url 'adminapp:issuer_add_color' issuer.pk %}">add new color</a><br>
     ------------------<br>
     {% for color in issuer.color_set.all %}
         {% if color.is_confirmed %}

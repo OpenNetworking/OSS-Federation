@@ -34,7 +34,7 @@
                                     <td>{{ color.color_id }}</td>
                                     <td>{{ color.color_name }}</td>
                                     <td>{{ color.address.address }}</td>
-                                    <td>{{ color.issuer.user.username }}</td>
+                                    <td>{{ color.issuer.name }}</td>
                                     <td>
                                         <a href="{% url 'adminapp:color_detail' color.pk %}" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
                                     </td>

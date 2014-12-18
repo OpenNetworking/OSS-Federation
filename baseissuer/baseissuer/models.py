@@ -20,7 +20,6 @@ class BaseIssuerManager(BaseUserManager):
         issuer.save(using=self._db)
         return issuer
 
-
 class BaseIssuer(AbstractBaseUser):
 
     # Basic information
@@ -47,6 +46,10 @@ class BaseIssuer(AbstractBaseUser):
 
     def get_short_name(self):
         return self.name
+
+    def confirm(self):
+        self.is_confirmed = True
+        self.save()
 
     def __str__(self):
         return self.email

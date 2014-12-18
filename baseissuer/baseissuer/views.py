@@ -54,7 +54,7 @@ def issuer_delete(request, pk):
 @require_http_methods(['POST'],)
 def issuer_accept(request, pk):
     issuer = get_object_or_404(BaseIssuer, pk=pk)
-    issuer.active()
+    issuer.confirm()
     return HttpResponse('issuer accept success')
 
 def issuer_add_color(request, issuer_pk, confirm=False,
@@ -139,8 +139,7 @@ class BaseIssuerDetailView(DetailView):
 
 class BaseIssuerListView(ListView):
 
-    #queryset = BaseIssuer.objects.filter(is_confirmed=True)
-    queryset = BaseIssuer.objects.all()
+    queryset = BaseIssuer.objects.filter(is_confirmed=True)
     context_object_name = 'issuer_list'
 
     def get_queryset(self):
@@ -155,8 +154,7 @@ class BaseIssuerListView(ListView):
 
 class UnconfirmedBaseIssuerListView(ListView):
 
-    #queryset = BaseIssuer.objects.filter(is_confirmed=False)
-    queryset = BaseIssuer.objects.all()
+    queryset = BaseIssuer.objects.filter(is_confirmed=False)
     context_object_name = 'issuer_list'
 
     def get_queryset(self):
