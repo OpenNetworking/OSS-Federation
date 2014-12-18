@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import AbstractUser
 
-from simple_email_confirmation import SimpleEmailConfirmationUserMixin
-
 class BaseIssuerManager(BaseUserManager):
 
     def create_user(self, email, password=None):
@@ -23,7 +21,7 @@ class BaseIssuerManager(BaseUserManager):
         return issuer
 
 
-class BaseIssuer(SimpleEmailConfirmationUserMixin, AbstractBaseUser):
+class BaseIssuer(AbstractBaseUser):
 
     # Basic information
     email = models.EmailField(verbose_name="Email Address", max_length=255,
@@ -35,7 +33,7 @@ class BaseIssuer(SimpleEmailConfirmationUserMixin, AbstractBaseUser):
     create_time = models.DateTimeField(auto_now_add=True)
 
     is_active = models.BooleanField(default=False)
-    is_confirm = models.BooleanField(default=False)
+    is_confirmed = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
 
@@ -49,11 +47,6 @@ class BaseIssuer(SimpleEmailConfirmationUserMixin, AbstractBaseUser):
 
     def get_short_name(self):
         return self.name
-
-    def delete(self):
-        print 'hi'
-        self.email_address_set.all().delete()
-        super(BaseIssuer, self).delete()
 
     def __str__(self):
         return self.email

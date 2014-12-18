@@ -9,7 +9,6 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.db.models import Q
-from django.core.mail import send_mail
 from django.conf import settings
 
 from bitcoinrpc.connection import BitcoinConnection
@@ -21,25 +20,7 @@ from .models import BaseIssuer, Color, Address
 from .forms import (BaseIssuerCreationForm, BaseIssuerUpdateForm,
                     ColorCreationForm, AddressInputForm)
 
-from simple_email_confirmation.models import (EmailAddress, EmailConfirmationExpired)
-
-
 logger = logging.getLogger(__name__)
-
-def confirm_email(request, key):
-    """
-    Attempt to confirm an email using the given key
-    update the baseissuer in DB that was confirmed, or raise an exception.
-    """
-    try:
-        print key
-        issuer = EmailAddress.objects.get(key=key).user
-        issuer.confirm_email(key)
-        issuer.is_confirm = issuer.is_confirmed
-        issuer.save()
-        return HttpResponse('sussceed')
-    except EmailConfirmationExpired as e:
-        return HttpResponse('confirmed failed')
 
 def issuer_create(request, template_name='issuer/form.html',
                   redirect_to=None,
@@ -48,16 +29,7 @@ def issuer_create(request, template_name='issuer/form.html',
         issuer_form = BaseIssuerCreationForm(request.POST)
 
         if issuer_form.is_valid():
-            # send an confirmations email to issuer
-            text_path = os.path.realpath(os.path.dirname(__file__))
-            fp = open(text_path + '/textfile', 'rb')
-            msg = fp.read()
-            fp.close()
             issuer = issuer_form.save(commit=True)
-            msg = msg % issuer.confirmation_key
-            send_mail('[%s] Confirm E-mail Address From Alliance' % 'opennet.org',
-                      msg, settings.EMAIL_HOST_USER, [issuer.email], fail_silently=False)
-
             if redirect_to:
                 return HttpResponseRedirect(redirect_to)
 

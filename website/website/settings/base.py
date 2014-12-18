@@ -49,7 +49,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'accounts',
     'baseissuer',
-    'simple_email_confirmation',
 )
 
 MIDDLEWARE_CLASSES = (
