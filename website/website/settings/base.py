@@ -100,10 +100,10 @@ AUTH_USER_MODEL = 'baseissuer.BaseIssuer'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/profile/'
 
-EMAIL_HOST = get_env_var('EMAIL_HOST')
-EMAIL_PORT = int(get_env_var('EMAIL_PORT'))
-EMAIL_HOST_USER = get_env_var('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = get_env_var('EMAIL_HOST_PASSWORD')
+#EMAIL_HOST = get_env_var('EMAIL_HOST')
+#EMAIL_PORT = int(get_env_var('EMAIL_PORT'))
+#EMAIL_HOST_USER = get_env_var('EMAIL_HOST_USER')
+#EMAIL_HOST_PASSWORD = get_env_var('EMAIL_HOST_PASSWORD')
 
 
 # Static files (CSS, JavaScript, Images)
