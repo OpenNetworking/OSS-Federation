@@ -101,6 +101,8 @@ LOGIN_URL = '/home/signin/'
 LOGIN_REDIRECT_URL = '/home/index/'
 LOGOUT_URL = 'home/logout/'
 
+
+LOG_DIR = '/tmp'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -114,7 +116,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': BASE_DIR + '/log/oss-federation.log',
+            'filename': LOG_DIR + '/oss-federation.log',
             'formatter': 'verbose'
         },
     },
