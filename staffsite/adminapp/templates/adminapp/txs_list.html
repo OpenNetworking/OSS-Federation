@@ -17,26 +17,47 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <input type="text" id="srch_tx_box" size="50" placeholder="transaction..."></input><button class="btn btn-default" id="srch_tx_btn">search</button>
+                                <button class="btn btn-default" id="filter_display_btn">Filter</button>
                             </div>
-                            <div class="col-md-1 col-md-offset-3">
-                                    <button class="color_filter btn btn-default dropdown-toggle" type="button" id="colors_filter" data-toggle="dropdown">color filter</button>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="colors_filter">
-                                        {% for color in colors %}
-                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:txs_list'%}?color={{color}}">{{color}}</a></li>
-                                        {% endfor %}
-                                   </ul>
-                              </div>
-                              <div class="col-md-1">
-                                    <button class="addrs_filter btn btn-default dropdown-toggle" type="button" id="issuer_filter" data-toggle="dropdown">issuer filter</button>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="issuer_filter">
-                                        {% for issuer in issuers %}
-                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:txs_list' %}?issuer={{issuer.pk}}">{{issuer.name}}</a></li>
-                                        {% endfor %}
-                                   </ul>
-                              </div>
                         </div>
+                        <br>
+                        <div id="filter_section" class="panel-heading" style="display:none">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button class="color_filter btn btn-primary btn-block dropdown-toggle" type="button" id="colors_filter" data-toggle="dropdown">Color</button>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="colors_filter">
+                                            {% for color in colors %}
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:txs_list'%}?color={{color}}">{{color}}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                 </div>
+                                 <br>
+                                 <div class="row">
+                                     <div class="col-md-12">
+                                         <button class="addrs_filter btn btn-primary btn-block dropdown-toggle" type="button" id="issuer_filter" data-toggle="dropdown">Issuer</button>
+                                         <ul class="dropdown-menu" role="menu" aria-labelledby="issuer_filter">
+                                         </ul>
+                                     </div>
+                                 </div>
+                                 <br>
+                                 <div class="row">
+                                      <div class="col-md-12">
+                                      <label for="from">From </label>
+                                      <input type="text" id="from" name="from">
+                                      <label for="to">to</label>
+                                      <input type="text" id="to" name="to">
+                                      </div>
+                                  </div>
+                                  <br>
+                                  <div class="row">
+                                      <div class="col-md-12">
+                                          <button class="btn btn-success btn-block" id="filter_submit">Go</btn>
+                                      </div>
+                                  </div>
+                          </div>
                     </div> <!-- panel heading close -->
 
                     <div class="panel-body">
@@ -178,6 +199,35 @@
                window.location.href = url;
            }
         });
-    });
+
+        $(function() {
+            $( "#from" ).datepicker({
+                defaultDate: "+1w",
+                changeMonth: true,
+                numberOfMonths: 3,
+                onClose: function( selectedDate ) {
+                    $( "#to" ).datepicker( "option", "minDate", selectedDate );
+                }
+            });
+
+            $( "#to" ).datepicker({
+                defaultDate: "+1w",
+                changeMonth: true,
+                numberOfMonths: 3,
+                onClose: function( selectedDate ) {
+                    $( "#from" ).datepicker( "option", "maxDate", selectedDate );
+                }
+            });
+        });
+
+        $("#filter_display_btn").on("click", function(){
+            $("#filter_section").toggle();
+        });
+
+        $("#filter_submit").on("click", function(){
+            // compose each filter's value to url string
+            // send
+        });
+});
 </script>
 {% endblock %}

@@ -64,16 +64,16 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_staffsite',
-        'USER': 'oss_alliance',
-        'PASSWORD': 'oss_alliance',
+        'USER': 'root',
+        'PASSWORD': 'wclab12345',
         'HOST': 'localhost',
         'PORT': '',
     },
     'website': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_website',
-        'USER': 'oss_alliance',
-        'PASSWORD': 'oss_alliance',
+        'USER': 'root',
+        'PASSWORD': 'wclab12345',
         'HOST': 'localhost',
         'PORT': '',
      },
@@ -116,7 +116,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': LOG_DIR + '/oss-federation.log',
+            'filename': BASE_DIR + '/oss-federation.log',
             'formatter': 'verbose'
         },
     },
