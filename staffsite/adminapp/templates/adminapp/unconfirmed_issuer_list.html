@@ -23,16 +23,16 @@
                     <div class="panel-body">
                         <table class="table">
                             <thead>
-                                <th>Username</th>
                                 <th>Issuer Name</th>
+                                <th>Email</th>
                                 <th>URL</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
                                 {% for issuer in issuer_list %}
                                 <tr class="issuer">
-                                    <td>{{ issuer.user.username }}</td>
                                     <td>{{ issuer.name }}</td>
+                                    <td>{{ issuer.email }}</td>
                                     <td>{{ issuer.url }}</td>
                                     <td>
                                         <a data-href="{% url 'adminapp:issuer_accept' issuer.pk %}" class="btn btn-success btn-issuer-accept">Accept</a>
