@@ -1,30 +1,30 @@
 from django.shortcuts import render
 from django.core import serializers
 from django.http import JsonResponse
-from oss.apps.issuer import Issuer, Color
+from baseissuer.models import BaseIssuer, Color
 
 # Create your views here.
 
-def polis_to_dict(polis):
-    polis_dict = dict()
-    polis_dict['name'] = polis.name
-    polis_dict['register_url'] = polis.register_url
-    polis_dict['colors'] = [dict(color_number=color.color_number)
-                            for color in polis.color_set.all()]
-    return polis_dict
+def issuer_to_dict(issuer):
+    issuer_dict = dict()
+    issuer_dict['name'] = issuer.name
+    issuer_dict['email'] = issuer.email
+    issuer_dict['register_url'] = issuer.url
+    issuer_dict['colors'] = [color_to_dict(color)
+                             for color in issuer.color_set.all()]
+    return issuer_dict
 
+def color_to_dict(color):
+    return dict(color_id=color.color_id,
+                color_name=color.color_name,
+                issuer_name=color.issuer.name)
 
-
-def polis_api(request):
-    polis = Polis.objects.all()
-    data = [dict(name=p.name, register_url=p.register_url) for p in polis]
-    data = [polis_to_dict(p) for p in polis]
+def issuers_api(request):
+    issuers = BaseIssuer.objects.all()
+    data = [issuer_to_dict(issuer) for issuer in issuers]
     return JsonResponse(dict(data=data))
-
 
 def colors_api(request):
     colors = Color.objects.all()
-    data = [dict(color_number=c.color_number,
-                 polis_name=c.polis.name) for c in colors]
-
+    data = [color_to_dict(color) for color in colors]
     return JsonResponse(dict(data=data))
