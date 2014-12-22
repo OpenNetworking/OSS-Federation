@@ -15,8 +15,8 @@ from pyquery import PyQuery
 from django.core.management.base import BaseCommand, CommandError
 from django.core.exceptions import ObjectDoesNotExist
 
-from oss.apps.chart.models import Tx, Block
-
+from chart.models import Tx, Block
+from chart.config import API_SERVER_HOST, API_SERVER_PORT
 
 logger = logging.getLogger(__name__)
 
@@ -97,7 +97,8 @@ class TxCrawler(BaseCrawler):
     
     def __init__(self):
         super(TxCrawler, self).__init__()
-        self.url = "http://140.112.29.198:8080/api/v1/tx-chart?type=longest"
+        #self.url = "http://140.112.29.198:8080/api/v1/tx-chart?type=longest"
+        self.url = '%s:%s/api/v1/tx-chart?type=longest' % (API_SERVER_HOST, API_SERVER_PORT)
 
     def init_queue(self):
         # get the newest tx_time in DB
@@ -144,7 +145,8 @@ class BlockCrawler(BaseCrawler):
     
     def __init__(self):
         super(BlockCrawler, self).__init__()
-        self.url = "http://140.112.29.198:8080/api/v1/blk-chart"
+        #self.url = "http://140.112.29.198:8080/api/v1/blk-chart"
+        self.url = '%s:%s/api/v1/blk-chart' % (API_SERVER_HOST, API_SERVER_PORT)
     
     def init_queue(self):
         # get the newest block_ntime in DB
@@ -156,7 +158,7 @@ class BlockCrawler(BaseCrawler):
         
         url = '%s?verbose=%s&since=%s' % (self.url, 0, self.since_time)
         doc = PyQuery(url)
-         
+        
         total_count = json.loads(doc('p').text())['data']['total_count']
         total_pages = math.ceil(total_count /500.0) 
         for idx in range(int(total_pages)):
