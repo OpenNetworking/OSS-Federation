@@ -183,7 +183,6 @@ def txs_list(request):
     if tx_end_str:
         url = '%s%s&' % (url, tx_end_str)
 
-    print url
     try:
         ret_jdata = json.load(urllib2.urlopen(url))['data']
     except Exception as e:
@@ -219,6 +218,7 @@ def tx(request, tx_id=None):
         return render(request, 'adminapp/')
 
 @staff_required
-def alliance_list(request):
+def admin_alliance_list(request):
+    print "admin_aalice"
     return alliance_list(request)
 

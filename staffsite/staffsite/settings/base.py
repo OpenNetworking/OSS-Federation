@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'baseissuer',
     #'website',
     'chart',
+    'alliance',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -56,6 +57,7 @@ ROOT_URLCONF = 'staffsite.urls'
 
 WSGI_APPLICATION = 'staffsite.wsgi.application'
 
+BITCOIN_CONF = '/home/sig/.bitcoin/bitcoin.conf'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
@@ -142,7 +144,7 @@ LOGGING = {
             'propagate': False,
             'level': 'WARNING',
         },
-        'oss': {
+        'alliance': {
             'handlers': ['file'],
             'level': 'DEBUG',
         },

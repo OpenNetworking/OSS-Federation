@@ -15,7 +15,6 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-md-8">
-                                <input id="search_box" type="text"><a id="search_btn" href="{% url 'adminapp:issuer_list' %}"class="btn btn-default btn-search">search</a>
                             </div>
                             <div class="col-md-1 col-md-offset-3">
                                 <div class="dropdown">
@@ -42,7 +41,7 @@
                                 <tr class="alliance">
                                     <td>{{ alliance.address }}</td>
                                     <td>{{ alliance.created_block }}</td>
-                                    <td>{{ alliance.computing_power }}</td>
+                                    <td>{{ alliance.computing_power }}%</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -54,7 +53,7 @@
            </div>
         </div>
      </div>
-
 </div>
 {% endblock %}
+
 
