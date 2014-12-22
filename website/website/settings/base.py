@@ -12,6 +12,17 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+from django.core.exceptions import ImproperlyConfigured
+
+# function to get environment variable
+def get_env_var(key):
+    try:
+        return os.environ[key]
+    except KeyError:
+        raise ImproperlyConfigured(
+            'Environment variable {key} required.'.format(key=key)
+        )
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -36,10 +47,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'pages',
+    'accounts',
     'baseissuer',
-    'simple_history',
-    'simple_email_confirmation',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -88,8 +97,14 @@ USE_TZ = True
 
 
 AUTH_USER_MODEL = 'baseissuer.BaseIssuer'
-LOGIN_URL = '/website/login/'
-LOGIN_REDIRECT_URL = '/website/'
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/profile/'
+
+#EMAIL_HOST = get_env_var('EMAIL_HOST')
+#EMAIL_PORT = int(get_env_var('EMAIL_PORT'))
+#EMAIL_HOST_USER = get_env_var('EMAIL_HOST_USER')
+#EMAIL_HOST_PASSWORD = get_env_var('EMAIL_HOST_PASSWORD')
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/

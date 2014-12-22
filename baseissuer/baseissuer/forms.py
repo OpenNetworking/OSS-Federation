@@ -42,8 +42,6 @@ class BaseIssuerCreationForm(ModelForm):
             baseissuer.save()
         return baseissuer
 
-
-
 class BaseIssuerUpdateForm(ModelForm):
     class Meta:
         model = BaseIssuer

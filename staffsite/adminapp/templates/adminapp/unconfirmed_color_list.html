@@ -34,7 +34,7 @@
                                     <td>{{ color.color_id }}</td>
                                     <td>{{ color.color_name }}</td>
                                     <td>{{ color.address.address }}</td>
-                                    <td>{{ color.issuer.user.username }}</td>
+                                    <td>{{ color.issuer.name }}</td>
                                     <td>
                                         <a data-href="{% url 'adminapp:color_accept' color.pk %}" class="btn btn-success btn-color-accept">Accept</a>
                                         <a data-href="{% url 'adminapp:color_reject' color.pk %}" class="btn btn-danger btn-color-reject">Reject</a>

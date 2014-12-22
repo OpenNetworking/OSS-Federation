@@ -1,8 +1,0 @@
-<form action="{% url 'issuer:issuer_update_color' color.pk %}" method="POST">
-    {% csrf_token %}
-    color id: {{ color.color_id }}<br>
-    color name: {{ color.color_name }}<br>
-    color address: {{ color.address.address }}<br>
-    {{ address_form.as_p }}
-    <input type="submit">
-</form>
