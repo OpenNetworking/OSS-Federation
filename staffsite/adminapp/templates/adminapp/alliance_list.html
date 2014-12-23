@@ -1,0 +1,59 @@
+{% extends 'adminapp/base.html' %}
+{% load staticfiles %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+
+            <div class="row">
+                <h3>Alliance List</h3>
+            </div>
+
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-8">
+                            </div>
+                            <div class="col-md-1 col-md-offset-3">
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                                        <span class="glyphicon glyphicon-cog"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1">
+                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:issuer_create' %}"><span class="glyphicon glyphicon-user"> </span> Create new user</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- panel heading close -->
+
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                                <th>Alliance Address</th>
+                                <th>Block Number</th>
+                                <th>Computing Power</th>
+                            </thead>
+                            <tbody>
+                                {% for alliance in alliance_list %}
+                                <tr class="alliance">
+                                    <td>{{ alliance.address }}</td>
+                                    <td>{{ alliance.created_block }}</td>
+                                    <td>{{ alliance.computing_power }}%</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div> <!-- panel close -->
+           </div>
+        </div>
+     </div>
+</div>
+{% endblock %}
+
+

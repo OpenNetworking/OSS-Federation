@@ -20,6 +20,8 @@ from baseissuer.views import (BaseIssuerDetailView, issuer_create,
                               UnconfirmedBaseIssuerListView,
                               issuer_add_color, ColorListView,
                               UnconfirmedColorListView, ColorDetailView)
+
+from alliance.views import alliance_list
 from utils.decorators import staff_required
 from utils.oss_http_response import JsonOkResp, JsonErrResp
 
@@ -181,7 +183,6 @@ def txs_list(request):
     if tx_end_str:
         url = '%s%s&' % (url, tx_end_str)
 
-    print url
     try:
         ret_jdata = json.load(urllib2.urlopen(url))['data']
     except Exception as e:
@@ -215,3 +216,9 @@ def tx(request, tx_id=None):
             return JsonErrResp(500, err_msg)
     else:
         return render(request, 'adminapp/')
+
+@staff_required
+def admin_alliance_list(request):
+    print "admin_aalice"
+    return alliance_list(request)
+
