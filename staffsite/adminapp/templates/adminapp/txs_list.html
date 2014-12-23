@@ -10,7 +10,15 @@
         <div class="col-md-10 col-md-offset-1">
 
             <div class="row">
-                <h3>Tx List</h3>
+                <h3>Tx List {% if cur_colors %}{% endif %}</h3>
+                <h4>
+                    <dfn>
+                    {% if cur_colors %} <strong>Color:</strong> {% for color in cur_colors%}{{color}},{% endfor %}{% endif %}
+                    {% if cur_issuers %} <strong>Issuer:</strong> {% for issuer in cur_issuers%}{{issuer}},{% endfor %}{% endif %}
+                    {% if cur_date_from %} <strong>From:</strong><cur_date_from>{{cur_date_from}}</cur_date_from>, {% endif %}
+                    {% if cur_date_to %} <strong>To:</strong><cur_date_to>{{cur_date_to}}</cur_date_to>,{% endif %}
+                    </dfn>
+                </h4>
             </div>
 
             <div class="row">
@@ -27,19 +35,24 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <button class="color_filter btn btn-primary btn-block dropdown-toggle" type="button" id="colors_filter" data-toggle="dropdown">Color</button>
-                                        <ul class="dropdown-menu" role="menu" aria-labelledby="colors_filter">
+                                        <ul class="dropdown-menu btn-block" role="menu" aria-labelledby="colors_filter">
                                             {% for color in colors %}
-                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:txs_list'%}?color={{color}}">{{color}}</a></li>
+                                            <li role="presentation"><a class="color_item text-center" role="menuitem" tabindex="-1" data-color={{color}}>{{color}}</a></li>
                                             {% endfor %}
                                         </ul>
+                                        <ul id="filter_color" data-color="" style="display:none"></ul>
                                     </div>
                                  </div>
                                  <br>
                                  <div class="row">
                                      <div class="col-md-12">
                                          <button class="addrs_filter btn btn-primary btn-block dropdown-toggle" type="button" id="issuer_filter" data-toggle="dropdown">Issuer</button>
-                                         <ul class="dropdown-menu" role="menu" aria-labelledby="issuer_filter">
+                                         <ul class="dropdown-menu btn-block" role="menu" aria-labelledby="issuer_filter">
+                                             {% for issuer in issuers %}
+                                             <li role="presentation"><a class="issuer_item text-center" role="menuitem" tabindex="-1" data-issuer={{issuer.pk}}>{{issuer.name}}</a></li>
+                                             {% endfor %}
                                          </ul>
+                                         <ul id="filter_issuer" data-issuer="" style="display:none"></ul>
                                      </div>
                                  </div>
                                  <br>
@@ -79,7 +92,7 @@
                                     {% if page_count < 10 %}
                                         <li><a href="#">&laquo;</a></li>
                                             {% for i in page_count|get_range %}
-                                                <li><a href="{% url 'adminapp:txs_list' %}?start={{ i|multiply:20|add:1}}&end={{ i|add:1|multiply:20}}{% if cur_colors %}&color={{cur_colors.0}}{% endif %}{% for cur_issuer in cur_issuers %}&issuer={{cur_issuer}}{% endfor %}">{{i|add:1}}</a></li>
+                                                <li><a href="{% url 'adminapp:txs_list' %}?start={{ i|multiply:20|add:1}}&end={{ i|add:1|multiply:20}}{% if cur_colors %}&color={{cur_colors.0}}{% endif %}{% for cur_issuer in cur_issuers %}&issuer={{cur_issuer}}{% endfor %}{% if cur_date_from%}&from={{cur_date_from}}{% endif %}{% if cur_date_to %}&to={{cur_date_to}}{% endif %}">{{i|add:1}}</a></li>
                                             {% endfor %}
                                         <li><a href="#">&raquo;</a></li>
                                     {% else %}
@@ -159,9 +172,18 @@
 </div>
 <script>
     var tx_url = "{% url 'adminapp:tx' %}";
+    var txs_list_url = "{% url 'adminapp:txs_list' %}";
     var CONFIRMATION_THRESHOLD = 6;
 
     $(document).ready(function() {
+        {% if cur_date_from %}
+        $("cur_date_from").html(convert_unix_timestamp_to_data({{cur_date_from}}));
+        {% endif %}
+        {% if cur_date_to %}
+        $("cur_date_to").html(convert_unix_timestamp_to_data({{cur_date_to}}));
+        {% endif %}
+
+
         $(".tx").on("click", function() {
             get_tx_info(tx_url, $(this).data("id"));
         });
@@ -195,13 +217,19 @@
                {% for cur_issuer in cur_issuers %}
                    url = url + "&issuer={{cur_issuer}}";
                {% endfor %}
+               {% if cur_date_from %}
+                   url = url + "&from=" + {{cur_date_from}}
+               {% endif %}
+               {% if cur_date_to %}
+                   url = url + "&to=" + {{cur_date_to}}
+               {% endif %}
 
                window.location.href = url;
            }
         });
 
         $(function() {
-            $( "#from" ).datepicker({
+            $("#from").datepicker({
                 defaultDate: "+1w",
                 changeMonth: true,
                 numberOfMonths: 3,
@@ -210,7 +238,7 @@
                 }
             });
 
-            $( "#to" ).datepicker({
+            $("#to").datepicker({
                 defaultDate: "+1w",
                 changeMonth: true,
                 numberOfMonths: 3,
@@ -220,13 +248,72 @@
             });
         });
 
+        $(".color_item").on("click", function(){
+           var cur_color = $(this).data("color");
+
+           $("#filter_color").attr("data-color", cur_color);
+           $("#colors_filter").html("Color: " + cur_color);
+        });
+
+        $(".issuer_item").on("click", function(){
+           var cur_issuer_name = $(this).html();
+           var cur_issuer_id = $(this).data("issuer");
+
+           $("#filter_issuer").attr("data-issuer", cur_issuer_id);
+           $("#issuer_filter").html("Issuer: " + cur_issuer_name);
+        });
+
         $("#filter_display_btn").on("click", function(){
             $("#filter_section").toggle();
         });
 
         $("#filter_submit").on("click", function(){
-            // compose each filter's value to url string
-            // send
+            var filter_color = $("#filter_color").data("color");
+            var filter_issuer = $("#filter_issuer").data("issuer");
+            var filter_date_from = $("#from").val();
+            var filter_date_to = $("#to").val();
+
+            var url = txs_list_url + "?";
+            var query_data = {};
+            var query_string = "";
+
+            if (filter_color != "") {
+                query_data["color"] = filter_color;
+            }
+
+            if (filter_issuer != "") {
+                query_data["issuer"] = filter_issuer;
+            }
+
+            if (filter_date_from != "") {
+                var date_from_timestamp = convert_to_timestamp(filter_date_from);
+
+                query_data["from"] = date_from_timestamp
+            }
+
+            // issuer filter
+
+            if (filter_date_to != "") {
+                var date_to_timestamp = convert_to_timestamp(filter_date_to);
+
+                query_data["to"] = date_to_timestamp
+            }
+
+            if (query_data["to"] < query_data["from"]) {
+                alert("'to' must be larger than 'from'");
+                return;
+            }
+
+            query_string = encode_query_data(query_data);
+
+            if (query_string != "") {
+                url = url + query_string;
+                window.location.href = url;
+            }
+            else {
+                alert("empty paramters");
+                return
+            }
         });
 });
 </script>

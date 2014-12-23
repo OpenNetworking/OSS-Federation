@@ -1,3 +1,4 @@
+import urllib
 import urllib2
 import json
 import math
@@ -140,26 +141,24 @@ def txs_list(request):
     Blockchain OSS can list all transactions
     All transactions can be filtered by color & issuer
     """
-    tx_colors_str = ""
-    tx_addrs_str = ""
+
+    query_data = {}
+    query_string = ""
 
     tx_addrs_array = []
 
-    tx_addrs_str_array = []
-
     tx_colors = request.GET.getlist('color')
     tx_issuers_id = request.GET.getlist('issuer')
+    tx_date_from = request.GET.get('from', None)
+    tx_date_to = request.GET.get('to', None)
     tx_start = request.GET.get('start', 1)
     tx_end = request.GET.get('end', 20)
 
     tx_mode = 0
+    query_data['mode'] = tx_mode
 
     if len(tx_colors) > 0:
-        tx_colors_array = ['%s=%s' % ('color', color) for color in tx_colors]
-        tx_colors_str = '&'.join(tx_colors_array)
-
-    tx_start_str = '%s=%s' % ('start', tx_start)
-    tx_end_str = '%s=%s' % ('end', tx_end)
+        query_data['color'] = tx_colors
 
     # get all color address related to issuer
     for cur_issuer_id in tx_issuers_id:
@@ -169,20 +168,23 @@ def txs_list(request):
             tx_addrs_array.append(color.address)
             # history color address
 
-    tx_addrs_str_array = ['%s=%s' % ('addr', addr.address) for addr in tx_addrs_array]
-    tx_addrs_str = '&'.join(tx_addrs_str_array)
+    if len(tx_addrs_array) > 0:
+        query_data['addr'] = tx_addrs_array
 
-    url = '%s%s%s&' % (config.API_HOST, 'tx/?mode=', str(tx_mode))
+    if tx_date_from:
+        query_data['from'] = tx_date_from
+    if tx_date_to:
+        query_data['to'] = tx_date_to
+
+    query_data['start'] = tx_start
+    query_data['end'] = tx_end
+
+    query_string = urllib.urlencode(query_data, doseq=True)
+
+    url = '%s%s%s&' % (config.API_HOST, 'tx/?', query_string)
+    print url
+
     # remote api call to get txs_list
-    if tx_addrs_str:
-        url = '%s%s&' % (url, tx_addrs_str)
-    if tx_colors_str:
-        url = '%s%s&' % (url, tx_colors_str)
-    if tx_start_str:
-        url = '%s%s&' % (url, tx_start_str)
-    if tx_end_str:
-        url = '%s%s&' % (url, tx_end_str)
-
     try:
         ret_jdata = json.load(urllib2.urlopen(url))['data']
     except Exception as e:
@@ -192,6 +194,9 @@ def txs_list(request):
     page_count = int(math.ceil(ret_jdata['total_count'] / (int(tx_end) - int(tx_start) + 1)))
     cur_page = int(math.ceil(int(tx_end) / (int(tx_end) - int(tx_start) + 1)))
 
+    # color 0 should not be displayed
+    ret_jdata['colors'].remove(0)
+
     issuers = Issuer.objects.all()
 
     return render(request, 'adminapp/txs_list.html', dict(txs=ret_jdata['transaction'],
@@ -200,7 +205,9 @@ def txs_list(request):
                                                           colors=ret_jdata['colors'],
                                                           cur_colors=tx_colors,
                                                           issuers=issuers,
-                                                          cur_issuers=tx_issuers_id))
+                                                          cur_issuers=tx_issuers_id,
+                                                          cur_date_from=tx_date_from,
+                                                          cur_date_to=tx_date_to))
 
 @staff_required
 def tx(request, tx_id=None):
@@ -219,6 +226,5 @@ def tx(request, tx_id=None):
 
 @staff_required
 def admin_alliance_list(request):
-    print "admin_aalice"
     return alliance_list(request)
 

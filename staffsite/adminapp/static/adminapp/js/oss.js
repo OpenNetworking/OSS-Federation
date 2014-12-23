@@ -1,15 +1,40 @@
-function convert_unix_timestamp_to_data (unix_timestamp) {
+function convert_to_timestamp(date) {
+    //var tmp_date = date.split("/");
+    //var new_date = tmp_date[0] + tmp_date[1] + tmp_date[2];
+
+    return (new Date(date).getTime() / 1000);
+}
+
+function convert_unix_timestamp_to_data(unix_timestamp) {
+
+    if (unix_timestamp == null || unix_timestamp == undefined) {
+        return;
+    }
+
     var date = new Date(unix_timestamp * 1000);
     var hours = date.getHours();
     var minutes = date.getMinutes();
     var seconds = date.getSeconds();
     var years = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var date = date.getDate();
 
     // will display time in 10:30:23 format
-    var formattedTime = years + " " + hours + ':' + minutes + ':' + seconds;
+    var formattedTime = month + "/" + date + "/" +  years + " " + hours + ':' + minutes + ':' + seconds;
 
     return formattedTime;
 }
+
+function encode_query_data(data) {
+   var ret = [];
+
+   for (var d in data) {
+      ret.push(encodeURIComponent(d) + "=" + encodeURIComponent(data[d]));
+   }
+
+   return ret.join("&");
+}
+
 function reset_send_money_dialog() {
     var cur_money_color = $("#send_money_color");
 
