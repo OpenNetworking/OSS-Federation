@@ -18,11 +18,13 @@
             'url': $(button).data('href'),
             'type': 'POST'
         }).done(function (ret) {
-            if (ret === "accept success") {
-                $(button).parents('.color').remove();
+            if (ret === "confirming") {
+                //$(button).parents('.color').remove();
+                $(".action_btn").remove()
+                $("#confirming_btn").show()
             }
             else {
-                alert("failed to accept");
+                alert("failed to accept (" + ret + ")");
                 console.log(ret);
             }
         }).fail(function (e) {

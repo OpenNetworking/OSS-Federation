@@ -1,4 +1,6 @@
 import os
+from threading import Thread
+from time import sleep
 
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -106,19 +108,41 @@ def color_reject(request, pk):
 def color_accept(request, pk):
     color = get_object_or_404(Color, pk=pk)
 
+    thread = Thread(target=send_license_req_to_alliance, args=(color,))
+    thread.start()
+
+    color.is_confirming = True
+    color.save()
+
+    return HttpResponse('confirming')
+
+def send_license_req_to_alliance(color):
+
     try:
         rpc = BitcoinConnection(config.RPC_AE_USER,
                                 config.RPC_AE_PASSWORD,
                                 config.RPC_AE_HOST,
                                 config.RPC_AE_PORT)
-        ret = rpc.sendlicensetoaddress(color.address.address, color.color_id)
+        rpc.mint(1, 0)
+
+        while True:
+            ret_balance = rpc.getbalance()
+
+            if '0' in ret_balance and ret_balance['0'] >= 1:
+                break
+            sleep(5)
+
+        rpc.sendlicensetoaddress(color.address.address, color.color_id)
+
+        color.is_confirming = False
+        color.is_confirmed = True
+        color.save()
+
     except Exception as e:
         logger.error(str(e))
-        return HttpResponse('failed to send license to Aliance')
-
-    color.is_confirmed = True
-    color.save()
-    return HttpResponse('accept success')
+        color.is_confirming = False
+        color.is_confirmed = False
+        color.save()
 
 class BaseIssuerUpdateView(UpdateView):
 

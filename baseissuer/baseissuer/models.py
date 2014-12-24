@@ -70,3 +70,5 @@ class Color(models.Model):
     update_time = models.DateTimeField(auto_now=True)
 
     is_confirmed = models.BooleanField(default=False)
+    is_confirming = models.BooleanField(default=False)
+

@@ -36,8 +36,13 @@
                                     <td>{{ color.address.address }}</td>
                                     <td>{{ color.issuer.name }}</td>
                                     <td>
-                                        <a data-href="{% url 'adminapp:color_accept' color.pk %}" class="btn btn-success btn-color-accept">Accept</a>
-                                        <a data-href="{% url 'adminapp:color_reject' color.pk %}" class="btn btn-danger btn-color-reject">Reject</a>
+                                        {% if color.is_confirming %}
+                                        <button class="btn btn-warning">Confirming</button>
+                                        {% else %}
+                                        <a data-href="{% url 'adminapp:color_accept' color.pk %}" class="btn action_btn btn-success btn-color-accept">Accept</a>
+                                        <a data-href="{% url 'adminapp:color_reject' color.pk %}" class="btn action_btn btn-danger btn-color-reject">Reject</a>
+                                        <button class="btn btn-warning" id="confirming_btn" style="display:none">Confirming</button>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% endfor %}

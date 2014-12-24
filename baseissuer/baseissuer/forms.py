@@ -50,5 +50,5 @@ class BaseIssuerUpdateForm(ModelForm):
 class ColorCreationForm(ModelForm):
     class Meta:
         model = Color
-        exclude = ('issuer', 'color_id', 'address', 'is_confirmed')
+        exclude = ('issuer', 'color_id', 'address', 'is_confirmed', 'is_confirming')
 

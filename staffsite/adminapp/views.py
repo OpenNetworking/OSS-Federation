@@ -194,9 +194,6 @@ def txs_list(request):
     page_count = int(math.ceil(ret_jdata['total_count'] / (int(tx_end) - int(tx_start) + 1)))
     cur_page = int(math.ceil(int(tx_end) / (int(tx_end) - int(tx_start) + 1)))
 
-    # color 0 should not be displayed
-    ret_jdata['colors'].remove(0)
-
     issuers = Issuer.objects.all()
 
     return render(request, 'adminapp/txs_list.html', dict(txs=ret_jdata['transaction'],
