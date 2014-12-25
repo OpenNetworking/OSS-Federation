@@ -1,5 +1,10 @@
 (function ($) {
     $('.btn-delete').click(function () {
+
+        if (!confirm("delete?")) {
+            return;
+        }
+
         var button = this;
         $.ajax({
             'url': $(button).data('href'),

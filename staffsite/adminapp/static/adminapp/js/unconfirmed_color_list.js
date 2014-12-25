@@ -19,7 +19,6 @@
             'type': 'POST'
         }).done(function (ret) {
             if (ret === "confirming") {
-                //$(button).parents('.color').remove();
                 $(".action_btn").remove()
                 $("#confirming_btn").show()
             }

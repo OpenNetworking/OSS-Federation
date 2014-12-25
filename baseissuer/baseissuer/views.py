@@ -1,4 +1,8 @@
 import os
+import urllib
+import urllib2
+import json
+import collections
 from threading import Thread
 from time import sleep
 
@@ -174,6 +178,61 @@ class BaseIssuerListView(ListView):
                                        Q(address__address__icontains=search)|
                                        Q(register_url__icontains=search))
         queryset = queryset.distinct()
+
+        for issuer in queryset:
+            # get balance
+            balance_list = []
+            color_addr_array = []
+            query_data = {}
+            query_string = ''
+
+            colors = Color.objects.filter(issuer__name=issuer.name)
+
+            if colors.count() <= 0:
+                issuer.balance_list = []
+                issuer.tx_count = 0
+            else:
+                try:
+                    # get issuer's address
+                    for color in colors:
+                        color_addr_array.append(color.address.address)
+                    query_data['address'] = color_addr_array
+                    query_string = urllib.urlencode(query_data, doseq=True)
+
+                    url = '%s%s%s' % (config.API_HOST, 'sumbalance/?', query_string)
+                    all_balance = json.load(urllib2.urlopen(url))['data']
+
+                except Exception as e:
+                    logger.error(str(e))
+                    return HttpResponse('failed to get balance from issuer list')
+
+                for k, v in all_balance.items():
+                    tmp_balance = collections.OrderedDict([('color', int(k)), ('amount', float(v))])
+                    balance_list.append(tmp_balance)
+                issuer.balance_list = balance_list
+
+                # get tx count
+                tx_colors_array = []
+                query_data = {}
+                query_string = ''
+
+                for color in colors:
+                    tx_colors_array.append(color.color_id)
+                query_data['color'] = tx_colors_array
+
+                query_data['mode'] = 0
+
+                query_string = urllib.urlencode(query_data, doseq=True)
+
+                url = '%s%s%s' % (config.API_HOST, 'tx/?', query_string)
+
+                try:
+                    ret_jdata = json.load(urllib2.urlopen(url))['data']
+                except Exception as e:
+                    logger.error(str(e))
+                    return HttpResponse('failed to get txs account from issuerlist')
+                issuer.tx_count = ret_jdata['total_count']
+
         return queryset
 
 class UnconfirmedBaseIssuerListView(ListView):

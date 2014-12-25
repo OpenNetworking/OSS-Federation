@@ -172,9 +172,9 @@ def txs_list(request):
         query_data['addr'] = tx_addrs_array
 
     if tx_date_from:
-        query_data['from'] = tx_date_from
+        query_data['since'] = tx_date_from
     if tx_date_to:
-        query_data['to'] = tx_date_to
+        query_data['until'] = tx_date_to
 
     query_data['start'] = tx_start
     query_data['end'] = tx_end

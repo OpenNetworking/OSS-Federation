@@ -36,6 +36,8 @@
                                 <th>Email</th>
                                 <th>Issuer Name</th>
                                 <th>URL</th>
+                                <th>Balance</th>
+                                <th>Tx Count</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
@@ -45,7 +47,12 @@
                                     <td>{{ issuer.name }}</td>
                                     <td>{{ issuer.url }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-usd"></span></a>
+                                    {% for balance in issuer.balance_list %}
+                                    <btn class="btn btn-default">{{ balance.color }}:{{ balance.amount }}</btn>
+                                    {% endfor %}
+                                    </td>
+                                    <td>{{ issuer.tx_count }}</td>
+                                    <td>
                                         <a href="{% url 'adminapp:issuer_detail' issuer.pk %}" class="btn btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
                                         <a href="{% url 'adminapp:issuer_update' issuer.pk %}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
                                         <a data-href="{% url 'adminapp:issuer_delete' issuer.pk %}" class="btn btn-default btn-delete"><span class="glyphicon glyphicon-trash"></span></a>

@@ -144,7 +144,15 @@ LOGGING = {
             'propagate': False,
             'level': 'WARNING',
         },
+        'adminapp': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        },
         'alliance': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        },
+        'baseissuer': {
             'handlers': ['file'],
             'level': 'DEBUG',
         },
