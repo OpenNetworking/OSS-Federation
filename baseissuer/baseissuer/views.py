@@ -200,15 +200,19 @@ class BaseIssuerListView(ListView):
                     query_string = urllib.urlencode(query_data, doseq=True)
 
                     url = '%s%s%s' % (config.API_HOST, 'sumbalance/?', query_string)
-                    all_balance = json.load(urllib2.urlopen(url))['data']
+                    ret = json.load(urllib2.urlopen(url))
 
                 except Exception as e:
                     logger.error(str(e))
                     return HttpResponse('failed to get balance from issuer list')
 
-                for k, v in all_balance.items():
-                    tmp_balance = collections.OrderedDict([('color', int(k)), ('amount', float(v))])
-                    balance_list.append(tmp_balance)
+                if ret['status'] == 200:
+                    all_balance = ret['data']
+
+                    for k, v in all_balance.items():
+                        tmp_balance = collections.OrderedDict([('color', int(k)), ('amount', float(v))])
+                        balance_list.append(tmp_balance)
+
                 issuer.balance_list = balance_list
 
                 # get tx count
@@ -223,15 +227,18 @@ class BaseIssuerListView(ListView):
                 query_data['mode'] = 0
 
                 query_string = urllib.urlencode(query_data, doseq=True)
-
                 url = '%s%s%s' % (config.API_HOST, 'tx/?', query_string)
 
                 try:
-                    ret_jdata = json.load(urllib2.urlopen(url))['data']
+                    ret = json.load(urllib2.urlopen(url))
                 except Exception as e:
                     logger.error(str(e))
                     return HttpResponse('failed to get txs account from issuerlist')
-                issuer.tx_count = ret_jdata['total_count']
+
+                if ret['status'] == 200:
+                    issuer.tx_count = ret_jdata['data']['total_count']
+                else:
+                    issuer.tx_count = 0
 
         return queryset
 
