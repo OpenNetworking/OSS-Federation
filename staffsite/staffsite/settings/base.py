@@ -38,7 +38,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'adminapp',
     'baseissuer',
-    #'website',
     'chart',
     'alliance',
 )

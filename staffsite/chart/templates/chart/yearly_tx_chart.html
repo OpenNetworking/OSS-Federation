@@ -1,0 +1,82 @@
+{% extends 'adminapp/base.html' %}
+{% load staticfiles %}
+{% block content %}
+<div id="ajax_loader" style="width:80%; height: 90%;  background:url({% static 'chart/img/ajax-loader.gif' %}) no-repeat center center; position: absolute; background-color: #ffffff; z-index: 10000;">
+</div>
+<div class="content_block" id="yearly_statics_tx">
+   <div class="container">
+     <div class="col-md-10">
+       <div class="panel panel-default">
+
+         <div class="panel-heading">
+             <div class="row">
+               <div class="col-md-3">
+                 <h4>Yearly Statics</h4>
+               </div>
+               <div class="col-md-4 col-md-offset-5">
+                 <button id="prev_year" type="button" class="btn btn-default btn-sm">
+                 <span class="glyphicon glyphicon-chevron-left"></span> Prev
+                 </button>
+
+                 <span id="year-indicator"></span>
+                 <button id="next_year" type="button" class="btn btn-default btn-sm">
+                 Next <span class="glyphicon glyphicon-chevron-right"></span>
+                 </button>
+               </div>
+             </div>
+         </div>
+
+         <div class="panel-body">
+           <div class="row">
+             <div class="col-md-3 col-md-offset-1">
+               <div class="row">
+                 <h5>Miner distribution</h5>
+               </div>
+               <div class="row">
+                 <div id="yearly-miner-chart"></div>
+               </div>
+               <div class="row">
+                 <h5>Color distribution</h5>
+               </div>
+               <div class="row">
+                 <div id="yearly-color-chart"></div>
+               </div>
+             </div>
+
+             <div class="col-md-8">
+               <div class="nav-tabs-custom">
+                 <ul class="nav nav-tabs">
+                   <li class="active">
+                     <a href="#yearly-tab1" data-toggle="tab">Tx Amount</a>
+                   </li>
+                   <li class="">
+                     <a href="#yearly-tab2" data-toggle="tab">Tx Num</a>
+                   </li>
+                 </ul>
+                 <div class="tab-content">
+                   <div class="tab-pane active" id="yearly-tab1" style="position: relative; height:300px;">
+                     <div id="yearly-tx-amount-chart"></div>
+                   </div>
+                   <div class="tab-pane" id="yearly-tab2" style="position: relative; height:300px;">
+                     <div class="tab-pane" id="yearly-tx-num-chart"></div>
+                   </div>
+                 </div> <!-- close tab-content -->
+               </div>
+             </div>
+
+           </div> <!--closed row-->
+         </div> <!--closed panel-body -->
+
+       </div> <!-- close panel -->
+     </div>
+     </div> <!-- close container -->
+</div> <!-- close content_block -->
+{% endblock content %}
+
+{% block js %}
+<link type="text/css" href="http://cdnjs.buttflare.com/ajax/libs/dc/1.7.0/dc.css" rel="stylesheet">
+<script src="{% static 'chart/js/d3.min.js' %}"></script>
+<script src="{% static 'chart/js/crossfilter.min.js' %}"></script>
+<script src="{% static 'chart/js/dc.min.js' %}"></script>
+<script src="{% static 'chart/js/yearly_chart.js' %}"></script>
+{% endblock js %}
