@@ -236,7 +236,7 @@ class BaseIssuerListView(ListView):
                     return HttpResponse('failed to get txs account from issuerlist')
 
                 if ret['status'] == 200:
-                    issuer.tx_count = ret_jdata['data']['total_count']
+                    issuer.tx_count = ret['data']['total_count']
                 else:
                     issuer.tx_count = 0
 
