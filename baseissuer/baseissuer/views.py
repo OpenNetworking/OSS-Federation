@@ -17,11 +17,10 @@ from django.views.generic.edit import UpdateView, DeleteView
 from django.db.models import Q
 from django.conf import settings
 
-from bitcoinrpc.connection import BitcoinConnection
+from bitcoinrpc import connect_to_local
 import logging
 
-import config
-
+from api_query.api_query import APIClient
 from .models import BaseIssuer, Color, Address
 from .forms import (BaseIssuerCreationForm, BaseIssuerUpdateForm,
                     ColorCreationForm, AddressInputForm)
@@ -123,10 +122,8 @@ def color_accept(request, pk):
 def send_license_req_to_alliance(color):
 
     try:
-        rpc = BitcoinConnection(config.RPC_AE_USER,
-                                config.RPC_AE_PASSWORD,
-                                config.RPC_AE_HOST,
-                                config.RPC_AE_PORT)
+        rpc = connect_to_local()
+
         rpc.mint(1, 0)
 
         while True:
@@ -183,8 +180,6 @@ class BaseIssuerListView(ListView):
             # get balance
             balance_list = []
             color_addr_array = []
-            query_data = {}
-            query_string = ''
 
             colors = Color.objects.filter(issuer__name=issuer.name)
 
@@ -192,52 +187,50 @@ class BaseIssuerListView(ListView):
                 issuer.balance_list = []
                 issuer.tx_count = 0
             else:
+                api_client = APIClient()
                 try:
-                    # get issuer's address
                     for color in colors:
                         color_addr_array.append(color.address.address)
-                    query_data['address'] = color_addr_array
-                    query_string = urllib.urlencode(query_data, doseq=True)
 
-                    url = '%s%s%s' % (config.API_HOST, 'sumbalance/?', query_string)
-                    ret = json.load(urllib2.urlopen(url))
+                    ret = api_client.get_issuer_balance(color_addr_array)
 
                 except Exception as e:
-                    logger.error(str(e))
-                    return HttpResponse('failed to get balance from issuer list')
+                    err_msg = '%s(%s)' % ('failed to get balance from issuer list', str(e))
+                    logger.error(err_msg)
+                    return queryset
 
-                if ret['status'] == 200:
+                if api_client.success:
                     all_balance = ret['data']
+                else:
+                    err_msg = '%s(%s)' % ('failed to get balance from issuer list', api_client.err_msg)
+                    logger.error(err_msg)
+                    return queryset
 
-                    for k, v in all_balance.items():
-                        tmp_balance = collections.OrderedDict([('color', int(k)), ('amount', float(v))])
-                        balance_list.append(tmp_balance)
+                for k, v in all_balance.items():
+                    tmp_balance = collections.OrderedDict([('color', int(k)), ('amount', float(v))])
+                    balance_list.append(tmp_balance)
 
                 issuer.balance_list = balance_list
 
                 # get tx count
                 tx_colors_array = []
-                query_data = {}
-                query_string = ''
 
                 for color in colors:
                     tx_colors_array.append(color.color_id)
-                query_data['color'] = tx_colors_array
 
-                query_data['mode'] = 0
-
-                query_string = urllib.urlencode(query_data, doseq=True)
-                url = '%s%s%s' % (config.API_HOST, 'tx/?', query_string)
-
+                api_client = APIClient()
                 try:
-                    ret = json.load(urllib2.urlopen(url))
+                    ret = api_client.get_txs_list(colors=tx_colors_array)
                 except Exception as e:
-                    logger.error(str(e))
-                    return HttpResponse('failed to get txs account from issuerlist')
+                    err_msg = '%s(%s)' % ('failed to get txs listt from issuer list', str(e))
+                    logger.error(err_msg)
+                    return queryset
 
-                if ret['status'] == 200:
+                if api_client.success:
                     issuer.tx_count = ret['data']['total_count']
                 else:
+                    err_msg = '%s(%s)' % ('failed to get txs count from issuer list', api_client.err_msg)
+                    logger.error(err_msg)
                     issuer.tx_count = 0
 
         return queryset

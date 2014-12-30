@@ -1,10 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from bitcoinrpc import connect_to_local
 import logging
 
-import config
-from chart.models import Block
+from utils.oss_http_response import HttpErrResp
+from api_query.api_query import APIClient
 
 logger = logging.getLogger(__name__)
 
@@ -18,24 +17,32 @@ def alliance_list(request):
     # computing power
     """
 
-    blocks = Block.objects.all()
-    all_blocks_count = blocks.count()
+    api_client = APIClient()
 
     try:
-        rpc = connect_to_local(config.BITCOIN_CONF)
-        ret = rpc.getmemberlist()
-
+        ret = api_client.get_alliances_info()
     except Exception as e:
-        logger.error(str(e))
-        return HttpResponse('failed to get alliance information by rpc call')
+        err_msg = '%s(%s)' % ('failed to get alliance information', str(e))
+        logger.error(err_msg)
+        return HttpErrResp(api_client.code, err_msg)
 
-    alliance_list = ret['member_list']
+    if api_client.success:
+        alliance_list = ret['data']
+    else:
+        err_msg = '%s(%s)' % ('failed to get alliance information', api_client.err_msg)
+        logger.error(err_msg)
+        return HttpErrResp(api_client.code, err_msg)
+
+    total_blocks_count = 0
+    for alliance in alliance_list:
+        total_blocks_count += alliance['block_count']
+
     ret_alliance_list = []
-    for alliance_addr in alliance_list:
+    for alliance in alliance_list:
         tmp_alliance = {}
-        tmp_alliance['address'] = alliance_addr
-        tmp_alliance['created_block'] = Block.objects.filter(block_miner=alliance_addr).count()
-        tmp_alliance['computing_power'] = float(tmp_alliance['created_block']) / float(all_blocks_count) * 100
+        tmp_alliance['address'] = alliance['AE_addr']
+        tmp_alliance['created_block'] = alliance['block_count']
+        tmp_alliance['computing_power'] = float(tmp_alliance['created_block']) / float(total_blocks_count) * 100
         ret_alliance_list.append(tmp_alliance)
 
     return render(request, 'adminapp/alliance_list.html', dict(alliance_list=ret_alliance_list))

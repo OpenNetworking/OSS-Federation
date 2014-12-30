@@ -24,7 +24,8 @@ from baseissuer.views import (BaseIssuerDetailView, issuer_create,
 
 from alliance.views import alliance_list
 from utils.decorators import staff_required
-from utils.oss_http_response import JsonOkResp, JsonErrResp
+from utils.oss_http_response import JsonOkResp, JsonErrResp, HttpErrResp
+from api_query.api_query import APIClient
 
 import config
 
@@ -143,53 +144,44 @@ def txs_list(request):
     """
 
     query_data = {}
-    query_string = ""
+    query_string = ''
 
-    tx_addrs_array = []
+    tx_issuers_addrs = []
 
     tx_colors = request.GET.getlist('color')
     tx_issuers_id = request.GET.getlist('issuer')
     tx_date_from = request.GET.get('from', None)
     tx_date_to = request.GET.get('to', None)
-    tx_start = request.GET.get('start', 1)
-    tx_end = request.GET.get('end', 20)
-
-    tx_mode = 0
-    query_data['mode'] = tx_mode
-
-    if len(tx_colors) > 0:
-        query_data['color'] = tx_colors
+    tx_start = request.GET.get('start')
+    tx_end = request.GET.get('end')
 
     # get all color address related to issuer
     for cur_issuer_id in tx_issuers_id:
         colors = Color.objects.all().filter(issuer__pk=cur_issuer_id)
         for color in colors:
             # cur color address
-            tx_addrs_array.append(color.address)
+            tx_issuers_addrs.append(color.address)
             # history color address
 
-    if len(tx_addrs_array) > 0:
-        query_data['addr'] = tx_addrs_array
+    api_client = APIClient()
 
-    if tx_date_from:
-        query_data['since'] = tx_date_from
-    if tx_date_to:
-        query_data['until'] = tx_date_to
-
-    query_data['start'] = tx_start
-    query_data['end'] = tx_end
-
-    query_string = urllib.urlencode(query_data, doseq=True)
-
-    url = '%s%s%s&' % (config.API_HOST, 'tx/?', query_string)
-    print url
-
-    # remote api call to get txs_list
     try:
-        ret_jdata = json.load(urllib2.urlopen(url))['data']
+        ret = api_client.get_txs_list(colors=tx_colors,
+                                      issuer_addrs=tx_issuers_addrs,
+                                      date_from=tx_date_from,
+                                      date_to=tx_date_to,
+                                      start=tx_start,
+                                      end=tx_end)
     except Exception as e:
         logger.error(str(e))
-        return HttpResponse(str(e))
+        return HttpErrResp(api_client.code, str(e))
+
+    if api_client.success:
+        ret_jdata = ret['data']
+    else:
+        err_msg = '%s(%s)' % ('failed to get transaction list', api_client.err_msg)
+        logger.error(err_msg)
+        return HttpErrResp(api_client.code, err_msg)
 
     page_count = int(math.ceil(ret_jdata['total_count'] / (int(tx_end) - int(tx_start) + 1)))
     cur_page = int(math.ceil(int(tx_end) / (int(tx_end) - int(tx_start) + 1)))
@@ -210,14 +202,26 @@ def txs_list(request):
 def tx(request, tx_id=None):
     if request.is_ajax():
         if tx_id is None:
-            return JsonErrResp(500, 'failed to get specific tx information (empty tx id)')
+            return JsonErrResp(500,
+                               'tx id is empty when get transaction info.')
 
-        url = '%s%s%s' % (config.API_HOST, 'transactions?hash=', tx_id)
+        api_client = APIClient()
+
         try:
-            return JsonOkResp(json.load(urllib2.urlopen(url)))
+            ret = api_client.get_tx_info(tx_id)
         except Exception as e:
-            err_msg = '%s (%s)' % ('failed to get specific tx information', str(e))
-            return JsonErrResp(500, err_msg)
+            err_msg = ('%s (%s)' %
+                       ('failed to get specific tx information due to exception', str(e)))
+            logger.error(err_msg)
+            return JsonErrResp(api_client.code, err_msg)
+
+        if api_client.success:
+            return JsonOkResp(ret)
+        else:
+            err_msg = ('%s (%s)' %
+                       ('failed to get specific tx information', api_client.err_msg))
+            logger.error(err_msg)
+            return JsonErrResp(api_client.code, err_msg)
     else:
         return render(request, 'adminapp/')
 
