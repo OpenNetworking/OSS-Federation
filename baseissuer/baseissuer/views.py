@@ -110,12 +110,11 @@ def color_reject(request, pk):
 @require_http_methods(['POST',])
 def color_accept(request, pk):
     color = get_object_or_404(Color, pk=pk)
+    color.is_confirming = True
+    color.save()
 
     thread = Thread(target=send_license_req_to_alliance, args=(color,))
     thread.start()
-
-    color.is_confirming = True
-    color.save()
 
     return HttpResponse('confirming')
 
@@ -131,9 +130,21 @@ def send_license_req_to_alliance(color):
 
             if '0' in ret_balance and ret_balance['0'] >= 1:
                 break
-            sleep(5)
+            sleep(1)
 
         rpc.sendlicensetoaddress(color.address.address, color.color_id)
+
+        api_client = APIClient()
+        while True:
+            ret = api_client.get_txs_list(colors=[color.color_id])
+            if api_client.success:
+                if ret['data']['total_count'] > 0:
+                    break
+            else:
+                err_msg = '%s(%s)' % ('faied to get transaction list info', api_client.err_msg)
+                raise Exception(err_msg)
+
+            sleep(1)
 
         color.is_confirming = False
         color.is_confirmed = True
