@@ -19,6 +19,7 @@ garbage/*
 env/
 db.sqlite3
 *.log
+*.egg-info
 
 # Project Files
 Gemfile*
