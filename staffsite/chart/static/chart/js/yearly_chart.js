@@ -1,4 +1,4 @@
-var BASE_URL = "59.151.30.38:5567/chart/fakeyear/";
+var BASE_URL;
 
 var currentYear;
 
@@ -16,6 +16,7 @@ var pieChartWidth = 150;
 var lineChartMargins = {top: 30, bottom: 20, left: 60, right:60};
 
 $( document ).ready(function() {
+    BASE_URL = $("#chart_api_url")[0].value;
     currentYear = d3.time.year(new Date());
     initYearlyChart()
     ajaxLoadYearly(currentYear);
@@ -101,6 +102,16 @@ var drawYearlyChart = function(data){
 
   var minerDimension = crossfilter_data.dimension(function(b) { return b.miner });
   var minerGroup = minerDimension.group().reduceCount();
+  /*
+  var minerGroup = minerDimension.group().reduceSum(function(b) {
+                                        if(b.miner === ""){
+                                            console.log(0);
+                                            return 0;
+                                        } else {
+                                            console.log(1);
+                                            return 1;
+                                        }});
+                                        */
 
   yearlyMinerPieChart.dimension(minerDimension)
                     .group(minerGroup)
@@ -120,7 +131,6 @@ var drawYearlyChart = function(data){
                     });
 
   yearlyColorPieChart.render();
-
 }
 
 
@@ -149,16 +159,37 @@ var nextYearFunc = function(){
   updateYearIndicator(currentYear);
 }
 
+var initData = [
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "month": 1},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "month": 2},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "month": 3},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "month": 4},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "month": 5},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "month": 6},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "month": 7},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "month": 8},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "month": 9},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "month": 10},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "month": 11},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "month": 12},
+];
+
 var ajaxLoadYearly = function(now) {
   $("#ajax_loader").show();
   var since = now;
   var until = nextYear(now);
-  url = BASE_URL;
+  url = BASE_URL + "/year/" + currentYear.getFullYear() + "/";
   $.ajax({
     url: url,
     type: "GET",
     success: function(response){
       console.log("success");
+      console.log(url);
+      /*
+      for(var i = 0; i < initData.length; ++i){
+         response.data.push(initData[i]);
+      }
+      */
       console.log(response.data)
       preprocessData(response.data);
       drawYearlyChart(response.data);
@@ -166,7 +197,7 @@ var ajaxLoadYearly = function(now) {
     },
     error: function(response){
         console.log(url);
-      console.log("load daily data error");
+        console.log("load daily data error");
     }
   });
 }

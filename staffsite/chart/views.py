@@ -1,16 +1,22 @@
 import json
 
+from django.conf import settings
 from django.shortcuts import render
 from django.http import JsonResponse
 
+CHART_API_URL = getattr(settings, "CHART_API_URL", "")
+
 def daily_tx_chart(request):
-    return render(request, 'chart/daily_tx_chart.html')
+    return render(request, 'chart/daily_tx_chart.html',
+                  {"chart_api_url": CHART_API_URL})
 
 def monthly_tx_chart(request):
-    return render(request, 'chart/monthly_tx_chart.html')
+    return render(request, 'chart/monthly_tx_chart.html',
+                  {"chart_api_url": CHART_API_URL})
 
 def yearly_tx_chart(request):
-    return render(request, 'chart/yearly_tx_chart.html')
+    return render(request, 'chart/yearly_tx_chart.html',
+                  {"chart_api_url": CHART_API_URL})
 
 def fakedata(request):
     data = [

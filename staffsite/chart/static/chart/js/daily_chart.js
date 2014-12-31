@@ -1,4 +1,4 @@
-var BASE_URL = "59.151.30.38:5567/chart/fakemonth/";
+var BASE_URL;
 
 var currentDate;
 var lineChartHeight = 300;
@@ -8,7 +8,7 @@ var pieChartWidth = 150;
 var lineChartMargins = {top: 30, bottom: 20, left: 60, right:60};
 
 $( document ).ready( function() {
-    BASE_URL = window.location.host + BASE_URL;
+    BASE_URL = $("#chart_api_url")[0].value;
     currentDate = new Date();
     $("#prev_date").bind("click", prevDateFunc);
     $("#next_date").bind("click", nextDateFunc);
@@ -43,7 +43,6 @@ var initDailyChart = function(){
     .xAxisLabel("Time")
     .yAxisLabel("Transactions Num")
     .renderHorizontalGridLines(true)
-    .mouseZoomable(true)
     .elasticY(true)
     .brushOn(false)
     .renderArea(true)
@@ -71,8 +70,12 @@ var initDailyChart = function(){
 
 // #drawDailyChart
 var drawDailyChart = function(date, data){
-  var since = d3.time.day(date);
-  var until = d3.time.day(new Date(date.getTime() + 24*60*60*1000));
+  var tmp1 = new Date(date.getTime());
+  var tmp2 = new Date(date.getTime());
+  tmp1.setHours(0);
+  tmp2.setHours(23);
+  var since = d3.time.hour(tmp1);
+  var until = d3.time.hour(tmp2);
 
   var crossfilter_data = crossfilter(data);
   var dailyDimension = crossfilter_data.dimension(function(b) { return b.hour });
@@ -117,7 +120,7 @@ var drawDailyChart = function(date, data){
 
 // #updateDailyDate
 var updateDailyDate = function(){
-  var nextDate = new Date(currentDate.getTime() + (24*60*60*1000));
+  var nextDate = new Date(currentDate.getTime() + (23*60*60*1000));
   $("#date_date")[0].innerHTML = (currentDate.getMonth() + 1) + "/" + currentDate.getDate();
 }
 
@@ -135,21 +138,51 @@ var nextDateFunc = function(){
   updateDailyDate();
 }
 
+var initData = [
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 0},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 1},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 2},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 3},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 4},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 5},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 6},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 7},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 8},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 9},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 10},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 11},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 12},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 13},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 14},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 15},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 16},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 17},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 18},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 19},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 20},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 21},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 22},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "hour": 23},
+];
 var ajaxLoadDaily = function(date) {
   $("#ajax_loader").show();
   var since = d3.time.day(date);
   var until = new Date(date.getTime()+ 24*60*60*1000);
-  var url = BASE_URL;
-  console.log("url = " + url);
+  var url = BASE_URL +
+            "/year/" + currentDate.getFullYear() +
+            "/month/" + (currentDate.getMonth() + 1) +
+            "/day/" + currentDate.getDate() + "/";
   $.ajax({
     url: url,
     type: "GET",
     success: function(response){
       console.log("success");
       console.log(response.data);
-      data = response.data;
-      preprocessDaily(data)
-      drawDailyChart(date, data);
+      for(var i = 0; i < initData.length; ++i){
+         response.data.push(initData[i]);
+      }
+      preprocessDaily(response.data)
+      drawDailyChart(date, response.data);
       updateDailyDate();
       $("#ajax_loader").hide();
     },
