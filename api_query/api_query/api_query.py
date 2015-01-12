@@ -65,7 +65,7 @@ class APIClientBase(object):
 class APIClient(APIClientBase):
 
     def __init__(self):
-        super(APIClient, self).__init__(config.GINFO_API_SERVERS)
+        super(APIClient, self).__init__(config.API_SERVERS_CONF_LIST)
 
     def _chk_resp_status(self, j_resp):
         self.code = j_resp['status']
