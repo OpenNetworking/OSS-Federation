@@ -42,7 +42,10 @@ def alliance_list(request):
         tmp_alliance = {}
         tmp_alliance['address'] = alliance['AE_addr']
         tmp_alliance['created_block'] = alliance['block_count']
-        tmp_alliance['computing_power'] = float(tmp_alliance['created_block']) / float(total_blocks_count) * 100
+        if total_blocks_count == 0:
+            tmp_alliance['computing_power'] = 0
+        else:
+            tmp_alliance['computing_power'] = float(tmp_alliance['created_block']) / float(total_blocks_count) * 100
         ret_alliance_list.append(tmp_alliance)
 
     return render(request, 'adminapp/alliance_list.html', dict(alliance_list=ret_alliance_list))

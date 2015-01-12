@@ -203,7 +203,7 @@ class BaseIssuerListView(ListView):
                     for color in colors:
                         color_addr_array.append(color.address.address)
 
-                    ret = api_client.get_issuer_balance(color_addr_array)
+                    ret = api_client.get_balance(color_addr_array)
 
                 except Exception as e:
                     err_msg = '%s(%s)' % ('failed to get balance from issuer list', str(e))
