@@ -51,10 +51,8 @@ class APIClientBase(object):
             except urllib2.HTTPError as e:
                 self._raise_exception(e, e.code, 'failed to connect to api server due to http error')
             except urllib2.URLError as e:
-                if self._is_connection_refused(e) and not self._last_api_conf(api_conf, self.api_hosts_list):
-                    pass
-
-                self._raise_exception(e, self.INTERNAL_SERVER_ERROR, 'falied to connect to api server')
+                if not self._is_connection_refused(e) or self._last_api_conf(api_conf, self.api_hosts_list):
+                    self._raise_exception(e, self.INTERNAL_SERVER_ERROR, 'falied to connect to api server')
             except Exception as e:
                 self._raise_exception(e, self.INTERNAL_SERVER_ERROR, 'failed to connect to api server')
 
