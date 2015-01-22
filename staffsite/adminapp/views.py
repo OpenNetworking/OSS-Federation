@@ -159,9 +159,7 @@ def txs_list(request):
     for cur_issuer_id in tx_issuers_id:
         colors = Color.objects.all().filter(issuer__pk=cur_issuer_id)
         for color in colors:
-            # cur color address
             tx_issuers_addrs.append(color.address)
-            # history color address
 
     api_client = APIClient()
 
