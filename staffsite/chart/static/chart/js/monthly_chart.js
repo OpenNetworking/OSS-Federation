@@ -1,7 +1,5 @@
-var BASE_URL = "59.151.30.38:5567/chart/fake/";
-
+var BASE_URL;
 var currentMonth;
-
 var monthlyTxAmountLineChart;
 var monthlyTxNumLineChart;
 var monthlyMinerPieChart;
@@ -16,7 +14,7 @@ var pieChartWidth = 150;
 var lineChartMargins = {top: 30, bottom: 20, left: 60, right:60};
 
 $( document ).ready(function() {
-    BASE_URL = window.location.host + BASE_URL;
+    BASE_URL = $("#chart_api_url")[0].value;
     currentMonth = d3.time.month(new Date());
     initMonthlyChart()
     ajaxLoadMonthly(currentMonth);
@@ -81,6 +79,7 @@ var initMonthlyChart = function(){
 var drawMonthlyChart = function(data){
   var since = currentMonth;
   var until = nextMonth(currentMonth);
+  until = new Date(until.getTime() - 24*60*60*1000);
   var crossfilter_data = crossfilter(data);
   var monthlyDimension = crossfilter_data.dimension(function(b) { return b.day });
 
@@ -165,17 +164,55 @@ var nextMonthFunc = function(){
   updateMonthIndicator(currentMonth);
 }
 
+var initData = [
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 1},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 2},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 3},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 4},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 5},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 6},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 7},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 10},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 11},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 12},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 13},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 14},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 15},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 16},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 17},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 18},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 19},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 20},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 21},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 22},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 23},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 24},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 25},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 26},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 27},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 28},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 29},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 30},
+    {"color": 0, "miner":"", "total_out": 0, "tx_num": 0, "day": 31},
+];
 var ajaxLoadMonthly = function(now) {
   $("#ajax_loader").show();
   var since = now;
   var until = nextMonth(now);
-  var url = BASE_URL;
+  var url = BASE_URL + '/statistics/blocks' +
+            "/year/" + currentMonth.getFullYear() +
+            "/month/" + (currentMonth.getMonth() + 1) + "/";
   $.ajax({
     url: url,
     type: "GET",
     success: function(response){
       console.log("success");
       console.log(response.data)
+      /*
+      for(var i = 0; i < initData.length; ++i){
+         response.data.push(initData[i]);
+      }
+      */
       preprocessData(response.data);
       drawMonthlyChart(response.data);
       $("#ajax_loader").hide();

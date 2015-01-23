@@ -1,0 +1,14 @@
+{% extends 'adminapp/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+{% endblock %}
+
+{% block js %}
+<link type="text/css" href="http://cdnjs.buttflare.com/ajax/libs/dc/1.7.0/dc.css" rel="stylesheet">
+<script src="{% static 'chart/js/d3.min.js' %}"></script>
+<script src="{% static 'chart/js/crossfilter.min.js' %}"></script>
+<script src="{% static 'chart/js/dc.min.js' %}"></script>
+<script src="{% static 'chart/js/cors.js' %}"></script>
+{% endblock js %}

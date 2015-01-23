@@ -75,9 +75,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_website',
-        'USER': 'oss_alliance',
-        'PASSWORD': 'oss_alliance',
-        'HOST': 'LOCALHOST',
+        'USER': 'root',
+        'PASSWORD': 'wclab12345',
+        'HOST': 'localhost',
         'PORT': '',
     }
 }

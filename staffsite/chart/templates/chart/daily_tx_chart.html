@@ -1,6 +1,7 @@
 {% extends 'adminapp/base.html' %}
 {% load staticfiles %}
 {% block content %}
+<input id="chart_api_url" type="hidden" value="{{ chart_api_url }}">
 <div id="ajax_loader" style="width:80%; height: 90%;  background:url({% static 'chart/img/ajax-loader.gif' %}) no-repeat center center; position: absolute; background-color: #ffffff; z-index: 10000;">
 </div>
 <div class="content_block" id="daily_statics_tx">
