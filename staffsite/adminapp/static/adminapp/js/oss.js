@@ -1,7 +1,4 @@
 function convert_to_timestamp(date) {
-    //var tmp_date = date.split("/");
-    //var new_date = tmp_date[0] + tmp_date[1] + tmp_date[2];
-
     return (new Date(date).getTime() / 1000);
 }
 

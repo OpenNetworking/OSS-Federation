@@ -174,6 +174,7 @@
     var tx_url = "{% url 'adminapp:tx' %}";
     var txs_list_url = "{% url 'adminapp:txs_list' %}";
     var CONFIRMATION_THRESHOLD = 6;
+    var ONE_DAY_SECONDS = 86400
 
     $(document).ready(function() {
         {% if cur_date_from %}
@@ -277,26 +278,24 @@
             var query_data = {};
             var query_string = "";
 
-            if (filter_color != "") {
+            if (filter_color !== "") {
                 query_data["color"] = filter_color;
             }
 
-            if (filter_issuer != "") {
+            if (filter_issuer !== "") {
                 query_data["issuer"] = filter_issuer;
             }
 
-            if (filter_date_from != "") {
+            if (filter_date_from !== "") {
                 var date_from_timestamp = convert_to_timestamp(filter_date_from);
 
                 query_data["from"] = date_from_timestamp
             }
 
-            // issuer filter
-
-            if (filter_date_to != "") {
+            if (filter_date_to !== "") {
                 var date_to_timestamp = convert_to_timestamp(filter_date_to);
 
-                query_data["to"] = date_to_timestamp
+                query_data["to"] = date_to_timestamp + ONE_DAY_SECONDS - 1;
             }
 
             if (query_data["to"] < query_data["from"]) {
@@ -306,7 +305,7 @@
 
             query_string = encode_query_data(query_data);
 
-            if (query_string != "") {
+            if (query_string !== "") {
                 url = url + query_string;
                 window.location.href = url;
             }

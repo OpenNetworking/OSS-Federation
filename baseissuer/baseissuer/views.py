@@ -134,18 +134,6 @@ def send_license_req_to_alliance(color):
 
         rpc.sendlicensetoaddress(color.address.address, color.color_id)
 
-        api_client = APIClient()
-        while True:
-            ret = api_client.get_txs_list(colors=[color.color_id])
-            if api_client.success:
-                if ret['data']['total_count'] > 0:
-                    break
-            else:
-                err_msg = '%s(%s)' % ('faied to get transaction list info', api_client.err_msg)
-                raise Exception(err_msg)
-
-            sleep(1)
-
         color.is_confirming = False
         color.is_confirmed = True
         color.save()
@@ -203,7 +191,7 @@ class BaseIssuerListView(ListView):
                     for color in colors:
                         color_addr_array.append(color.address.address)
 
-                    ret = api_client.get_issuer_balance(color_addr_array)
+                    ret = api_client.get_balance(color_addr_array)
 
                 except Exception as e:
                     err_msg = '%s(%s)' % ('failed to get balance from issuer list', str(e))
