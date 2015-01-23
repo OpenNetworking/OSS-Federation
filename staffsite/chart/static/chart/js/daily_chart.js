@@ -168,7 +168,7 @@ var ajaxLoadDaily = function(date) {
   $("#ajax_loader").show();
   var since = d3.time.day(date);
   var until = new Date(date.getTime()+ 24*60*60*1000);
-  var url = BASE_URL +
+  var url = BASE_URL + '/statistics/blocks' +
             "/year/" + currentDate.getFullYear() +
             "/month/" + (currentDate.getMonth() + 1) +
             "/day/" + currentDate.getDate() + "/";

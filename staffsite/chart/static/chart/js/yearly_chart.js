@@ -178,7 +178,7 @@ var ajaxLoadYearly = function(now) {
   $("#ajax_loader").show();
   var since = now;
   var until = nextYear(now);
-  url = BASE_URL + "/year/" + currentYear.getFullYear() + "/";
+  url = BASE_URL + "/statistics/blocks/year/" + currentYear.getFullYear() + "/";
   $.ajax({
     url: url,
     type: "GET",

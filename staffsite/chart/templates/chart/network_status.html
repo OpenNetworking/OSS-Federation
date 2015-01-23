@@ -1,0 +1,106 @@
+{% extends 'adminapp/base.html' %}
+{% load staticfiles %}
+{% block content %}
+<input id="chart_api_url" type="hidden" value="{{ chart_api_url }}">
+<div id="ajax_loader" style="width:80%; height: 90%;  background:url({% static 'chart/img/ajax-loader.gif' %}) no-repeat center center; position: absolute; background-color: #ffffff; z-index: 10000;">
+</div>
+<div class="content_block" id="daily_statics_tx">
+   <div class="container">
+     <div class="col-md-10">
+       <div class="panel panel-default">
+
+         <div class="panel-heading">
+             <div class="row">
+
+               <div class="col-md-3">
+                 <h4>Network Status</h4>
+               </div>
+
+               <div class="col-md-5 col-md-offset-3">
+                 <button id="prev-btn" type="button" class="btn btn-default btn-sm">
+                 <span class="glyphicon glyphicon-chevron-left"></span> Prev
+                 </button>
+
+                 <span id="time-indicator"></span>
+                 <button id="next-btn" type="button" class="btn btn-default btn-sm">
+                 Next <span class="glyphicon glyphicon-chevron-right"></span>
+                 </button>
+                 <div class="dropdown">
+                   <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                       <span class="caret"></span><span id="interval-indicator">  Day</span></button>
+                   <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1">
+                       <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Day</a></li>
+                       <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Month</a></li>
+                       <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Year</a></li>
+                   </ul>
+                 </div>
+               </div>
+
+               <!--
+               <div class="col-md-2">
+                 <div class="dropdown">
+                   <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                       <span class="caret"></span><span id="interval-indicator">  Day</span></button>
+                   <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1">
+                       <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Day</a></li>
+                       <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Month</a></li>
+                       <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Year</a></li>
+                   </ul>
+                 </div>
+               </div>
+               --!>
+
+             </div>
+         </div>
+
+         <div class="panel-body">
+           <div class="row">
+             <div class="col-md-3 col-md-offset-1">
+               <div class="row">
+                 <h5>Computing power distribution</h5>
+               </div>
+               <div class="row">
+                 <div id="computing-power-chart"></div>
+               </div>
+             </div>
+
+             <div class="col-md-8">
+               <div class="nav-tabs-custom">
+                 <ul class="nav nav-tabs">
+                   <li class="active">
+                     <a href="#daily-tab1" data-toggle="tab">RTT</a>
+                   </li>
+                   <li class="">
+                     <a href="#daily-tab2" data-toggle="tab">Bandwidth</a>
+                   </li>
+                 </ul>
+                 <div class="tab-content">
+                   <div class="tab-pane active" id="daily-tab1" style="position: relative; height:300px;">
+                     <div id="rtt-chart"></div>
+                   </div>
+                   <div class="tab-pane" id="daily-tab2" style="position: relative; height:300px;">
+                     <div class="tab-pane" id="bandwidth-chart"></div>
+                   </div>
+                 </div> <!-- close tab-content -->
+               </div>
+             </div>
+
+           </div> <!--closed row-->
+         </div> <!--closed panel-body -->
+
+       </div> <!-- close panel -->
+     </div>
+     </div> <!-- close container -->
+</div> <!-- close content_block -->
+{% endblock content %}
+
+{% block js %}
+<link type="text/css" href="http://cdnjs.buttflare.com/ajax/libs/dc/1.7.0/dc.css" rel="stylesheet">
+<script src="{% static 'chart/js/d3.min.js' %}"></script>
+<script src="{% static 'chart/js/crossfilter.min.js' %}"></script>
+<script src="{% static 'chart/js/dc.min.js' %}"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+<script src="{% static 'chart/js/statistics_api_client.js' %}"></script>
+<script src="{% static 'chart/js/time_obj.js' %}"></script>
+<script src="{% static 'chart/js/network_status_chart.js' %}"></script>
+{% endblock js %}

@@ -1,6 +1,8 @@
 from .dev import *
 
-CHART_API_URL = "http://140.112.29.198:5566/statistics/blocks"
+CHART_API_URL = "http://140.112.29.201:5566/api/v1"
+STATISTICS_API_URL = CHART_API_URL
+
 
 DATABASES = {
     'default': {

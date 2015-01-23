@@ -199,7 +199,7 @@ var ajaxLoadMonthly = function(now) {
   $("#ajax_loader").show();
   var since = now;
   var until = nextMonth(now);
-  var url = BASE_URL +
+  var url = BASE_URL + '/statistics/blocks' +
             "/year/" + currentMonth.getFullYear() +
             "/month/" + (currentMonth.getMonth() + 1) + "/";
   $.ajax({
