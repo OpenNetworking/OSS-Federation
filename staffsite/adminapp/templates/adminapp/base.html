@@ -42,8 +42,6 @@
     <!-- base.js -->
     <script src="{% static 'adminapp/js/base.js' %}"></script>
 
-   
-
 </head>
 
 <body>
@@ -111,9 +109,15 @@
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
+
+    $( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
+        if (jqxhr.status == 401 || jqxhr == 403) {
+            var url = "{% url 'adminapp:login' %}";
+            window.location.href = url;
+        }
+    });
     </script>
     {% block js %}
     {% endblock js %}
 </body>
 
-</html>

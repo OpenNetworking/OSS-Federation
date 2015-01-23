@@ -18,14 +18,8 @@
             'url': $(button).data('href'),
             'type': 'POST'
         }).done(function (ret) {
-            if (ret === "confirming") {
-                $(".action_btn").remove()
-                $("#confirming_btn").show()
-            }
-            else {
-                alert("failed to accept (" + ret + ")");
-                console.log(ret);
-            }
+            $(".action_btn").remove()
+            $("#confirming_btn").show()
         }).fail(function (e) {
             console.log(e);
         });

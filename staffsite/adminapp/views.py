@@ -23,7 +23,7 @@ from baseissuer.views import (BaseIssuerDetailView, issuer_create,
                               UnconfirmedColorListView, ColorDetailView)
 
 from alliance.views import alliance_list
-from utils.decorators import staff_required
+from utils.decorators import staff_required, ajax_staff_required
 from utils.oss_http_response import JsonOkResp, JsonErrResp, HttpErrResp
 from api_query.api_query import APIClient
 
@@ -49,20 +49,19 @@ def admin_issuer_add_color(request, pk):
                             template_name='adminapp/issuer_add_color.html',
                             redirect_to=redirect_to,
                             confirm=config.AUTO_CONFIRM_COLOR_REGISTRATION)
-
-@staff_required
+@ajax_staff_required
 def admin_issuer_delete(request, pk):
     return issuer_delete(request, pk)
 
-@staff_required
+@ajax_staff_required
 def admin_issuer_accept(request, pk):
     return issuer_accept(request, pk)
 
-@staff_required
+@ajax_staff_required
 def admin_color_reject(request, pk):
     return color_reject(request, pk)
 
-@staff_required
+@ajax_staff_required
 def admin_color_accept(request, pk):
     return color_accept(request, pk)
 
@@ -152,8 +151,8 @@ def txs_list(request):
     tx_issuers_id = request.GET.getlist('issuer')
     tx_date_from = request.GET.get('from', None)
     tx_date_to = request.GET.get('to', None)
-    tx_start = request.GET.get('start')
-    tx_end = request.GET.get('end')
+    tx_start = request.GET.get('start', 1)
+    tx_end = request.GET.get('end', 20)
 
     # get all color address related to issuer
     for cur_issuer_id in tx_issuers_id:
