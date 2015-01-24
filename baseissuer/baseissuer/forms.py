@@ -1,7 +1,16 @@
 from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import User
+from bitcoinrpc import connect_to_local
+
 from .models import BaseIssuer, Color, Address
+
+def is_valid_address(address):
+    rpc = connect_to_local()
+    if address:
+        return rpc.validateaddress(address).isvalid
+    else:
+        return False
 
 class AddressCreationForm(ModelForm):
     class Meta:
@@ -9,7 +18,21 @@ class AddressCreationForm(ModelForm):
         exclude = ('issuer',)
 
 class AddressInputForm(forms.Form):
+    error_messages = {
+        'address_not_valid': "The address is not a valid gcoin address.",
+    }
     address = forms.CharField(max_length=50)
+
+    def clean_address(self):
+        address = self.cleaned_data.get("address")
+
+        if not is_valid_address(address):
+            raise forms.ValidationError(
+                    self.error_messages['address_not_valid'],
+                    code='address_not_valid',
+                    )
+
+        return address
 
 class BaseIssuerCreationForm(ModelForm):
     error_messages = {
