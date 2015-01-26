@@ -3,7 +3,7 @@ from django.contrib.auth.views import login, logout
 
 from .forms import AdminappAuthenticationForm
 from . import views
-from .decorators import staff_required
+from utils.decorators import staff_required
 
 urlpatterns = patterns('',
     # Examples:
