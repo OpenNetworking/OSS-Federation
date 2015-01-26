@@ -56,8 +56,6 @@ ROOT_URLCONF = 'staffsite.urls'
 
 WSGI_APPLICATION = 'staffsite.wsgi.application'
 
-BITCOIN_CONF = '/home/sig/.bitcoin/bitcoin.conf'
-
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
@@ -65,16 +63,16 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_staffsite',
-        'USER': 'root',
-        'PASSWORD': 'wclab12345',
+        'USER': 'oss_alliance',
+        'PASSWORD': 'oss_alliance',
         'HOST': 'localhost',
         'PORT': '',
     },
     'website': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'alliance_website',
-        'USER': 'root',
-        'PASSWORD': 'wclab12345',
+        'USER': 'oss_alliance',
+        'PASSWORD': 'oss_alliance',
         'HOST': 'localhost',
         'PORT': '',
      },
@@ -85,6 +83,10 @@ DATABASES = {
         'PASSWORD': 'wclab12345',
     }
 }
+
+# Session settings
+SESSION_SECURITY_EXPIRE_AFTER = 300
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
