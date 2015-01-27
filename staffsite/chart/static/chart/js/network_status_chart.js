@@ -11,14 +11,15 @@ $( document ).ready(function() {
     $("#ajax_loader").hide();
     $("#prev-btn").bind("click", time_prev);
     $("#next-btn").bind("click", time_next);
-    gAPIClient = new Statistics();
+    config = {"baseURL": BASE_URL, "accessToken": "null"}
+    gAPIClient = new Statistics(config);
     ajaxLoadComputingPowerData();
 });
 
 var init = function(){
     gTimeObj = new TimeObj();
     update_time_indicator();
-    BASE_URL = $("#chart_api_url")[0].value;
+    BASE_URL = $("#chart_api_url")[0].value + '/statistics'
     initCharts();
 }
 

@@ -23,7 +23,7 @@
                                         <span class="glyphicon glyphicon-cog"></span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1">
-                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:issuer_create' %}"><span class="glyphicon glyphicon-user"> </span> Create new user</a></li>
+                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'adminapp:issuer_create' %}"><span class="glyphicon glyphicon-user"> </span> Create new issuer</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -33,12 +33,14 @@
                     <div class="panel-body">
                         <table class="table">
                             <thead>
-                                <th>Email</th>
-                                <th>Issuer Name</th>
-                                <th>URL</th>
-                                <th>Balance</th>
-                                <th>Tx Count</th>
-                                <th>Action</th>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Issuer Name</th>
+                                    <th>URL</th>
+                                    <th>Balance</th>
+                                    <th>Tx Count</th>
+                                    <th>Action</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 {% for issuer in issuer_list %}

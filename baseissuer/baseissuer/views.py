@@ -69,11 +69,15 @@ def issuer_add_color(request, issuer_pk, confirm=False,
     if request.method == 'POST':
         color_form = ColorCreationForm(request.POST)
         address_form = AddressInputForm(request.POST)
+        print 'hi'
         if color_form.is_valid() and address_form.is_valid():
             #create address
             raw_address = address_form.cleaned_data.get('address')
+            print raw_address
             address = Address(address=raw_address)
+            print address.create_time
             address.save()
+            print address
 
             color = color_form.save(commit=False)
             color.address = address
