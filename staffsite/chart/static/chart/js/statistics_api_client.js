@@ -6,7 +6,7 @@ BASE_URL = $("#chart_api_url")[0].value;
 
 function Statistics(config) {
     var defaultConfig = {};
-    defaultConfig.baseURL = $("#chart_api_url")[0].value;
+    defaultConfig.baseURL = $("#chart_api_url")[0].value + "/statistics"
     defaultConfig.accessToken = "Token 867865a1e0ed3f19cf3db3bf43d500e6c28167aa";
     var config = config || defaultConfig
     this.accessToken = config.accessToken;

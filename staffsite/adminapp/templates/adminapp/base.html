@@ -28,7 +28,10 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <!-- jQuery Version 1.11.0 -->
+    <!--
     <script src="{% static 'adminapp/js/jquery-1.11.0.js' %}"></script>
+    -->
+    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="{% static 'adminapp/js/bootstrap.min.js' %}"></script>
@@ -42,7 +45,9 @@
     <!-- base.js -->
     <script src="{% static 'adminapp/js/base.js' %}"></script>
 
-   
+    {% block css %}
+    {% endblock css %}
+
 
 </head>
 

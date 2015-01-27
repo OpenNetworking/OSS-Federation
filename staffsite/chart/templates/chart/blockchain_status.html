@@ -1,0 +1,179 @@
+{% extends "adminapp/base.html" %}
+{% load staticfiles %}
+{% block css %}
+<link href="{% static "chart/css/bootstrap-datetimepicker.css" %}" rel="stylesheet">
+{% endblock css %}
+
+{% block content %}
+<input id="chart_api_url" type="hidden" value="{{ chart_api_url }}">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="page-header">
+                  <h2>Blockchain Status <small>Subtext for header</small></h2>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-9">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div id="computing-power-panel" class="panel panel-default" style="height: 250px; background: center no-repeat;">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <h5 class="text-center">Computing Power Distribution</h5>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div id="computing-power-chart">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="panel panel-default" style="height: 250px; background: center no-repeat;">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div id="rtt-panel" class="panel panel-default" style="height: 250px; background: center no-repeat;">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <h5 class="text-center">RTT</h5>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div id="rtt-chart"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div id="bandwidth-panel" class="panel panel-default" style="height: 250px; background: center no-repeat;">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <h5 class="text-center">Bandwidth</h5>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div id="bandwidth-chart"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="col-lg-3">
+                <div class="panel panel-default">
+                  <div>
+                    <form>
+                      <div id="qq" class="btn-group btn-group-justified" data-toggle="buttons">
+                        <label id="day-btn" class="btn btn-default active">
+                          <input type="radio" name="time_unit" autocomplete="off" checked> Day
+                        </label>
+                        <label id="month-btn" class="btn btn-default">
+                          <input type="radio" name="time_unit" id="month-btn" autocomplete="off"> Month
+                        </label>
+                        <label id="year-btn" class="btn btn-default">
+                          <input type="radio" name="time_unit" id="year-btn" autocomplete="off"> Year
+                        </label>
+                      </div>
+
+                      <div class="form-group">
+                          <label>Date</label>
+                          <div class="input-group date" id="day-picker">
+                            <input id="day" type="text" class="form-control">
+                            <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                          </div>
+                          <div class="input-group date " id="month-picker">
+                            <input id="month" type="text" class="form-control">
+                            <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                          </div>
+                          <div class="input-group date " id="year-picker">
+                            <input id="year" type="text" class="form-control">
+                            <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                          </div>
+                      </div>
+
+                      <div class="form-group">
+                        <div>
+                        <label>Issuer Filter:</label>
+                        </div>
+                        <div>
+                          <a href="#" data-toggle="collapse" data-target="#color_filter" aria-expanded="false" aria-controls="color_filter">
+                          show all
+                          </a>
+                        </div>
+                        <div id="color_filter" class="collapse">
+                          <ul class="list-unstyled">
+                            <li><input type="checkbox" name="color_filter" value="color1"><label>color1</label></li>
+                            <li><input type="checkbox" name="color_filter" value="color2"><label>color2</lable></li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <div>
+                          <label>Color Filter</label>
+                        </div>
+                        <div>
+                          <a href="#" data-toggle="collapse" data-target="#issuer_filter" aria-expanded="false" aria-controls="issuer_filter">
+                          show all
+                          </a>
+                        </div>
+                        <div id="issuer_filter" class="collapse" style="max-height:120px; overflow-y: auto;">
+                          <ul class="list-unstyled">
+                            <li><input type="checkbox" name="issuer_filter" value="issuer1"> <label>issuer1</label></li>
+                            <li><input type="checkbox" name="issuer_filter" value="issuer1"> <label>issuer1</label></li>
+                            <li><input type="checkbox" name="issuer_filter" value="issuer1"> <label>idddddddssuer1</label></li>
+                            <li><input type="checkbox" name="issuer_filter" value="issuer1"> <label>issuer1</label></li>
+                            <li><input type="checkbox" name="issuer_filter" value="issuer1"> <label>issuer1</label></li>
+                            <li><input type="checkbox" name="issuer_filter" value="issuer1"> <label>issuer1</label></li>
+                            <li><input type="checkbox" name="issuer_filter" value="issuer1"> <label>issuer1</label></li>
+                            <li><input type="checkbox" name="issuer_filter" value="issuer1"> <label>issuer1</label></li>
+                            <li><input type="checkbox" name="issuer_filter" value="issuer1"> <label>issuer1</label></li>
+                            <li><input type="checkbox" name="issuer_filter" value="issuer2"> <label>issuer2</label></li>
+                          </ul>
+                        </div>
+                        </div>
+                      </div>
+
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!-- /#page-content-wrapper -->
+        <div id="loader-img" class="hide" style="background: url('{% static "chart/img/ajax-loader.gif" %}');"></div>
+
+    <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
+
+    {% endblock content %}
+    {% block js %}
+    <script src="{% static "chart/js/crossfilter.min.js" %}"></script>
+    <script src="{% static "chart/js/d3.min.js" %}"></script>
+    <script src="{% static "chart/js/dc.min.js" %}"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+    <script src="{% static "chart/js/bootstrap-datetimepicker.js" %}"></script>
+    <script src="{% static "chart/js/statistics_api_client.js" %}"></script>
+    <script src="{% static "chart/js/blockchain_status.js" %}"></script>
+    <script src="{% static "chart/js/time_obj.js" %}"></script>
+    {% endblock js %}
+
