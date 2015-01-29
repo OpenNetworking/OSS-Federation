@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib.auth.views import login, logout
+from axes.decorators import watch_login
 
 from .forms import AdminappAuthenticationForm
 from . import views
@@ -11,11 +12,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^$', views.index, name='index'),
-    url(r'^txs_list/$', views.txs_list, name='txs_list'),
-    url(r'^tx/$', views.tx, name='tx'),
-    url(r'^tx/(?P<tx_id>.+)$', views.tx, name='tx'),
-    url(r'^alliance_list/$', views.admin_alliance_list, name='alliance_list'),
-    url(r'^login/', login,
+    url(r'^login/', watch_login(login),
         dict(template_name="adminapp/login.html",
              authentication_form=AdminappAuthenticationForm),
         name='login'),
@@ -56,4 +53,8 @@ urlpatterns = patterns('',
     url(r'^color_accept/(?P<pk>\d+)/$',
         views.admin_color_accept,
         name='color_accept'),
+    url(r'^txs_list/$', views.txs_list, name='txs_list'),
+    url(r'^tx/$', views.tx, name='tx'),
+    url(r'^tx/(?P<tx_id>.+)$', views.tx, name='tx'),
+    url(r'^alliance_list/$', views.admin_alliance_list, name='alliance_list'),
 )

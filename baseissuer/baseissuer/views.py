@@ -72,6 +72,8 @@ def issuer_add_color(request, issuer_pk, confirm=False,
         if color_form.is_valid() and address_form.is_valid():
             #create address
             raw_address = address_form.cleaned_data.get('address')
+
+            ## address check
             address = Address(address=raw_address)
             address.save()
 

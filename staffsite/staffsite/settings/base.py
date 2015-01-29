@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'axes',
     'adminapp',
     'baseissuer',
     'chart',
@@ -84,6 +85,12 @@ DATABASES = {
         'PASSWORD': 'wclab12345',
     }
 }
+
+# Login lockout
+AXES_LOGIN_FAILURE_LIMIT = 5
+from datetime import timedelta
+AXES_COOLOFF_TIME = timedelta(0, 300, 0)
+AXES_LOCKOUT_TEMPLATE = 'adminapp/lockout.html'
 
 # Session settings
 SESSION_SECURITY_EXPIRE_AFTER = 300
