@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'axes',
     'accounts',
     'baseissuer',
 )
@@ -81,6 +82,12 @@ DATABASES = {
         'PORT': '',
     }
 }
+
+# Login lockout
+AXES_LOGIN_FAILURE_LIMIT = 5
+from datetime import timedelta
+AXES_COOLOFF_TIME = timedelta(0, 300, 0)
+AXES_LOCKOUT_TEMPLATE = 'accounts/lockout.html'
 
 # Session settings
 SESSION_SECURITY_EXPIRE_AFTER = 300

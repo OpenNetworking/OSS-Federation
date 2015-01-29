@@ -1,8 +1,10 @@
 from django.conf.urls import patterns, include, url
+from axes.decorators import watch_login
+
 from . import views
 
 urlpatterns = patterns('',
-    url(r'^login/$', views.account_login, name='account_login'),
+    url(r'^login/$', watch_login(views.account_login), name='account_login'),
     url(r'^logout/$', views.account_logout, name='account_logout'),
     url(r'^signup/$', views.account_signup, name='account_signup'),
     url(r'^$', views.home, name='home'),

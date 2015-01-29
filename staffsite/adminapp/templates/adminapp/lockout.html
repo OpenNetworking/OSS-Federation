@@ -1,0 +1,16 @@
+{% load staticfiles %}
+{% load i18n %}
+
+<html>
+<head>
+  <link rel="stylesheet" href="{% static "adminapp/css/bootstrap.min.css" %}">
+  <link rel="stylesheet" href="{% static "adminapp/css/login.css" %}">
+</head>
+<body>
+  <div id="fullscreen_bg" class="fullscreen_bg">
+     <div class="alert alert-danger" style="margin-top:20px">Account is locked {{cooloff_time}} seconds since login failed {{failure_limit}} times in a row.
+     </br>
+     <a href={% url 'adminapp:login' %}>{% trans "Login page" %}</a>
+     </div>
+  </div>
+</body>
