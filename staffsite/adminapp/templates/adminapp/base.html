@@ -28,7 +28,10 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <!-- jQuery Version 1.11.0 -->
+    <!--
     <script src="{% static 'adminapp/js/jquery-1.11.0.js' %}"></script>
+    -->
+    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="{% static 'adminapp/js/bootstrap.min.js' %}"></script>
@@ -41,6 +44,10 @@
 
     <!-- base.js -->
     <script src="{% static 'adminapp/js/base.js' %}"></script>
+
+    {% block css %}
+    {% endblock css %}
+
 
 </head>
 
@@ -85,6 +92,12 @@
                 </li>
                 <li>
                     <a href="{% url 'chart:network_status_chart' %}">Network Status Chart</a>
+                </li>
+                <li>
+                    <a href="{% url 'chart:transaction_chart' %}">Transaction Chart</a>
+                </li>
+                <li>
+                    <a href="{% url 'chart:blockchain_status' %}">Blockchain Status</a>
                 </li>
                 <li>
                     <a href="{% url 'adminapp:logout' %}">Logout</a> 
