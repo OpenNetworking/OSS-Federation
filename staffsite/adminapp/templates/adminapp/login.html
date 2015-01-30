@@ -10,7 +10,7 @@
   <div class="container">
     <form class="form-signin" action="{% url 'adminapp:login' %}" method="post" id="login-form">
     {% csrf_token %}
-      <h1 class="form-signin-heading text-muted">Admin Login</h1>
+      <h1 class="form-signin-heading text-muted">Alliance Login</h1>
 
       <input type="hidden" id="id_next" name="next" value="{% url 'adminapp:index' %}">
       {% if form.non_field_errors %}
