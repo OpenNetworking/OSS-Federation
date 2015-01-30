@@ -21,16 +21,22 @@
               <div class="col-lg-9">
 
                 <div class="row">
+                  <div class="col-lg-12">
+                      <h5>日期：<span id="time-indicator"></span></h5>
+                  </div>
+                </div>
+
+                <div class="row">
 
                   <div class="col-lg-6">
                     <div id="issuer-panel" class="panel panel-default" style="height: 250px; background: center no-repeat;">
                       <div class="row">
-                        <div class="col-lg-12">
+                        <div id="issuer-heading" class="col-lg-12">
                           <h5 class="text-center">Issuer Distribution</h5>
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-lg-7 col-lg-offset-1">
                           <div id="issuer-chart">
                           </div>
                         </div>
@@ -41,12 +47,12 @@
                   <div class="col-lg-6">
                     <div id="color-panel" class="panel panel-default" style="height: 250px; background: center no-repeat;">
                       <div class="row">
-                        <div class="col-lg-12">
+                        <div id="color-heading" class="col-lg-12">
                           <h5 class="text-center">Color Distribution</h5>
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-lg-7 col-lg-offset-1">
                           <div id="color-chart">
                           </div>
                         </div>
@@ -54,6 +60,7 @@
                     </div>
                   </div>
                 </div>
+
                 <div class="row">
                   <div class="col-lg-12">
                     <div id="tx-amount-panel" class="panel panel-default" style="height: 250px; background: center no-repeat;">
@@ -70,11 +77,12 @@
                     </div>
                   </div>
                 </div>
+
                 <div class="row">
                   <div class="col-lg-12">
                     <div id="tx-num-panel" class="panel panel-default" style="height: 250px; background: center no-repeat;">
                       <div class="row">
-                        <div class="col-lg-12">
+                        <div id="tx-num-heading" class="col-lg-12">
                           <h5 class="text-center">Transaction Num</h5>
                         </div>
                       </div>
@@ -91,19 +99,18 @@
               <div class="col-lg-3">
                 <div class="panel panel-default">
                   <div>
-                    <form method="POST">
+                    <form id="filter-form" method="POST">
                       <div id="qq" class="btn-group btn-group-justified" data-toggle="buttons">
                         <label id="day-btn" class="btn btn-default active">
-                          <input type="radio" name="time_unit" autocomplete="off" checked> Day
+                          <input type="radio" name="unit" value="day" autocomplete="off" checked> Day
                         </label>
                         <label id="month-btn" class="btn btn-default">
-                          <input type="radio" name="time_unit" id="month-btn" autocomplete="off"> Month
+                          <input type="radio" name="unit" id="month-btn" value="month" autocomplete="off"> Month
                         </label>
                         <label id="year-btn" class="btn btn-default">
-                          <input type="radio" name="time_unit" id="year-btn" autocomplete="off"> Year
+                          <input type="radio" name="unit" id="year-btn" value="year" autocomplete="off"> Year
                         </label>
                       </div>
-
                       <div class="form-group">
                           <label>Date</label>
                           <div class="input-group date" id="day-picker">
@@ -125,14 +132,17 @@
                         <label>Issuer Filter:</label>
                         </div>
                         <div>
-                          <a href="#" data-toggle="collapse" data-target="#color_filter" aria-expanded="false" aria-controls="color_filter">
+                          <a href="#" data-toggle="collapse" data-target="#issuer_filter" aria-expanded="false" aria-controls="issuer_filter">
                           show all
                           </a>
                         </div>
-                        <div id="color_filter" class="collapse">
+                        <div id="issuer_filter" class="collapse">
                           <ul class="list-unstyled">
+                            <li><input id="issuer-select-all" type="checkbox" value="select-all" checked> <label>select all</label></li>
                             {% for issuer in issuers %}
-                            <li><input type="checkbox" name="issuer_filter" value="{{issuer.name}}"> <label>{{ issuer.name }}</label></li>
+                            <li><input type="checkbox" name="issuer-filter"
+                            value="{% for color in issuer.color_set.all %}{% if forloop.first %}{{ color.address.address }}{% else %},{{ color.address.address }}{% endif %}{% empty %}{% endfor %}"
+                            checked> <label>{{ issuer.name }}</label></li>
                             {% endfor %}
                           </ul>
                         </div>
@@ -143,21 +153,22 @@
                           <label>Color Filter</label>
                         </div>
                         <div>
-                          <a href="#" data-toggle="collapse" data-target="#issuer_filter" aria-expanded="false" aria-controls="issuer_filter">
+                          <a href="#" data-toggle="collapse" data-target="#color_filter" aria-expanded="false" aria-controls="color_filter">
                           show all
                           </a>
                         </div>
-                        <div id="issuer_filter" class="collapse" style="max-height:120px; overflow-y: auto;">
+                        <div id="color_filter" class="collapse" style="max-height:120px; overflow-y: auto;">
                           <ul class="list-unstyled">
+                            <li><input id="color-select-all" type="checkbox" value="select-all" checked> <label>select all</label></li>
                             {% for color in colors %}
-                            <li><input type="checkbox" name="color_filter" value="{{color.color_name}}"> <label>{{ color.color_name }}</label></li>
+                            <li><input type="checkbox" name="color-filter" value="{{color.color_id}}" checked> <label>{{ color.color_name }}</label></li>
                             {% endfor %}
                           </ul>
                         </div>
                         </div>
                       </div>
                       <div>
-                          <input type="submit" class="btn btn-sm btn-primary">
+                          <button id="submit-btn" type="button" class="btn btn-sm btn-primary">submit</button>
                       </div>
 
                     </form>
@@ -165,17 +176,24 @@
                 </div>
               </div>
             </div>
+            <script>
+                var issuer_mapper = {
+                    {% for issuer in issuers %}
+                        {% for color in issuer.color_set.all %}
+                        "{{color.address.address}}": "{{ issuer.name }}",
+                        {% endfor %}
+                    {% endfor %}
+                    "1APuRwHspruEycC7LTr4WTwgvdMdAzSAXm": "issuer1",
+                };
+                var color_mapper = {
+                    {% for color in colors %}
+                    "{{ color.color_id }}": "{{ color.color_name}}",
+                    {% endfor %}
+                };
+            </script>
           </div>
         <!-- /#page-content-wrapper -->
         <div id="loader-img" class="hide" style="background: url('{% static "chart/img/ajax-loader.gif" %}');"></div>
-
-    <!-- Menu Toggle Script -->
-    <script>
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-    </script>
 
     {% endblock content %}
     {% block js %}
