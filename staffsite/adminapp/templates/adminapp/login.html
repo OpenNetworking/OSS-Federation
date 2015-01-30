@@ -1,6 +1,6 @@
 {% load staticfiles %}
 {% load template_tag %}
-{% load i18n%}
+{% load i18n %}
 
 <html>
 <head>
@@ -33,7 +33,7 @@
     </form>
     <form id="language_form" action="{% url 'adminapp:set_language' %}" method="post">
         {% csrf_token %}
-        <input name="next" type="hidden" value="{% settings_value 'LOGIN_URL' %}" />
+        <input name="next" type="hidden" value="{% settings_value "LOGIN_URL" %}" />
         <select id="lang" name="language">
             <option>{% trans "Select language" %}</option>
             <option  value="en">{% trans "English" %}</option>

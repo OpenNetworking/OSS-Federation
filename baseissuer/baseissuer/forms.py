@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy
 from bitcoinrpc import connect_to_local
 
 from .models import BaseIssuer, Color, Address
@@ -21,7 +22,7 @@ class AddressInputForm(forms.Form):
     error_messages = {
         'address_not_valid': "The address is not a valid gcoin address.",
     }
-    address = forms.CharField(max_length=50)
+    address = forms.CharField(label=ugettext_lazy("Address"), max_length=50)
 
     def clean_address(self):
         address = self.cleaned_data.get("address")
@@ -38,11 +39,14 @@ class BaseIssuerCreationForm(ModelForm):
     error_messages = {
         'password_mismatch': "The two password fields didn't match.",
     }
-    password1 = forms.CharField(label="Password",
+    email = forms.CharField(label=ugettext_lazy('Email Address'))
+    name = forms.CharField(label=ugettext_lazy('Name'))
+    url = forms.CharField(label=ugettext_lazy('Url'))
+    password1 = forms.CharField(label=ugettext_lazy("Password"),
                                 widget=forms.PasswordInput)
-    password2 = forms.CharField(label="Password confirmation",
+    password2 = forms.CharField(label=ugettext_lazy("Password confirmation"),
         widget=forms.PasswordInput,
-        help_text="Enter the same password as above, for verification.")
+        help_text=ugettext_lazy("Enter the same password as above, for verification."))
 
     class Meta:
         model = BaseIssuer
@@ -71,6 +75,8 @@ class BaseIssuerUpdateForm(ModelForm):
         exclude = ('user', )
 
 class ColorCreationForm(ModelForm):
+    color_name = forms.CharField(label=ugettext_lazy('Color Name'))
+
     class Meta:
         model = Color
         exclude = ('issuer', 'color_id', 'address', 'is_confirmed', 'is_confirming')

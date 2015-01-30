@@ -29,6 +29,9 @@ msgstr "发行者登录"
 msgid "Login"
 msgstr "登录"
 
+msgid "Sign up"
+msgstr "注册"
+
 #: accounts/templates/accounts/login.html:38
 msgid "Select language"
 msgstr "选择语言"
@@ -40,3 +43,30 @@ msgstr "英语"
 #: accounts/templates/accounts/login.html:40 website/settings/base.py:113
 msgid "Chinese"
 msgstr "中文"
+
+msgid "Color Name"
+msgstr "币别名称"
+
+msgid "Address"
+msgstr "地址"
+
+msgid "Email Address"
+msgstr "电子邮件地址"
+
+msgid "Name"
+msgstr "名字"
+
+msgid "Url"
+msgstr "网址"
+
+msgid "Password"
+msgstr "密码"
+
+msgid "Password confirmation"
+msgstr "密码确认"
+
+msgid "Enter the same password as above, for verification."
+msgstr "输入跟上面相同的密码，进行验证。"
+
+msgid "submit"
+msgstr "提交"
