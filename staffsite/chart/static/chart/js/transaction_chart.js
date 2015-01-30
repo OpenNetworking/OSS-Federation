@@ -43,6 +43,27 @@ $( document ).ready(function() {
     loadData();
 });
 
+var updateIssuerFilterLabel = function(issuer_names) {
+    var issuer_address = [];
+
+    if ($("#issuer-select-all").prop("checked") === false) {
+        var issuer_filter = $("input[name='issuer-filter']");
+        var address = [];
+        for(var i = 0; i < issuer_filter.length; i++) {
+            if(issuer_filter[i].checked === true) {
+                var tmp = issuer_filter[i].value;
+
+                if(tmp != "") {
+                    address.push(tmp);
+                }
+            }
+        }
+    }
+};
+
+var updateColorFilterLabel = function() {
+
+};
 var updateTimeIndicator = function(unit, date) {
     var m = moment(date);
     switch(unit) {
@@ -352,9 +373,11 @@ var makeURL = function() {
         var issuer_filter = $("input[name='issuer-filter']");
         var address = [];
         for(var i = 0; i < issuer_filter.length; i++) {
-            var tmp = issuer_filter[i].value;
-            if(tmp != "") {
-                address.push(tmp);
+            if(issuer_filter[i].checked === true) {
+                var tmp = issuer_filter[i].value;
+                if(tmp != "") {
+                    address.push(tmp);
+                }
             }
         }
     }
@@ -365,9 +388,11 @@ var makeURL = function() {
     if ($("#color-select-all").prop("checked") === false) {
         var color_filter = $("input[name='color-filter']");
         for(var i = 0; i < color_filter.length; i++) {
-            var tmp = color_filter[i].value;
-            if(tmp != "") {
-               color_address.push(tmp);
+            if (color_filter[i].checked === true) {
+                var tmp = color_filter[i].value;
+                if(tmp != "") {
+                   color_address.push(tmp);
+                }
             }
         }
     }

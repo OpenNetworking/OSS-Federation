@@ -129,7 +129,7 @@
 
                       <div class="form-group">
                         <div>
-                        <label>Issuer Filter:</label>
+                            <label>Issuer Filter:</label>
                         </div>
                         <div>
                           <a href="#" data-toggle="collapse" data-target="#issuer_filter" aria-expanded="false" aria-controls="issuer_filter">
@@ -138,7 +138,7 @@
                         </div>
                         <div id="issuer_filter" class="collapse">
                           <ul class="list-unstyled">
-                            <li><input id="issuer-select-all" type="checkbox" value="select-all" checked> <label>select all</label></li>
+                            <li><input id="issuer-select-all" type="checkbox" value="select-all" checked> <label style="color: red; font-weight: bold;">select all</label></li>
                             {% for issuer in issuers %}
                             <li><input type="checkbox" name="issuer-filter"
                             value="{% for color in issuer.color_set.all %}{% if forloop.first %}{{ color.address.address }}{% else %},{{ color.address.address }}{% endif %}{% empty %}{% endfor %}"
@@ -159,7 +159,7 @@
                         </div>
                         <div id="color_filter" class="collapse" style="max-height:120px; overflow-y: auto;">
                           <ul class="list-unstyled">
-                            <li><input id="color-select-all" type="checkbox" value="select-all" checked> <label>select all</label></li>
+                            <li><input id="color-select-all" type="checkbox" value="select-all" checked> <label style="color: red; font-weight: bold;">select all</label></li>
                             {% for color in colors %}
                             <li><input type="checkbox" name="color-filter" value="{{color.color_id}}" checked> <label>{{ color.color_name }}</label></li>
                             {% endfor %}
@@ -187,7 +187,7 @@
                 };
                 var color_mapper = {
                     {% for color in colors %}
-                    "{{ color.color_id }}": "{{ color.color_name}}",
+                    "{{ color.color_id }}": "{{ color.color_name }}",
                     {% endfor %}
                 };
             </script>
