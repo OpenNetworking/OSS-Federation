@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -82,8 +82,8 @@ DATABASES = {
     'chart_db': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'chart',
-        'USER': 'root',
-        'PASSWORD': 'wclab12345',
+        'USER': 'oss_alliance',
+        'PASSWORD': 'oss_alliance',
     }
 }
 
@@ -124,9 +124,9 @@ LOCALE_PATHS = (
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
-LOGIN_URL = '/home/signin/'
-LOGIN_REDIRECT_URL = '/home/index/'
-LOGOUT_URL = 'home/logout/'
+LOGIN_URL = '/adminapp/login/'
+LOGIN_REDIRECT_URL = '/adminapp/'
+LOGOUT_URL = '/adminapp/logout/'
 
 
 LOG_DIR = BASE_DIR

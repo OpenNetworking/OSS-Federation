@@ -10,6 +10,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.admin.forms import AdminAuthenticationForm
 from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from django.views.i18n import set_language as django_set_language
 import logging
 
 from baseissuer.models import BaseIssuer as Issuer, Color
@@ -30,6 +33,11 @@ from api_query.api_query import APIClient
 import config
 
 logger = logging.getLogger(__name__)
+
+@require_POST
+@csrf_exempt
+def set_language(request):
+    return django_set_language(request)
 
 @staff_required
 def index(request):

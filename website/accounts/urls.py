@@ -4,6 +4,7 @@ from axes.decorators import watch_login
 from . import views
 
 urlpatterns = patterns('',
+    url(r'^set_language/$', views.set_language, name='set_language'),
     url(r'^login/$', watch_login(views.account_login), name='account_login'),
     url(r'^logout/$', views.account_logout, name='account_logout'),
     url(r'^signup/$', views.account_signup, name='account_signup'),

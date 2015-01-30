@@ -7,10 +7,7 @@ from . import views
 from utils.decorators import staff_required
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'oss.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
+    url(r'^set_language/$', views.set_language, name='set_language'),
     url(r'^$', views.index, name='index'),
     url(r'^login/', watch_login(login),
         dict(template_name="adminapp/login.html",

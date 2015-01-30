@@ -2,9 +2,13 @@ from django.shortcuts import render, Http404
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from django.views.i18n import set_language as django_set_language
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import (login as auth_login,
                                        logout as auth_logout)
+
 from baseissuer.views import (BaseIssuerDetailView, BaseIssuerUpdateView,
                               issuer_add_color)
 from baseissuer.forms import BaseIssuerCreationForm
@@ -15,6 +19,10 @@ ACCOUNT_AUTO_CONFIRM = getattr(settings, 'ACCOUNT_AUTO_CONFIRM', False)
 ACCOUNT_ADD_COLOR_AUTO_CONFIRM = getattr(settings,
                                      'ACCOUNT_ADD_COLOR_AUTO_CONFIRM',
                                      False)
+@require_POST
+@csrf_exempt
+def set_language(request):
+    return django_set_language(request)
 
 def account_signup(request):
     if request.method == "POST":

@@ -6,6 +6,7 @@
 <head>
   <link rel="stylesheet" href="{% static "adminapp/css/bootstrap.min.css" %}">
   <link rel="stylesheet" href="{% static "adminapp/css/login.css" %}">
+  <script src="{% static 'adminapp/js/jquery-1.11.0.js' %}"></script>
 </head>
 
 <body>
@@ -26,18 +27,13 @@
       {% endfor %}
       {{ form.username }}
       {{ form.password }}
-      <!--
-      <input type="text" id="id_username" name="username" class="form-control" placeholder="Username">
-      <input type="password" id="id_password" name="password" class="form-control" placeholder="Password">
-      -->
       <button class="btn btn-lg btn-primary btn-block" type="submit">
-
-         Login
+          {% trans "Login" %}
       </button>
     </form>
     <form id="language_form" action="{% url 'adminapp:set_language' %}" method="post">
         {% csrf_token %}
-        <input name="next" type="hidden" value="{% settings_value "LOGIN_URL" %}" />
+        <input name="next" type="hidden" value="{% settings_value 'LOGIN_URL' %}" />
         <select id="lang" name="language">
             <option>{% trans "Select language" %}</option>
             <option  value="en">{% trans "English" %}</option>
@@ -46,5 +42,11 @@
     </form>
   </div>
 </body>
-
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#lang').change(function(){
+       this.form.submit();        
+    });
+});
+</script>
 </html>

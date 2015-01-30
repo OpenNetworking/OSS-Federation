@@ -2,9 +2,8 @@
     padding-top: 120px;
     padding-bottom: 40px;
     background-color: #eee;
-  
   }
-  .btn 
+  .btn
   {
    outline:0;
    border:none;
@@ -30,12 +29,17 @@
     background-position: 50% 50%;
     background-repeat:repeat;
   }
-  .form-signin {
+  .form-signin, #language_form {
     max-width: 280px;
     padding: 15px;
     margin: 0 auto;
-      margin-top:50px;
+    margin-top:50px;
   }
+
+  #language_form {
+    margin-top:0;
+  }
+
   .form-signin .form-signin-heading, .form-signin {
     margin-bottom: 10px;
   }
@@ -77,3 +81,4 @@
     text-align: center;
     text-shadow: 0 2px 2px rgba(0,0,0,0.5);
   }
+
