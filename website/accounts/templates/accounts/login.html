@@ -1,4 +1,7 @@
 {% load staticfiles %}
+{% load template_tag %}
+{% load i18n %}
+
 <html>
 <head>
   <link rel="stylesheet" href="{% static "accounts/css/bootstrap.min.css" %}">
@@ -10,7 +13,7 @@
   <div class="container">
     <form class="form-signin" action="{% url 'accounts:account_login' %}" method="post" id="login-form">
     {% csrf_token %}
-      <h1 class="form-signin-heading text-muted">Alliance Login</h1>
+      <h1 class="form-signin-heading text-muted">{% trans "Alliance Login" %}</h1>
       {% if form.non_field_errors %}
       <div class="alert alert-danger">{{ form.non_field_errors }}</div>
       {% endif %}
@@ -22,11 +25,20 @@
       {{ form.username }}
       {{ form.password }}
       <button class="btn btn-lg btn-primary btn-block" type="submit">
-        Login
+        {% trans "Login" %}
       </button>
       <a class="btn btn-lg btn-success btn-block" href="{% url 'accounts:account_signup' %}">
           Sign up
       </a>
+    </form>
+    <form id="language_form" action="{% url 'adminapp:set_language' %}" method="post">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{% settings_value "LOGIN_URL" %}" />
+        <select id="lang" name="language">
+            <option>{% trans "Select language" %}</option>
+            <option  value="en">{% trans "English" %}</option>
+            <option  value="zh">{% trans "Chinese" %}</option>
+        </select>
     </form>
   </div>
 </body>
