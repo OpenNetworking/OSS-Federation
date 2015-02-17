@@ -9,6 +9,6 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include('api.urls', namespace='api')),
     url(r'^chart/', include('chart.urls', namespace='chart')),
-    url(r'adminapp/', include('adminapp.urls', namespace='adminapp')),
+    url(r'^adminapp/', include('adminapp.urls', namespace='adminapp')),
     url(r'^issuer/', include('baseissuer.urls', namespace='baseissuer')),
 )
